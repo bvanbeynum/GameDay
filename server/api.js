@@ -1,0 +1,89 @@
+import client from "superagent";
+import jwt from "jsonwebtoken";
+import config from "./config.js";
+
+export default {
+
+	validateAccess: (request, response) => {
+		if (!request.query.token) {
+			response.redirect("/noaccess.html");
+			return;
+		}
+
+		client.get(request.protocol + "://" + request.headers.host + "/data/user?usertoken=" + request.query.token)
+			.then(clientResponse => {
+				if (clientResponse.body.users && clientResponse.body.users.length === 1) {
+					const user = clientResponse.body.users[0];
+
+					let ipAddress = (request.headers["x-forwarded-for"] || "").split(",").pop().trim() || 
+						request.connection.remoteAddress || 
+						request.socket.remoteAddress || 
+						request.connection.socket.remoteAddress;
+					ipAddress = ipAddress.match(/[^:][\d.]+$/g).join("");
+
+					user.devices.push({
+						requestDate: new Date(),
+						agent: request.headers["user-agent"],
+						ip: ipAddress,
+						token: request.query.token
+					});
+
+					user.tokens = user.tokens.filter(token => token !== request.query.token);
+
+					client.post(request.protocol + "://" + request.headers.host + "/data/user")
+						.send({ user: user })
+						.then(clientResponse => {
+
+							const encryptedToken = jwt.sign({ token: request.query.token }, config.jwt);
+							response.cookie("gd", encryptedToken, { maxAge: 999999999999 });
+							response.redirect("/");
+
+						})
+				}
+				else {
+					response.redirect("/noaccess.html");
+				}
+			})
+			.catch(error => {
+				response.redirect("/noaccess.html");
+			})
+	},
+
+	authenticate: (request, response, next) => {
+		if (request.cookies.gd) {
+			try {
+				const tokenData = jwt.verify(request.cookies.gd, config.jwt);
+
+				if (tokenData.token) {
+					client.get(request.protocol + "://" + request.headers.host + "/data/user?devicetoken=" + tokenData.token)
+						.then(clientResponse => {
+							if (clientResponse.body.users && clientResponse.body.users.length === 1) {
+								request.user = clientResponse.body.users[0];
+								next();
+							}
+							else {
+								response.redirect("/noaccess.html");
+							}
+						})
+						.catch(() => {
+							response.redirect("/noaccess.html");
+						});
+				}
+			}
+			catch (error) {
+				response.redirect("/noaccess.html");
+			}
+		}
+		else if (
+			!request.url.toLowerCase().startsWith("/noaccess.html")
+			&& !request.url.toLowerCase().startsWith("/data")
+			&& !request.url.toLowerCase().startsWith("/access")
+			) {
+				response.redirect("/noaccess.html");
+		}
+		else {
+			next();
+		}
+	}
+
+}
