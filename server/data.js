@@ -165,6 +165,453 @@ export default {
 			.catch(error => {
 				response.status(560).json({ error: error.message });
 			});
+	},
+
+	divisionGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+
+		data.division.find(filter)
+			.lean()
+			.exec()
+			.then(divisionsDb => {
+				const output = {
+					divisions: divisionsDb.map(({ _id, __v, ...division }) => ({ id: _id, ...division }))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	divisionSave: (request, response) => {
+		if (!request.body.division) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const divisionSave = request.body.division;
+
+		if (divisionSave.id) {
+			data.division.findById(divisionSave.id)
+				.exec()
+				.then(divisionDb => {
+					if (!divisionDb) {
+						response.status(560).json({ error: "Division not found" });
+						return;
+					}
+
+					Object.keys(divisionSave).forEach(field => {
+						if (field != "id") {
+							divisionDb[field] = divisionSave[field];
+						}
+					})
+
+					return divisionDb.save();
+				})
+				.then(divisionDb => {
+					response.status(200).json({ id: divisionDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.division(divisionSave)
+				.save()
+				.then(divisionDb => {
+					response.status(200).json({ id: divisionDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	divisionDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.division.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	teamGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+		if (request.query.name) {
+			filter.name = { $regex: new RegExp(request.query.name, "i") };
+		}
+		if (request.query.divisionid) {
+			filter["division.id"] = request.query.divisionid;
+		}
+		if (request.query.managed) {
+			filter.isManaged = true;
+		}
+
+		data.team.find(filter)
+			.lean()
+			.exec()
+			.then(teamsDb => {
+				const output = {
+					teams: teamsDb.map(({ _id, __v, ...team }) => ({ id: _id, ...team }))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			})
+	},
+
+	teamSave: (request, response) => {
+		if (!request.body.team) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const teamSave = request.body.team;
+
+		if (teamSave.id) {
+			data.team.findById(teamSave.id)
+				.exec()
+				.then(teamDb => {
+					if (!teamDb) {
+						response.status(560).json({ error: "Team not found" });
+						return;
+					}
+
+					Object.keys(teamSave).forEach(field => {
+						if (field != "id") {
+							teamDb[field] = teamSave[field];
+						}
+					})
+
+					return teamDb.save();
+				})
+				.then(teamDb => {
+					response.status(200).json({ id: teamDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.team(teamSave)
+				.save()
+				.then(teamDb => {
+					response.status(200).json({ id: teamDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	teamDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.team.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	gameGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+		if (request.query.date) {
+			const day = new Date(Date.parse(request.query.date)),
+				endDate = new Date(day);
+			
+			endDate.setDate(day.getDate() + 1);
+			filter.dateTime = { $gte: day, $lt: endDate };
+		}
+		if (request.query.divisionid) {
+			filter["division.id"] = request.query.divisionid;
+		}
+		if (request.query.teamid) {
+			filter.$or = [
+				{ "homeTeam.id": request.query.teamid },
+				{ "awayTeam.name": request.query.teamid }
+			]
+		}
+
+		data.game.find(filter)
+			.lean()
+			.exec()
+			.then(gamesDb => {
+				const output = {
+					games: gamesDb.map(({ _id, __v, ...game }) => ({ id: _id, ...game }))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			})
+	},
+
+	gameSave: (request, response) => {
+		if (!request.body.game) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const gameSave = request.body.game;
+
+		if (gameSave.id) {
+			data.game.findById(gameSave.id)
+				.exec()
+				.then(gameDb => {
+					if (!gameDb) {
+						response.status(560).json({ error: "Game not found" });
+						return;
+					}
+
+					Object.keys(gameSave).forEach(field => {
+						if (field != "id") {
+							gameDb[field] = gameSave[field];
+						}
+					})
+
+					return gameDb.save();
+				})
+				.then(gameDb => {
+					response.status(200).json({ id: gameDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.game(gameSave)
+				.save()
+				.then(gameDb => {
+					response.status(200).json({ id: gameDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	gameDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.game.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	playerGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+		if (request.query.divisionid) {
+			filter["division.id"] = request.query.divisionid;
+		}
+		if (request.query.teamid) {
+			filter["team.id"] = request.query.teamid;
+		}
+
+		const output = {};
+
+		data.player.find(filter)
+			.lean()
+			.exec()
+			.then(playersDb => {
+				output.players = playersDb.map(({ _id, __v, ...player }) => ({ id: _id, ...player }));
+
+				return data.player.find().lean().exec();
+			})
+			.then(playersDb => {
+				output.players = output.players.map(player => ({
+					...player,
+					prev: playersDb.filter(playersAll => 
+						player.division.id !== playersAll.division.id
+						)
+				}))
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			})
+	},
+
+	playerSave: (request, response) => {
+		if (!request.body.player) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const playerSave = request.body.player;
+
+		if (playerSave.id) {
+			data.player.findById(playerSave.id)
+				.exec()
+				.then(playerDb => {
+					if (!playerDb) {
+						response.status(560).json({ error: "Player not found" });
+						return;
+					}
+
+					Object.keys(playerSave).forEach(field => {
+						if (field != "id") {
+							playerDb[field] = playerSave[field];
+						}
+					})
+
+					return playerDb.save();
+				})
+				.then(playerDb => {
+					response.status(200).json({ id: playerDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.player(playerSave)
+				.save()
+				.then(playerDb => {
+					response.status(200).json({ id: playerDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	playerDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.player.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	playGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+		if (request.query.divisionid) {
+			filter["division.id"] = request.query.divisionid;
+		}
+
+		data.play.find(filter)
+			.lean()
+			.exec()
+			.then(playsDb => {
+				const output = {
+					plays: playsDb.map(({ _id, __v, ...play }) => ({ id: _id, ...play }))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			})
+	},
+
+	playSave: (request, response) => {
+		if (!request.body.play) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const playSave = request.body.play;
+
+		if (playSave.id) {
+			data.play.findById(playSave.id)
+				.exec()
+				.then(playDb => {
+					if (!playDb) {
+						response.status(560).json({ error: "Play not found" });
+						return;
+					}
+
+					Object.keys(playSave).forEach(field => {
+						if (field != "id") {
+							playDb[field] = playSave[field];
+						}
+					})
+
+					return playDb.save();
+				})
+				.then(playDb => {
+					response.status(200).json({ id: playDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.play(playSave)
+				.save()
+				.then(playDb => {
+					response.status(200).json({ id: playDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	playDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.play.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
 	}
 
 }
