@@ -84,6 +84,20 @@ export default {
 		else {
 			next();
 		}
+	},
+
+	divisionsLoad: (request, response) => {
+		client.get(request.protocol + "://" + request.headers.host + "/data/team?managed=true")
+			.then(clientResponse => {
+				const output = {
+					teams: clientResponse.body.teams.map(team => team)
+				}
+
+				response.status(200).json(output);
+			})
+			.catch(() => {
+				response.status(560).json({ error: error.message });
+			})
 	}
 
 }

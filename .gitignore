@@ -14,4 +14,5 @@ jspm_packages/
 .eslintcache
 
 config.js
-client/dev/*
+client/dev/
+client/static/

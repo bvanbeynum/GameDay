@@ -15,6 +15,11 @@ export default {
 			template: "./client/src/noaccess.html",
 			favicon: "./client/src/media/favicon.ico",
 			chunks: []
+		}),
+		new HtmlWebpackPlugin({
+			filename: "working.html",
+			template: "./client/src/working.html",
+			chunks: []
 		})
 	],
 	module: {

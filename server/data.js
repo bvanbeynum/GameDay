@@ -40,8 +40,7 @@ export default {
 				.exec()
 				.then(userData => {
 					if (!userData) {
-						response.status(560).json({ error: "Could not find user" });
-						return;
+						throw new Error("User not found");
 					}
 
 					Object.keys(userSave).forEach(field => {
@@ -121,8 +120,7 @@ export default {
 				.exec()
 				.then(requestData => {
 					if (!requestData) {
-						response.status(560).json({ error: "Request not found" });
-						return;
+						throw new Error("Request not found");
 					}
 
 					Object.keys(requestSave).forEach(field => {
@@ -202,8 +200,7 @@ export default {
 				.exec()
 				.then(divisionDb => {
 					if (!divisionDb) {
-						response.status(560).json({ error: "Division not found" });
-						return;
+						throw new Error("Division not found");
 					}
 
 					Object.keys(divisionSave).forEach(field => {
@@ -292,8 +289,7 @@ export default {
 				.exec()
 				.then(teamDb => {
 					if (!teamDb) {
-						response.status(560).json({ error: "Team not found" });
-						return;
+						throw new Error("Team not found");
 					}
 
 					Object.keys(teamSave).forEach(field => {
@@ -389,8 +385,7 @@ export default {
 				.exec()
 				.then(gameDb => {
 					if (!gameDb) {
-						response.status(560).json({ error: "Game not found" });
-						return;
+						throw new Error("Game not found");
 					}
 
 					Object.keys(gameSave).forEach(field => {
@@ -461,10 +456,20 @@ export default {
 			.then(playersDb => {
 				output.players = output.players.map(player => ({
 					...player,
-					prev: playersDb.filter(playersAll => 
-						player.division.id !== playersAll.division.id
+					prev: playersDb.filter(playerAll => 
+						player.division
+						&& player.firstName
+						&& player.parentEmail
+						&& playerAll.division
+						&& playerAll.firstName
+						&& playerAll.parentEmail
+						&& player.division.id !== playerAll.division.id
+						&& player.parentEmail.toLowerCase() == playerAll.parentEmail.toLowerCase()
+						&& player.firstName.toLowerCase() == playerAll.firstName.toLowerCase()
 						)
-				}))
+				}));
+
+				response.status(200).json(output);
 			})
 			.catch(error => {
 				response.status(560).json({ error: error.message });
@@ -484,12 +489,11 @@ export default {
 				.exec()
 				.then(playerDb => {
 					if (!playerDb) {
-						response.status(560).json({ error: "Player not found" });
-						return;
+						throw new Error("Player not found");
 					}
 
 					Object.keys(playerSave).forEach(field => {
-						if (field != "id") {
+						if (field != "id" && field != "prev") {
 							playerDb[field] = playerSave[field];
 						}
 					})
@@ -568,8 +572,7 @@ export default {
 				.exec()
 				.then(playDb => {
 					if (!playDb) {
-						response.status(560).json({ error: "Play not found" });
-						return;
+						throw new Error("Play not found");
 					}
 
 					Object.keys(playSave).forEach(field => {

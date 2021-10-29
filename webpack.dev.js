@@ -8,7 +8,6 @@ export default merge(common, {
 	output: {
 		path: path.resolve("./client/dev"),
 		filename: "[name].js",
-		publicPath: "/",
 		clean: true
 	}
 });
