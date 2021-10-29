@@ -21,6 +21,26 @@ router.get("/data/request", data.requestGet);
 router.post("/data/request", data.requestSave);
 router.delete("/data/request", data.requestDelete);
 
+router.get("/data/division", data.divisionGet);
+router.post("/data/division", data.divisionSave);
+router.delete("/data/division", data.divisionDelete);
+
+router.get("/data/game", data.gameGet);
+router.post("/data/game", data.gameSave);
+router.delete("/data/game", data.gameDelete);
+
+router.get("/data/team", data.teamGet);
+router.post("/data/team", data.teamSave);
+router.delete("/data/team", data.teamDelete);
+
+router.get("/data/player", data.playerGet);
+router.post("/data/player", data.playerSave);
+router.delete("/data/player", data.playerDelete);
+
+router.get("/data/play", data.playGet);
+router.post("/data/play", data.playSave);
+router.delete("/data/play", data.playDelete);
+
 // ************************* API
 
 // ************************* Routes
