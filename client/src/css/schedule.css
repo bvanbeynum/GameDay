@@ -1,0 +1,110 @@
+.confrenceContainer {
+	display: flex;
+	flex-direction: column;
+}
+
+.scheduleHeader {
+	color: rgb(100,100,100);
+	margin: 10px 5px;
+}
+
+.daySection {
+	margin: 20px;
+}
+
+.confrence {
+	flex: 1;
+}
+
+.standingDate {
+	margin: 8px 0px;
+	font-size: 1.1em;
+	color: rgb(100,100,100);
+}
+
+.scheduleSection {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+img {
+	width: 24px;
+}
+
+.gameHighlight {
+	font-weight: bold;
+	color: black;
+}
+
+.gameContainer {
+	padding: 10px 20px;
+	border: solid 1px rgb(224, 224, 224);
+	border-collapse: collapse;
+	cursor: pointer;
+	margin: 10px;
+	width: 320px;
+	display: flex;
+}
+
+.scheduleTeams {
+	border-right: solid 1px rgb(224, 224, 224);
+	margin-right: 10px;
+	display: flex;
+	flex-direction: column;
+	flex: 60;
+}
+
+.scheduleDateContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 40;
+}
+
+.scheduleTeam {
+	display: flex;
+	align-items: center;
+}
+
+.scheduleTeamName {
+	margin: 0px 10px;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th, td {
+	padding: 8px 5px;
+	border-bottom: 1px solid rgb(223, 225, 229);
+}
+
+th {
+	font-weight: normal;
+	text-align: left;
+}
+
+td:nth-child(2) {
+	width: 70%;
+}
+
+tr:nth-child(n+1):hover {
+	background-color: rgb(245, 245, 245);
+}
+
+tr:nth-child(n+1) {
+	cursor: pointer;
+}
+
+th:nth-child(n+2), td:nth-child(n+3) {
+	text-align: center;
+}
+
+@media (min-width: 600px) {
+	.confrenceContainer {
+		flex-direction: row;
+	}
+}

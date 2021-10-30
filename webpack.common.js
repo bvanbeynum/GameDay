@@ -2,24 +2,29 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 
 export default {
 	entry: {
-		main: "./client/src/index.jsx"
+		index: "./client/src/index.jsx",
+		schedule: "./client/src/schedule.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
 			filename: "index.html",
-			template: "./client/src/index.html",
-			favicon: "./client/src/media/favicon.ico"
+			title: "Game Day",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "index" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
 		}),
 		new HtmlWebpackPlugin({ 
-			filename: "noaccess.html",
-			template: "./client/src/noaccess.html",
-			favicon: "./client/src/media/favicon.ico",
-			chunks: []
-		}),
-		new HtmlWebpackPlugin({
-			filename: "working.html",
-			template: "./client/src/working.html",
-			chunks: []
+			filename: "schedule.html",
+			title: "Game Day - Schedule",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "schedule" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],
 	module: {

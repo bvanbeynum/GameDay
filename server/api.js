@@ -90,14 +90,41 @@ export default {
 		client.get(request.protocol + "://" + request.headers.host + "/data/team?managed=true")
 			.then(clientResponse => {
 				const output = {
-					teams: clientResponse.body.teams.map(team => team)
+					teams: clientResponse.body.teams
 				}
 
 				response.status(200).json(output);
 			})
-			.catch(() => {
+			.catch(error => {
 				response.status(560).json({ error: error.message });
 			})
+	},
+
+	scheduleLoad: (request, response) => {
+		if (!request.query.divisionid) {
+			response.status(550).json({ error: "Missing division" });
+			return;
+		}
+
+		client.get(`${ request.protocol }://${ request.headers.host }/data/team?divisionid=${ request.query.divisionid }`)
+			.then(clientReponse => {
+				const output = {
+					teams: clientReponse.body.teams
+				}
+
+				client.get(`${ request.protocol }://${ request.headers.host }/data/game?divisionid=${ request.query.divisionid}`)
+					.then(clientReponse => {
+						output.games = clientReponse.body.games;
+
+						response.status(200).json(output);
+					})
+					.catch(error => {
+						response.status(561).json({ error: error.message });
+					});
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
 	}
 
 }

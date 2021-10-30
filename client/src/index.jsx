@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Toolbar from "./components/toolbar";
 import Toast from "./components/toast";
-import "./index.css";
-import "./media/common.css";
-import loadingImage from "./media/loading.gif";
+import Cookies from "universal-cookie";
+import "./css/index.css";
+import "./css/common.css";
 
-class Content extends Component {
+class Index extends Component {
 	constructor(props) {
 		super(props);
+
+		const cookies = new Cookies();
+		cookies.remove("division");
 
 		this.state = {
 			divisions: [],
@@ -21,17 +24,63 @@ class Content extends Component {
 		fetch("/api/divisionload")
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
+				const divisions = [... new Set(data.teams.map(team => team.division.name))] // get the unique names of the divisions
+					.map(division => ({
+						name: division,
+						age: +(division.replace(/u/i, "")), // convert the name to an int for sorting
+						teams: data.teams
+							.filter(team => team.division.name === division)
+							.sort((teamA, teamB) => 
+								teamA.division.year !== teamB.division.year ?
+									teamB.division.year - teamA.division.year // Primarily sort by year
+								:
+									teamA.division.season > teamB.division.season ? 1 : -1 // If year is same, sort by season
+							)
+					}))
+					.sort((divisionA, divisionB) => divisionB.age - divisionA.age); // sort the divisions by age group
+				
+				this.setState({
+					divisions: divisions,
+					isLoading: false
+				});
 			})
 			.catch(error => {
-
+				console.log(`error: ${ error.message }`);
+				this.showToast("There was an error loading", true);
 			});
 	}
 
 	navBack = () => {
 	}
 
-	selectTeam = (teamIndex) => {
+	selectTeam = (divisionIndex, teamIndex) => {
+		const team = this.state.divisions[divisionIndex].teams[teamIndex];
+
+		const cookies = new Cookies();
+		cookies.set("division", team.division.id, { path: "/" });
+		
+		window.location = "/schedule.html";
+	}
+
+	showToast = (message, isError) => {
+		this.setState(({
+			toast: {
+				text: message,
+				isActive: true,
+				type: isError ? "error" : "info"
+			}
+		}), // After updating the state set a timer to clear toast
+		() => {
+			setTimeout(() => {
+				this.setState({
+					toast: {
+						text: "",
+						isActive: false,
+						type: "info"
+					}
+				})
+			}, 4000) // 4 seconds to clear
+		})
 	}
 	
 	render() { return (
@@ -41,7 +90,7 @@ class Content extends Component {
 			{
 			this.state.isLoading ?
 				<div className="loading">
-					<img alt="Loading" src={ loadingImage } />
+					<img alt="Loading" src="/media/images/loading.gif" />
 				</div>
 			:
 				<div className="divisionContainer">
@@ -59,8 +108,8 @@ class Content extends Component {
 						<div className="teamsContainer">
 						{
 						division.teams.map((team, teamIndex) => (
-							<div key={ teamIndex } onClick={ this.selectTeam(teamIndex) } className="team">
-								<div><img src={ team.img } /></div>
+							<div key={ teamIndex } onClick={ () => { this.selectTeam(divisionIndex, teamIndex) } } className="team">
+								<div><img src={ `/media/logos/${ team.name.toLowerCase() }.png` } /></div>
 								<div>{ team.name }</div>
 								<div className="teamSeason">{ team.division.season } - { team.division.year }</div>
 							</div>
@@ -76,4 +125,4 @@ class Content extends Component {
 	); }
 }
 
-ReactDOM.render(<Content />, document.getElementById("root"));
+ReactDOM.render(<Index />, document.getElementById("root"));

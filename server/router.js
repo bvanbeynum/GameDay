@@ -44,6 +44,7 @@ router.delete("/data/play", data.playDelete);
 // ************************* API
 
 router.get("/api/divisionload", api.divisionsLoad);
+router.get("/api/scheduleload", api.scheduleLoad);
 
 // ************************* Routes
 

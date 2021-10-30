@@ -27,6 +27,8 @@ app.use(cookieParser());
 // Routes =======================================================================
 
 app.use(router);
+app.use("/media", express.static(path.join(currentDirectory, "/client/media")));
+app.use(express.static(path.join(currentDirectory, "/client/staticpages")));
 
 if (config.mode === "development") {
 	Promise.all([
