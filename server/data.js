@@ -265,6 +265,7 @@ export default {
 			.lean()
 			.exec()
 			.then(teamsDb => {
+				
 				const output = {
 					teams: teamsDb.map(({ _id, __v, ...team }) => ({ id: _id, ...team }))
 				};

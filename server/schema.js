@@ -71,7 +71,8 @@ export default {
 		practiceDay: String,
 		practiceTime: String,
 		practiceLocation: String,
-		practiceWeekend: String
+		practiceWeekend: String,
+		teamDivision: { type: {}, select: false }
 	}),
 	
 	player: mongoose.model("player", {
@@ -128,7 +129,8 @@ export default {
 		routeColor: String,
 		
 		prev: [{type: prevYearSchema}],
-		notes: String
+		notes: String,
+		playerDivision: { type: {}, select: false }
 	}),
 	
 	game: mongoose.model("game", {
@@ -151,7 +153,8 @@ export default {
 			score: Number,
 			isWinner: Boolean
 		},
-		field: String
+		field: String,
+		gameDivision: { type: {}, select: false }
 	}),
 	
 	play: mongoose.model("play", {
