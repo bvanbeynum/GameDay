@@ -44,7 +44,7 @@ export default {
 					response.redirect("/noaccess.html");
 				}
 			})
-			.catch(error => {
+			.catch(() => {
 				response.redirect("/noaccess.html");
 			})
 	},

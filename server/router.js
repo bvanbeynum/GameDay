@@ -9,14 +9,6 @@ const router = express.Router();
 
 connect("mongodb://" + config.db.user + ":" + config.db.pass + "@" + config.db.servers.join(",") + "/" + config.db.db + "?authSource=" + config.db.authDB, {useNewUrlParser: true, useUnifiedTopology: true });
 
-router.use((request, response, next) => {
-	response.header("Access-Control-Allow-Origin", request.get("origin"));
-	response.header("Access-Control-Allow-Credentials", "true");
-	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	
-	next();
-});
-
 router.use(api.authenticate)
 
 // ************************* Data
