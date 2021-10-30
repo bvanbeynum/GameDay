@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Toolbar from "./components/toolbar";
+import Toast from "./components/toast";
 import "./index.css";
 import "./media/common.css";
 import loadingImage from "./media/loading.gif";
@@ -11,8 +12,20 @@ class Content extends Component {
 
 		this.state = {
 			divisions: [],
-			isLoading: true
+			isLoading: true,
+			toast: { text: "", isActive: false, type: "info" }
 		};
+	}
+
+	componentDidMount() {
+		fetch("/api/divisionload")
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+			})
+			.catch(error => {
+
+			});
 	}
 
 	navBack = () => {
@@ -57,6 +70,8 @@ class Content extends Component {
 				))}
 				</div>
 			}
+
+			<Toast message={ this.state.toast } />
 		</div>
 	); }
 }
