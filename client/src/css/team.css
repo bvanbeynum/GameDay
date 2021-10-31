@@ -1,25 +1,17 @@
-.confrenceContainer {
+.scheduleContainer {
+	padding: 30px 10px;
 	display: flex;
 	flex-direction: column;
 }
 
-.scheduleHeader {
-	color: rgb(100,100,100);
-	margin: 10px 5px;
+.teamHeader {
+	display: flex;
 }
 
-.daySection {
-	margin: 20px;
-}
-
-.confrence {
-	flex: 1;
-}
-
-.standingDate {
-	margin: 8px 0px;
-	font-size: 1.1em;
-	color: rgb(100,100,100);
+.scheduleTeam img {
+	width: 24px;
+	height: 24px;
+	margin-right: 10px;
 }
 
 .scheduleSection {
@@ -68,43 +60,36 @@
 	margin: 0px 10px;
 }
 
-table.standings {
+.teamStats {
+	width: 95%;
 	border-collapse: collapse;
-	width: 100%;
 }
 
-.standings img {
-	width: 24px;
-}
-
-.standings th, td {
-	padding: 8px 5px;
-	border-bottom: 1px solid rgb(223, 225, 229);
-}
-
-.standings th {
+.teamStats th {
+	border-bottom: solid 1px rgb(224, 224, 224);
 	font-weight: normal;
+}
+
+.teamStats th, .teamStats td {
+	padding: 8px 5px;
+}
+
+.teamStats th:nth-child(2) {
 	text-align: left;
 }
 
-.standings td:nth-child(2) {
-	width: 70%;
-}
-
-.standings tr:nth-child(n+1):hover {
-	background-color: rgb(245, 245, 245);
-}
-
-.standings tr:nth-child(n+1) {
-	cursor: pointer;
-}
-
-.standings th:nth-child(n+2), td:nth-child(n+3) {
+.teamStats td:nth-child(1), .teamStats td:nth-child(n+3) {
 	text-align: center;
 }
 
-@media (min-width: 600px) {
-	.confrenceContainer {
-		flex-direction: row;
-	}
+.teamStats td {
+	font-size: 0.85em;
+}
+
+.statsContainer {
+	margin: 20px 0px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 5;
 }

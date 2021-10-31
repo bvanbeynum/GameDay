@@ -11,6 +11,11 @@
 	flex: 1;
 }
 
+.toolbarButton {
+	margin: 5px 10px;
+	cursor: pointer;
+}
+
 .menuContainer {
 	position: relative;
 	display: none;

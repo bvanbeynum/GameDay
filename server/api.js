@@ -112,15 +112,30 @@ export default {
 					teams: clientReponse.body.teams
 				}
 
-				client.get(`${ request.protocol }://${ request.headers.host }/data/game?divisionid=${ request.query.divisionid}`)
-					.then(clientReponse => {
-						output.games = clientReponse.body.games;
+				client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.query.divisionid }`)
+					.then(clientResponse => {
+						const players = clientResponse.body.players;
 
-						response.status(200).json(output);
+						output.teams = output.teams.map(team => ({
+							...team,
+							players: players.filter(player => player.team && player.team.id === team.id)
+						}));
+
+						client.get(`${ request.protocol }://${ request.headers.host }/data/game?divisionid=${ request.query.divisionid }`)
+							.then(clientReponse => {
+								output.games = clientReponse.body.games;
+		
+								response.status(200).json(output);
+							})
+							.catch(error => {
+								response.status(561).json({ error: error.message });
+							});
+
 					})
 					.catch(error => {
-						response.status(561).json({ error: error.message });
-					});
+						response.status(562).json({ error: error.message });
+					})
+
 			})
 			.catch(error => {
 				response.status(560).json({ error: error.message });

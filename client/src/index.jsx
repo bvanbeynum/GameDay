@@ -50,9 +50,6 @@ class Index extends Component {
 			});
 	}
 
-	navBack = () => {
-	}
-
 	selectTeam = (divisionIndex, teamIndex) => {
 		const team = this.state.divisions[divisionIndex].teams[teamIndex];
 
@@ -85,7 +82,7 @@ class Index extends Component {
 	
 	render() { return (
 		<div className="pageContainer">
-			<Toolbar navBack={ this.navBack } />
+			<Toolbar navBack={ {} } />
 
 			{
 			this.state.isLoading ?

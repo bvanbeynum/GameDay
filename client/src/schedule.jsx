@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Toolbar from "./components/toolbar";
 import Toast from "./components/toast";
+import Standings from "./components/standings";
+import Team from "./components/team";
+import Game from "./components/game";
 import Cookies from "universal-cookie";
-import "./css/schedule.css";
 import "./css/common.css";
 
 class Schedule extends Component {
@@ -13,7 +15,8 @@ class Schedule extends Component {
 		this.state = {
 			confrences: [],
 			schedule: [],
-			isLoading: true,
+			managedTeam: {},
+			pageState: "loading",
 			toast: { text: "", isActive: false, type: "info" }
 		};
 	}
@@ -23,31 +26,32 @@ class Schedule extends Component {
         const divisionId = cookies.get("division");
 
         if (!divisionId) {
-            window.location = "/index.html";
+            window.location = "/";
         }
 
 		fetch(`/api/scheduleload?divisionid=${ divisionId }`)
 			.then(response => response.json())
 			.then(data => {
 
+				data.teams = data.teams.map(team => ({
+					...team,
+					wins: data.games.filter(game =>
+							(game.awayTeam.id === team.id && game.awayTeam.isWinner) ||
+							(game.homeTeam.id === team.id && game.homeTeam.isWinner)
+						).length,
+					losses: data.games.filter(game =>
+							(game.awayTeam.isWinner || game.homeTeam.isWinner) &&
+							(
+								(game.awayTeam.id === team.id && !game.awayTeam.isWinner) ||
+								(game.homeTeam.id === team.id && !game.homeTeam.isWinner)
+							)
+						).length
+				}))
+
 				let confrences = [... new Set(data.teams.map(team => team.confrence || ""))]
 					.map(confrence => ({
 						name: confrence,
 						teams: data.teams.filter(team => (team.confrence || "") === confrence)
-							.map(team => ({ 
-								...team,
-								wins: data.games.filter(game =>
-										(game.awayTeam.id === team.id && game.awayTeam.isWinner) ||
-										(game.homeTeam.id === team.id && game.homeTeam.isWinner)
-									).length,
-								losses: data.games.filter(game =>
-										(game.awayTeam.isWinner || game.homeTeam.isWinner) &&
-										(
-											(game.awayTeam.id === team.id && !game.awayTeam.isWinner) ||
-											(game.homeTeam.id === team.id && !game.homeTeam.isWinner)
-										)
-									).length
-							}))
 					}));
 				
 				// Calculate ratio after wins & losses calculated
@@ -67,7 +71,21 @@ class Schedule extends Component {
 						dateOnly = new Date(dateTime);
 					
 					dateOnly.setHours(0,0,0,0);
-					return { ...game, dateTime: dateTime, date: dateOnly };
+					return { 
+						...game, 
+						dateTime: dateTime, 
+						date: dateOnly,
+						awayTeam: {
+							...data.teams.find(team => team.id === game.awayTeam.id),
+							isWinner: game.awayTeam.isWinner,
+							score: game.awayTeam.score
+						},
+						homeTeam: {
+							...data.teams.find(team => team.id === game.homeTeam.id),
+							isWinner: game.homeTeam.isWinner,
+							score: game.homeTeam.score
+						}
+					};
 				});
 
 				const schedule = [... new Set(games.map(game => Date.parse(game.date)))]
@@ -78,11 +96,14 @@ class Schedule extends Component {
 						games: games.filter(game => Date.parse(game.date) === date)
 					}));
 
+				const managedTeam = data.teams.find(team => team.isManaged);
+
 				this.setState({
 					confrences: confrences,
 					schedule: schedule,
-					isLoading: false,
-					data: data
+					managedTeam: managedTeam,
+					games: games,
+					pageState: "standings"
 				});
 
 			})
@@ -91,6 +112,47 @@ class Schedule extends Component {
 				this.showToast("Error loading schedule data", true);
 			})
     }
+	
+	navBack = () => {
+		switch (this.state.pageState) {
+		case "standings":
+			window.location = "/";
+			break;
+		
+		case "team":
+			this.setState({ 
+				selectTeam: null,
+				teamGames: null,
+				pageState: "standings"
+			});
+			break;
+		
+		case "game":
+			this.setState({ 
+				selectedGame: null,
+				pageState: this.state.selectedTeam ? "team" : "standings"
+			});
+
+			break;
+		}
+	}
+
+	selectTeam = (team) => {
+		const teamGames = this.state.games.filter(game => game.awayTeam.id === team.id || game.homeTeam.id === team.id);
+
+		this.setState({
+			selectedTeam: team,
+			teamGames: teamGames,
+			pageState: "team"
+		});
+	}
+
+	selectGame = (game) => {
+		this.setState({
+			selectedGame: game,
+			pageState: "game"
+		});
+	}
 
 	showToast = (message, isError) => {
 		this.setState(({
@@ -115,92 +177,23 @@ class Schedule extends Component {
 	
     render() { return (
 		<div className="pageContainer">
-			<Toolbar navBack={ this.navBack } />
+			<Toolbar navBack={ this.navBack } teamName={ this.state.managedTeam.name } adminMenu={ [] } />
 
 			{
-			this.state.isLoading ?
+			this.state.pageState === "loading" ?
 				<div className="loading">
 					<img alt="Loading" src="/media/images/loading.gif" />
 				</div>
-			:
-			<div className="scheduleContainer">
-				<h2 className="scheduleHeader">Standings</h2>
-		
-				<div className="confrenceContainer">
-				{
-				this.state.confrences
-					.map((confrence, confrenceIndex) => 
-				
-					<div key={ confrenceIndex } className="daySection confrence">
-						<table>
-						<thead>
-						<tr>
-							<th colSpan="2">{ confrence.name }</th>
-							<th>W</th>
-							<th>L</th>
-							<th>Pct</th>
-						</tr>
-						</thead>
-						<tbody>
-						{
-						confrence.teams.map((team, teamIndex) => 
-							<tr key={ teamIndex } ng-click="selectTeam(team)">
-								<td><img src={ `/media/logos/${ team.name.toLowerCase() }.png` } /></td>
-								<td>{team.name}</td>
-								<td>{team.wins}</td>
-								<td>{team.losses}</td>
-								<td>{team.ratio}</td>
-							</tr>
-						)}
-						</tbody>
-						</table>
-					</div>
-				)}
-				</div>
-					
-				<h2 className="scheduleHeader">Schedule</h2>
-				
-				<div>
-				{
-				this.state.schedule.map((gameDay, dayIndex) => 
-				
-					<div key={ dayIndex } className="daySection">
-						<div className={`standingDate ${ gameDay.isNext ? "gameHighlight" : "" }`}>
-							{ dayIndex + 1 } - { gameDay.name.toLocaleDateString() }
-						</div>
-						
-						<div className="scheduleSection">
-						{
-						gameDay.games.map((game, gameIndex) => 
-						
-							<div key={ gameIndex } className="gameContainer">
-								
-								<div className="scheduleTeams"> 
-									<div className="scheduleTeam">
-										<img src={`/media/logos/${ game.awayTeam.name.toLowerCase() }.png`} />
-										<div className="scheduleTeamName">{ game.awayTeam.name }</div>
-										<div className="scheduleWinner">{ game.awayTeam.isWinner ? <span>&#9668;</span> : "" }</div>
-									</div>
-									
-									<div className="scheduleTeam">
-										<img src={`/media/logos/${ game.homeTeam.name.toLowerCase() }.png`} />
-										<div className="scheduleTeamName">{ game.homeTeam.name }</div>
-										<div className="scheduleWinner">{ game.homeTeam.isWinner ? <span>&#9668;</span> : "" }</div>
-									</div>
-								</div>
-								
-								<div className="scheduleDateContainer">
-									<div className="scheduleDate">{ game.dateTime.toDateString() }</div>
-									<div className="scheduleTime">{ game.dateTime.toLocaleTimeString().replace(/:00 /, " ") }</div>
-								</div>
-							</div>
+			: this.state.pageState === "standings" ?
+				<Standings confrences={ this.state.confrences } schedule={ this.state.schedule } selectTeam={ this.selectTeam } selectGame={ this.selectGame } />
+			
+			: this.state.pageState === "team" ?
+				<Team team={ this.state.selectedTeam } games={ this.state.teamGames } selectGame={ this.selectGame } />
+			
+			: this.state.pageState === "game" ?
+				<Game game={ this.state.selectedGame } />
 
-						) }
-						</div>
-					</div>
-				)}
-				</div>
-			</div>
+			: ""
             }
 
 			<Toast message={ this.state.toast } />
