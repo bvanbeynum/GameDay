@@ -5,6 +5,7 @@ import Toast from "./components/toast";
 import Standings from "./components/standings";
 import Team from "./components/team";
 import Game from "./components/game";
+import PlayerPopup from "./components/playerpopup";
 import Cookies from "universal-cookie";
 import "./css/common.css";
 
@@ -16,6 +17,7 @@ class Schedule extends Component {
 			confrences: [],
 			schedule: [],
 			managedTeam: {},
+			popupPlayer: { prev: [] },
 			pageState: "loading",
 			toast: { text: "", isActive: false, type: "info" }
 		};
@@ -35,6 +37,25 @@ class Schedule extends Component {
 
 				data.teams = data.teams.map(team => ({
 					...team,
+					players: team.players.map(player => ({
+						...player,
+						prev: player.prev.sort((prevA, prevB) => prevB.division.year !== prevA.division.year ? prevB.division.year - prevA.division.year : prevA.division.season < prevB.division.season ? -1 : 1),
+						age: new Date(Date.now() - (new Date(player.dateOfBirth)).getTime()).getFullYear() - 1970,
+						comments: 
+							!player.height && !player.route && !player.speed && !player.hands && !player.draftBlock && !player.draftWatch ? "Didn't show at draft"
+							: "Player " +
+								(player.height == 1 ? "is short, " : "") +
+								(player.height == 2 ? "is average height, " : "") +
+								(player.height == 3 ? "is tall, " : "") +
+								(player.hands == 1 ? "has good hands, " : "") +
+								(player.hands == -1 ? "can't catch, " : "") +
+								(player.speed == 1 ? "is slow, " : "") +
+								(player.fast == 2 ? "is fast, " : "") +
+								(player.route == 1 ? "has a sloppy route, " : "") +
+								(player.route == 2 ? "has a sharp route, " : "") +
+								(player.draftBlock ? "don't pickup.  " : "") +
+								(player.draftWatch ? "pickup player.  " : "")
+							})),
 					wins: data.games.filter(game =>
 							(game.awayTeam.id === team.id && game.awayTeam.isWinner) ||
 							(game.homeTeam.id === team.id && game.homeTeam.isWinner)
@@ -154,6 +175,20 @@ class Schedule extends Component {
 		});
 	}
 
+	viewPlayer = (player) => {
+		this.setState({
+			popupPlayer: player,
+			isViewPlayer: true
+		});
+		window.scrollTo({top: 0, behavior: "smooth"})
+	}
+
+	closePlayer = () => {
+		this.setState({
+			isViewPlayer: false
+		});
+	}
+
 	showToast = (message, isError) => {
 		this.setState(({
 			toast: {
@@ -188,14 +223,15 @@ class Schedule extends Component {
 				<Standings confrences={ this.state.confrences } schedule={ this.state.schedule } selectTeam={ this.selectTeam } selectGame={ this.selectGame } />
 			
 			: this.state.pageState === "team" ?
-				<Team team={ this.state.selectedTeam } games={ this.state.teamGames } selectGame={ this.selectGame } />
+				<Team team={ this.state.selectedTeam } games={ this.state.teamGames } selectGame={ this.selectGame } viewPlayer={ this.viewPlayer } />
 			
 			: this.state.pageState === "game" ?
-				<Game game={ this.state.selectedGame } />
+				<Game game={ this.state.selectedGame } viewPlayer={ this.viewPlayer } />
 
 			: ""
             }
 
+			<PlayerPopup player={ this.state.popupPlayer } isActive={ this.state.isViewPlayer } closePlayer={ this.closePlayer } />
 			<Toast message={ this.state.toast } />
 		</div>
     ); }

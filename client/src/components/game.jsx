@@ -54,7 +54,7 @@ const Game = (props) => {
 					<tbody>
 					{
 					props.game.awayTeam.players.map((player, playerIndex) =>
-					<tr key={ playerIndex } ng-click="viewPlayer(player)">
+					<tr key={ playerIndex } onClick={ () => { props.viewPlayer(player) }}>
 						<td>{ player.draftPick ? player.draftPick : "-" } / { player.draftRank ? player.draftRank : "-" }</td>
 						<td>{ player.firstName + " " + player.lastName }</td>
 						<td>{ player.throwing ? player.throwing : "-" }</td>
@@ -84,7 +84,7 @@ const Game = (props) => {
 					<tbody>
 					{
 					props.game.homeTeam.players.map((player, playerIndex) =>
-					<tr key={ playerIndex } ng-click="viewPlayer(player)">
+					<tr key={ playerIndex } onClick={ () => { props.viewPlayer(player) }}>
 						<td>{ player.draftPick ? player.draftPick : "-" } / { player.draftRank ? player.draftRank : "-" }</td>
 						<td>{ player.firstName + " " + player.lastName }</td>
 						<td>{ player.throwing ? player.throwing : "-" }</td>
@@ -104,4 +104,3 @@ const Game = (props) => {
 }
 		
 export default Game;
-	

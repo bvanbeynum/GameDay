@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./toast.css"
+import "../css/toast.css"
 
 const Toast = (props) => {
 
