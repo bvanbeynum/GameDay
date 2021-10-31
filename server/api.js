@@ -50,7 +50,14 @@ export default {
 	},
 
 	authenticate: (request, response, next) => {
-		if (request.cookies.gd) {
+		if (
+			request.url.toLowerCase().startsWith("/noaccess.html") ||
+			request.url.toLowerCase().startsWith("/data") ||
+			request.url.toLowerCase().startsWith("/access")
+			) {
+			next();
+		}
+		else if (request.cookies.gd) {
 			try {
 				const tokenData = jwt.verify(request.cookies.gd, config.jwt);
 
@@ -74,15 +81,8 @@ export default {
 				response.redirect("/noaccess.html");
 			}
 		}
-		else if (
-			!request.url.toLowerCase().startsWith("/noaccess.html")
-			&& !request.url.toLowerCase().startsWith("/data")
-			&& !request.url.toLowerCase().startsWith("/access")
-			) {
-				response.redirect("/noaccess.html");
-		}
 		else {
-			next();
+			response.redirect("/noaccess.html");
 		}
 	},
 
