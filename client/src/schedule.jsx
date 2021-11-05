@@ -196,14 +196,38 @@ class Schedule extends Component {
 			}
 		};
 
-		this.setState(({ schedule }) => ({
-			schedule: schedule.map(day => ({
-				...day,
-				games: day.games.map(game => { return game.id === updatedGame.id ? updatedGame : game })
-			})),
-			selectedGame: updatedGame,
-			isViewGame: false
-		}));
+		this.setState({ pageState: "loading" }, () => {
+
+			fetch("/api/gamesave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ game: updatedGame }) })
+			.then(response => {
+				if (response.ok) {
+					response.json();
+				}
+				else {
+					throw Error(response.statusText);
+				}
+			})
+			.then(data => {
+				this.setState(({ schedule }) => ({
+					schedule: schedule.map(day => ({
+						...day,
+						games: day.games.map(game => { return game.id === updatedGame.id ? updatedGame : game })
+					})),
+					selectedGame: updatedGame,
+					pageState: "game",
+					isViewGame: false
+				}));
+		
+				this.showToast("Game saved");
+			})
+			.catch(error => {
+				this.setState({ pageState: "game", isViewGame: false });
+				
+				console.warn(error);
+				this.showToast("Error saving game", true);
+			});
+
+		})
 
 	}
 

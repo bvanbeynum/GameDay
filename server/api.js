@@ -140,6 +140,24 @@ export default {
 			.catch(error => {
 				response.status(560).json({ error: error.message });
 			});
+	},
+
+	gameSave: (request, response) => {
+		if (!request.body.game) {
+			response.statusMessage = "Missing game to save";
+			response.status(550).json({ error: "Missing game to save" });
+			return;
+		}
+
+		client.post(`${ request.protocol }://${ request.headers.host }/data/game`)
+			.send({ game: request.body.game })
+			.then(clientResponse => {
+				response.status(200).json({ id: clientResponse.body.id });
+			})
+			.catch(error => {
+				response.statusMessage = error.message;
+				response.status(560).json({ error: error.message });
+			});
 	}
 
 }
