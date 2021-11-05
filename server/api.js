@@ -44,9 +44,9 @@ export default {
 					response.redirect("/noaccess.html");
 				}
 			})
-			.catch(() => {
+			.catch((error) => {
 				response.redirect("/noaccess.html");
-			})
+			});
 	},
 
 	authenticate: (request, response, next) => {

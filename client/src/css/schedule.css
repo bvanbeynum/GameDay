@@ -152,6 +152,8 @@ table.standings {
 	left: 0;
 	right: 0;
 	display: none;
+	justify-content: center;
+	align-items: center;
 }
 .popupBackground.active {
 	display: flex;
@@ -159,9 +161,6 @@ table.standings {
 
 .popup {
 	position: fixed;
-	top: 15%;
-	left: 8%;
-	right: 8%;
 	background-color: white;
 	flex: 1;
 	box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 10%);
@@ -177,15 +176,6 @@ table.standings {
 	box-shadow: 0px 0px 1px 1px rgb(0 0 0 / 14%), 0px 0px 2px 2px rgb(0 0 0 / 10%), 0px 0px 5px 1px rgb(0 0 0 / 8%);
 }
 
-.popup h2.label {
-	font-size: 18px;
-	flex: 1;
-}
-
-.popup .header .button {
-	margin-right: 15px;
-}
-
 .popup .loading {
 	display: flex;
 	flex-direction: column;
@@ -198,18 +188,16 @@ table.standings {
 	cursor: pointer;
 }
 
+.popup .button svg {
+	fill: rgb(0 0 0);
+	width: 28px;
+	margin: 0px 15px;
+}
+
 .popupContainer {
-	padding: 15px;
+	padding: 35px;
 	display: flex;
 	flex-direction: column;
-}
-
-.popup .textInput {
-	margin-left: 20px;
-}
-
-.popup .editItem {
-	margin-bottom: 30px;
 }
 
 .popup .spacer {
@@ -218,7 +206,35 @@ table.standings {
 }
 
 .popup .label {
-	font-weight: bold;
+	font-size: 1.8em;
+	margin-right: 80px;
+}
+
+.popupFormRow {
+	display: flex;
+	justify-content: space-between;
+	margin: 15px 0px;
+}
+
+.popupFormInput select {
+	border: 0;
+	border-bottom: 1px solid rgb(175 175 175);
+	padding: 5px 20px 0px 20px;
+	font-size: 1.8em;
+	background-color: rgb(255,255,255);
+	text-align: right;
+}
+
+.popupFormInput input[type=number] {
+	border: 0;
+	border-bottom: 1px solid rgb(175 175 175);
+	font-size: 1.8em;
+	width: 100px;
+	text-align: right;
+}
+
+.popupFormInput select:focus-visible, .popupFormInput input[type=number]:focus-visible {
+	outline: none;
 }
 
 .popup .viewPlayerTable {

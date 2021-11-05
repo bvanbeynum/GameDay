@@ -6,6 +6,7 @@ import Standings from "./components/standings";
 import Team from "./components/team";
 import Game from "./components/game";
 import PlayerPopup from "./components/playerpopup";
+import GamePopup from "./components/gamepopup";
 import Cookies from "universal-cookie";
 import "./css/common.css";
 
@@ -175,6 +176,41 @@ class Schedule extends Component {
 		});
 	}
 
+	editGame = () => {
+		this.setState(({ isViewGame: true }));
+	}
+
+	saveGame = (winnerId, awayScore, homeScore) => {
+
+		const updatedGame = {
+			...this.state.selectedGame,
+			awayTeam: {
+				...this.state.selectedGame.awayTeam,
+				isWinner: this.state.selectedGame.awayTeam.id === winnerId ? true : false,
+				score: awayScore
+			},
+			homeTeam: {
+				...this.state.selectedGame.homeTeam,
+				isWinner: this.state.selectedGame.homeTeam.id === winnerId ? true : false,
+				score: homeScore
+			}
+		};
+
+		this.setState(({ schedule }) => ({
+			schedule: schedule.map(day => ({
+				...day,
+				games: day.games.map(game => { return game.id === updatedGame.id ? updatedGame : game })
+			})),
+			selectedGame: updatedGame,
+			isViewGame: false
+		}));
+
+	}
+
+	closeGame = () => {
+		this.setState({ isViewGame: false });
+	}
+
 	viewPlayer = (player) => {
 		this.setState({
 			popupPlayer: player,
@@ -226,10 +262,16 @@ class Schedule extends Component {
 				<Team team={ this.state.selectedTeam } games={ this.state.teamGames } selectGame={ this.selectGame } viewPlayer={ this.viewPlayer } />
 			
 			: this.state.pageState === "game" ?
-				<Game game={ this.state.selectedGame } viewPlayer={ this.viewPlayer } />
+				<Game game={ this.state.selectedGame } viewPlayer={ this.viewPlayer } editGame={ this.editGame } />
 
 			: ""
             }
+
+			{
+			this.state.pageState === "game" ?
+				<GamePopup game={ this.state.selectedGame } isActive={ this.state.isViewGame } closeGame={ this.closeGame } saveGame={ this.saveGame } />
+			: ""
+			}
 
 			<PlayerPopup player={ this.state.popupPlayer } isActive={ this.state.isViewPlayer } closePlayer={ this.closePlayer } />
 			<Toast message={ this.state.toast } />
