@@ -5,7 +5,7 @@ const Game = (props) => {
 
 	return (
 
-		<div className="gamePage">
+		<div className="scheduleContainer">
 			<div className="schedule">
 				<div className="gameTitle">
 					<div>{ props.game.field } Field &bull; { props.game.dateTime.toDateString() } { props.game.dateTime.toLocaleTimeString() }</div>

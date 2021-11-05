@@ -1,9 +1,8 @@
-.scheduleContainer {
-	padding: 30px 10px;
-	display: flex;
-	flex-direction: column;
-}
-
 .teamHeader {
 	display: flex;
+	color: rgb(100,100,100);
+}
+
+.teamHeader img {
+	margin-right: 20px;
 }

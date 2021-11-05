@@ -1,3 +1,9 @@
+.scheduleContainer {
+	padding: 20px 10px 80px 10px;
+	display: flex;
+	flex-direction: column;
+}
+
 .confrenceContainer {
 	display: flex;
 	flex-direction: column;
@@ -26,21 +32,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-}
-
-.gameHighlight {
-	font-weight: bold;
-	color: black;
-}
-
-.gameContainer {
-	padding: 10px 20px;
-	border: solid 1px rgb(224, 224, 224);
-	border-collapse: collapse;
-	cursor: pointer;
-	margin: 10px;
-	width: 320px;
-	display: flex;
 }
 
 .scheduleTeams {
@@ -74,16 +65,16 @@
 	margin: 0px 10px;
 }
 
-table.standings {
+.scheduleContainer table {
 	border-collapse: collapse;
 	width: 100%;
 }
 
-.standings img {
+.scheduleContainer table img {
 	width: 24px;
 }
 
-.standings th, td {
+.scheduleContainer table th, td {
 	padding: 8px 5px;
 	border-bottom: 1px solid rgb(223, 225, 229);
 }
@@ -107,6 +98,74 @@ table.standings {
 
 .standings th:nth-child(n+2), td:nth-child(n+3) {
 	text-align: center;
+}
+
+.dayContainer {
+	margin-top: 30px;
+}
+
+h3.gameHeader {
+	color: rgb(100,100,100);
+	text-align: center;
+}
+
+.gameContainer {
+	display: flex;
+	align-items: center;
+	padding: 10px 0px;
+	border-bottom: 1px solid rgb(223, 225, 229);
+	width: 100%;
+}
+
+.gameContainer:nth-child(2) {
+	border-top: 1px solid rgb(223, 225, 229);
+}
+
+.gameContainer:nth-child(2n) {
+	background-color: rgb(243 243 243);
+}
+
+.gameTime {
+	white-space: nowrap;
+}
+
+.gameTeamContainer {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	justify-content: center;
+}
+
+.gameTeam {
+	width: 70px;
+	margin: 0px 15px;
+}
+
+.gameTeam:nth-child(1) {
+	text-align: right;
+}
+
+.gameTeam div:nth-child(2) {
+	font-size: 0.79em;
+	color: rgb(137 137 137);
+}
+
+.gameWinner {
+	width: 30px;
+	text-align: center;
+}
+
+.gameContainer img {
+	width: 24px;
+}
+
+.gameContainer svg {
+	width: 13px;
+}
+
+.gameSplit {
+	font-size: 18px;
+	font-family: Trebuchet MS;
 }
 
 .statsContainer {
@@ -206,7 +265,7 @@ table.standings {
 }
 
 .popup .label {
-	font-size: 1.8em;
+	font-size: 1.2em;
 	margin-right: 80px;
 }
 
@@ -220,7 +279,7 @@ table.standings {
 	border: 0;
 	border-bottom: 1px solid rgb(175 175 175);
 	padding: 5px 20px 0px 20px;
-	font-size: 1.8em;
+	font-size: 1.4em;
 	background-color: rgb(255,255,255);
 	text-align: right;
 }
@@ -228,7 +287,7 @@ table.standings {
 .popupFormInput input[type=number] {
 	border: 0;
 	border-bottom: 1px solid rgb(175 175 175);
-	font-size: 1.8em;
+	font-size: 1.4em;
 	width: 100px;
 	text-align: right;
 }
@@ -255,6 +314,10 @@ table.standings {
 }
 
 @media (min-width: 600px) {
+	.scheduleContainer {
+		max-width: 800px;
+	}
+
 	.confrenceContainer {
 		flex-direction: row;
 	}
