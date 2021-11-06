@@ -316,6 +316,7 @@ h3.gameHeader {
 @media (min-width: 600px) {
 	.scheduleContainer {
 		max-width: 800px;
+		min-width: 600px;
 	}
 
 	.confrenceContainer {
