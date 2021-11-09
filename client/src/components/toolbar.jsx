@@ -9,6 +9,10 @@ const Toolbar = (props) => {
 		setIsMenuOpen(!isMenuOpen);
 	};
 
+	const openItem = (url) => {
+		window.location = url;
+	};
+
 	return (
 		<div className="toolbar">
 			{
@@ -43,8 +47,8 @@ const Toolbar = (props) => {
 				<div className={`adminMenuContainer ${ props.adminMenu.length > 0 ? "active" : "" }` }>
 					<div className="adminMenu">
 						{
-						props.adminMenu.map(item => (
-							<div className="adminMenuItem" onClick="">{ item.display }</div>
+						props.adminMenu.map((item, itemIndex) => (
+							<div key={ itemIndex } className="adminMenuItem" onClick={ () => { openItem(item.url) }}>{ item.name }</div>
 						))
 						}
 					</div>

@@ -1,6 +1,12 @@
 import client from "superagent";
 import jwt from "jsonwebtoken";
 import config from "./config.js";
+import fs from "fs";
+import path from "path";
+import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
+import ffmpeg from "fluent-ffmpeg";
+
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 export default {
 
@@ -109,6 +115,11 @@ export default {
 		client.get(`${ request.protocol }://${ request.headers.host }/data/team?divisionid=${ request.query.divisionid }`)
 			.then(clientReponse => {
 				const output = {
+					user: {
+						firstName: request.user.firstName,
+						lastName: request.user.lastName,
+						modules: request.user.modules
+					},
 					teams: clientReponse.body.teams
 				}
 
@@ -157,6 +168,65 @@ export default {
 			.catch(error => {
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
+			});
+	},
+
+	videoPlayerUpload: (request, response) => {
+		request.busboy.on("file", (fieldName, file, fileName) => {
+			file.pipe(fs.createWriteStream(path.join(request.app.get("root"), "client/media/video/" + fileName)));
+		});
+		
+		request.busboy.on("finish", () => {
+			response.status(200).json({status: "ok"});
+		});
+		
+		request.pipe(request.busboy);
+	},
+
+	videoPlayerLoad: (request, response) => {
+		
+		client.get(`${ request.protocol }://${ request.headers.host }/data/team?divisionid=${ request.query.divisionid }&managed=true`)
+			.then(clientResponse => {
+				if (!clientResponse.body.teams || clientResponse.body.teams.length !== 1) {
+					response.statusMessage = "Unable to retrieve managed team";
+					response.status(562).json({ error: "Unable to retrieve managed team" });
+					return;
+				}
+
+				const output = { 
+					user: {
+						firstName: request.user.firstName,
+						lastName: request.user.lastName,
+						modules: request.user.modules,
+						team: clientResponse.body.teams[0]
+					}
+				};
+
+				const videoPath = path.join(request.app.get("root"), "client/media/video");
+				fs.readdir(videoPath, (error, files) => {
+					
+					if (error) {
+						response.status(560).json({ error: error.message });
+						response.end();
+					}
+					else {
+						output.files = files.filter(file => /.mp4/i.test(file))
+								.map(file => {
+									const { mtime } = fs.statSync(path.join(videoPath, file));
+
+									return {
+										name: file,
+										modified: mtime
+									};
+								})
+
+						response.status(200).json(output);
+					}
+					
+				});
+			})
+			.catch(error => {
+				response.status(561).json({ error: error.message });
 			});
 	}
 

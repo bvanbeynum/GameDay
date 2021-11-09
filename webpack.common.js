@@ -3,7 +3,8 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 export default {
 	entry: {
 		index: "./client/src/index.jsx",
-		schedule: "./client/src/schedule.jsx"
+		schedule: "./client/src/schedule.jsx",
+		videoPlayer: "./client/src/videoplayer.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -24,6 +25,16 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "schedule" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "videoplayer.html",
+			title: "Game Day - Video Player",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "videoPlayer" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],

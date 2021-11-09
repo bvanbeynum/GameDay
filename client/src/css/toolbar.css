@@ -16,16 +16,16 @@
 	cursor: pointer;
 }
 
-.menuContainer {
+.adminMenuContainer {
 	position: relative;
 	display: none;
 }
 
-.menuContainer.active {
+.adminMenuContainer.active {
 	display: block;
 }
 
-.menu {
+.adminMenu {
 	position: absolute;
 	display: flex;
 	flex-direction: column;
@@ -35,7 +35,7 @@
 	background-color: white;
 }
 
-.menu .item {
+.adminMenuItem {
 	padding: 15px 20px;
 	font-size: 1.2em;
 	border-bottom: 1px solid rgb(230,230,230);

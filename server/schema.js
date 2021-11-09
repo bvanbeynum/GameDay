@@ -42,7 +42,8 @@ export default {
 		lastName: String,
 		createdDate: Date,
 		devices: [{ type: deviceSchema }],
-		tokens: [ String ]
+		tokens: [ String ],
+		modules: [{ name: String, url: String }]
 	}),
 
 	request: mongoose.model("request", {

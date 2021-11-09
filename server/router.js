@@ -47,6 +47,8 @@ router.get("/api/divisionload", api.divisionsLoad);
 router.get("/api/scheduleload", api.scheduleLoad);
 router.post("/api/gamesave", api.gameSave);
 
+router.get("/api/videoplayerload", api.videoPlayerLoad);
+
 // ************************* Routes
 
 router.get("/access", api.validateAccess);

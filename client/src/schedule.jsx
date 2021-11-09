@@ -18,6 +18,7 @@ class Schedule extends Component {
 			confrences: [],
 			schedule: [],
 			managedTeam: {},
+			user: {},
 			popupPlayer: { prev: [] },
 			pageState: "loading",
 			toast: { text: "", isActive: false, type: "info" }
@@ -25,15 +26,22 @@ class Schedule extends Component {
 	}
 
 	componentDidMount() {
-        const cookies = new Cookies();
-        const divisionId = cookies.get("division");
+		const cookies = new Cookies();
+		const divisionId = cookies.get("division");
 
-        if (!divisionId) {
-            window.location = "/";
-        }
+		if (!divisionId) {
+			window.location = "/";
+		}
 
 		fetch(`/api/scheduleload?divisionid=${ divisionId }`)
-			.then(response => response.json())
+			.then(response => {
+				if (response.ok) {
+					return response.json();
+				}
+				else {
+					throw Error(response.statusText);
+				}
+			})
 			.then(data => {
 
 				data.teams = data.teams.map(team => ({
@@ -75,7 +83,7 @@ class Schedule extends Component {
 						name: confrence,
 						teams: data.teams.filter(team => (team.confrence || "") === confrence)
 					}));
-				
+
 				// Calculate ratio after wins & losses calculated
 				confrences = confrences
 					.sort((confrenceA, confrenceB) => confrenceA.name > confrenceB.name ? 1 : -1)
@@ -125,6 +133,7 @@ class Schedule extends Component {
 					schedule: schedule,
 					managedTeam: managedTeam,
 					games: games,
+					user: data.user,
 					pageState: "standings"
 				});
 
@@ -132,8 +141,8 @@ class Schedule extends Component {
 			.catch(error => {
 				console.log(error);
 				this.showToast("Error loading schedule data", true);
-			})
-    }
+			});
+	}
 	
 	navBack = () => {
 		switch (this.state.pageState) {
@@ -201,7 +210,7 @@ class Schedule extends Component {
 			fetch("/api/gamesave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ game: updatedGame }) })
 			.then(response => {
 				if (response.ok) {
-					response.json();
+					return response.json();
 				}
 				else {
 					throw Error(response.statusText);
@@ -270,9 +279,9 @@ class Schedule extends Component {
 		})
 	}
 	
-    render() { return (
+	render() { return (
 		<div className="pageContainer">
-			<Toolbar navBack={ this.navBack } teamName={ this.state.managedTeam.name } adminMenu={ [] } />
+			<Toolbar navBack={ this.navBack } teamName={ this.state.managedTeam.name } adminMenu={ this.state.user.modules } />
 
 			{
 			this.state.pageState === "loading" ?
@@ -289,7 +298,7 @@ class Schedule extends Component {
 				<Game game={ this.state.selectedGame } viewPlayer={ this.viewPlayer } editGame={ this.editGame } />
 
 			: ""
-            }
+			}
 
 			{
 			this.state.pageState === "game" ?
@@ -300,7 +309,7 @@ class Schedule extends Component {
 			<PlayerPopup player={ this.state.popupPlayer } isActive={ this.state.isViewPlayer } closePlayer={ this.closePlayer } />
 			<Toast message={ this.state.toast } />
 		</div>
-    ); }
+	); }
 
 }
 
