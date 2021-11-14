@@ -212,11 +212,12 @@ export default {
 					else {
 						output.files = files.filter(file => /.mp4/i.test(file))
 								.map(file => {
-									const { mtime } = fs.statSync(path.join(videoPath, file));
+									const { mtime } = fs.statSync(`${ videoPath }/${ file }`);
 
 									return {
 										name: file,
-										modified: mtime
+										modified: mtime,
+										thumb: fs.existsSync(`${ videoPath }/${ file.replace(/.mp4/i, ".png") }`) ? file.replace(/.mp4/i, ".png") : null
 									};
 								})
 
