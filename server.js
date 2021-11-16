@@ -6,6 +6,7 @@ import config from "./server/config.js";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import busboy from "connect-busboy";
 import router from "./server/router.js";
 
 // Declarations =======================================================================
@@ -23,6 +24,7 @@ app.set("root", currentDirectory);
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(busboy()); 
 
 // Routes =======================================================================
 

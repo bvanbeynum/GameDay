@@ -59,7 +59,8 @@ export default {
 		if (
 			request.url.toLowerCase().startsWith("/noaccess.html") ||
 			request.url.toLowerCase().startsWith("/data") ||
-			request.url.toLowerCase().startsWith("/access")
+			request.url.toLowerCase().startsWith("/access") ||
+			request.url.toLowerCase().startsWith("/api/videoplayerupload")
 			) {
 			next();
 		}
@@ -172,12 +173,44 @@ export default {
 	},
 
 	videoPlayerUpload: (request, response) => {
-		request.busboy.on("file", (fieldName, file, fileName) => {
-			file.pipe(fs.createWriteStream(path.join(request.app.get("root"), "client/media/video/" + fileName)));
+		if (!request.query.divisionid) {
+			response.status(560).json({ error: "Missing division" });
+			return;
+		}
+
+		const today = new Date(),
+			folderName = `${ today.getFullYear() }-${ (today.getMonth() + 1 + "").padStart(2, "0") }-${ today.getDate() }`,
+			videoPath = path.join(request.app.get("root"), `client/media/video/${ request.query.divisionid }/${ folderName }`);
+
+		if (!fs.existsSync(videoPath)) {
+			fs.mkdirSync(videoPath, { recursive: true });
+		}
+
+		const files = fs.readdirSync(`${ videoPath }`),
+			videoCount = files.filter(file => /.mp4$/i.test(file)).length,
+			fileName = (videoCount + 1) + "";
+
+		request.busboy.on("file", (fieldName, file, uploadName) => {
+			if (!/.mp4$/i.test(uploadName)) {
+				response.status(561).json({ error: "File is not an mp4 file" });
+				return;
+			}
+
+			file.pipe(fs.createWriteStream(`${ videoPath }/${ fileName }.mp4`));
 		});
 		
 		request.busboy.on("finish", () => {
-			response.status(200).json({status: "ok"});
+			const converter = ffmpeg(`${ videoPath }/${ fileName }.mp4`).outputOptions("-frames 1");
+
+			converter.output(`${ videoPath }/${ fileName }.jpg`)
+				.on("end", () => {
+					response.status(200).json({status: "ok"});
+				})
+				.on("error", error => {
+					console.log(`error: ${ error.message }`);
+					response.status(562).json({ error: error.message });
+				})
+				.run();
 		});
 		
 		request.pipe(request.busboy);
@@ -202,28 +235,31 @@ export default {
 					}
 				};
 
-				const videoPath = path.join(request.app.get("root"), "client/media/video");
-				fs.readdir(videoPath, (error, files) => {
-					
+				const divisionPath = path.join(request.app.get("root"), `client/media/video/${ request.query.divisionid }`);
+				fs.readdir(divisionPath, (error, files) => {
 					if (error) {
 						response.status(560).json({ error: error.message });
-						response.end();
+						return;
 					}
-					else {
-						output.files = files.filter(file => /.mp4/i.test(file))
-								.map(file => {
-									const { mtime } = fs.statSync(`${ videoPath }/${ file }`);
 
-									return {
-										name: file,
-										modified: mtime,
-										thumb: fs.existsSync(`${ videoPath }/${ file.replace(/.mp4/i, ".png") }`) ? file.replace(/.mp4/i, ".png") : null
-									};
-								})
+					const folders = files.filter(file => /[\d]{2,4}-[\d]{1,2}-[\d]{1,2}/.test(file));
+					console.log(folders.length);
+					output.videos = folders.map(folder => {
+						const files = fs.readdirSync(`${ divisionPath}/${ folder }`);
+						
+						return {
+							date: Date.parse(folder),
+							files: files
+								.filter(file => /.mp4/i.test(file))
+								.map(file => ({
+									name: file,
+									path: `${ divisionPath }/${ folder }/${ file }`,
+									thumb: fs.existsSync(`${ divisionPath }/${ folder }/${ file.replace(/.mp4/i, ".jpg") }`) ? file.replace(/.mp4/i, ".jpg") : null
+								}))
+						};
+					});
 
-						response.status(200).json(output);
-					}
-					
+					response.status(200).json(output);
 				});
 			})
 			.catch(error => {

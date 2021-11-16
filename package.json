@@ -19,7 +19,8 @@
 		"superagent": "^6.1.0",
 		"universal-cookie": "^4.0.4",
 		"fluent-ffmpeg": "^2.1.2",
-		"@ffmpeg-installer/ffmpeg": "^1.0.20"
+		"@ffmpeg-installer/ffmpeg": "^1.0.20",
+		"connect-busboy": "0.0.2"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.14.3",
