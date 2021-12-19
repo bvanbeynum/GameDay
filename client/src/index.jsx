@@ -46,7 +46,7 @@ class Index extends Component {
 			})
 			.catch(error => {
 				console.log(`error: ${ error.message }`);
-				this.showToast("There was an error loading", true);
+				this.setState(({ toast: { text: "There was an error loading", type: "error" } }));
 			});
 	}
 
@@ -59,27 +59,6 @@ class Index extends Component {
 		window.location = "/schedule.html";
 	}
 
-	showToast = (message, isError) => {
-		this.setState(({
-			toast: {
-				text: message,
-				isActive: true,
-				type: isError ? "error" : "info"
-			}
-		}), // After updating the state set a timer to clear toast
-		() => {
-			setTimeout(() => {
-				this.setState({
-					toast: {
-						text: "",
-						isActive: false,
-						type: "info"
-					}
-				})
-			}, 4000) // 4 seconds to clear
-		})
-	}
-	
 	render() { return (
 		<div className="pageContainer">
 			<Toolbar navBack={ {} } />

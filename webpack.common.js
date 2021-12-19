@@ -4,7 +4,8 @@ export default {
 	entry: {
 		index: "./client/src/index.jsx",
 		schedule: "./client/src/schedule.jsx",
-		videoPlayer: "./client/src/videoplayer.jsx"
+		videoPlayer: "./client/src/videoplayer.jsx",
+		eval: "./client/src/eval.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -35,6 +36,16 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "videoPlayer" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "eval.html",
+			title: "Game Day - Evaluation",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "eval" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],

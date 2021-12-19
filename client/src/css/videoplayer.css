@@ -58,16 +58,19 @@
 	background-color: black;
 	display: flex;
 	flex-direction: column;
-	transition: height .5s ease-in-out;
+	transition: height .3s ease-in-out;
+}
+.videoViewer.grow {
+	height: 100%;
 }
 .videoViewer.active {
-	height: 100%;
+	height: auto;
+	bottom: 0px;
 }
 
 .videoAction {
 	display: flex;
-	justify-content: flex-end;
-	margin: 20px 20px 0px 0px;
+	margin: 20px 20px 0px 15px;
 	cursor: pointer;
 }
 .videoAction svg {
@@ -78,7 +81,7 @@
 .videoViewer video {
 	width: 100%;
 	opacity: 0%;
-	transition: opacity .4s ease-in;
+	transition: opacity .2s ease-in;
 	flex: 1;
 }
 .videoViewer video.active {

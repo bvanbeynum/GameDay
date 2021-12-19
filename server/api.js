@@ -93,6 +93,27 @@ export default {
 		}
 	},
 
+	loadState: (request, response, next) => {
+		const divisionId = request.cookies.division;
+
+		if (divisionId) {
+			client.get(`${ request.protocol }://${ request.headers.host }/data/team?divisionid=${ divisionId }&managed=true`)
+				.then(clientResponse => {
+					if (clientResponse.body.teams && clientResponse.body.teams.length === 1) {
+						request.team = clientResponse.body.teams[0];
+					}
+
+					next();
+				})
+				.catch(() => {
+					next();
+				})
+		}
+		else {
+			next();
+		}
+	},
+
 	divisionsLoad: (request, response) => {
 		client.get(request.protocol + "://" + request.headers.host + "/data/team?managed=true")
 			.then(clientResponse => {
@@ -243,17 +264,17 @@ export default {
 					}
 
 					const folders = files.filter(file => /[\d]{2,4}-[\d]{1,2}-[\d]{1,2}/.test(file));
-					console.log(folders.length);
+					
 					output.videos = folders.map(folder => {
 						const files = fs.readdirSync(`${ divisionPath}/${ folder }`);
 						
 						return {
-							date: Date.parse(folder),
+							date: new Date(Date.parse(folder)),
 							files: files
 								.filter(file => /.mp4/i.test(file))
 								.map(file => ({
 									name: file,
-									path: `${ divisionPath }/${ folder }/${ file }`,
+									path: `/media/video/${ request.query.divisionid }/${ folder }`,
 									thumb: fs.existsSync(`${ divisionPath }/${ folder }/${ file.replace(/.mp4/i, ".jpg") }`) ? file.replace(/.mp4/i, ".jpg") : null
 								}))
 						};
@@ -264,6 +285,50 @@ export default {
 			})
 			.catch(error => {
 				response.status(561).json({ error: error.message });
+			});
+	},
+
+	evaluationLoad: (request, response) => {
+		const divisionId = request.query.divisionid || request.cookies.division;
+
+		client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ divisionId }`)
+			.then(clientResponse => {
+				
+				const output = { 
+					user: {
+						firstName: request.user.firstName,
+						lastName: request.user.lastName,
+						modules: request.user.modules,
+						division: request.team ? request.team.division : null,
+						team: request.team ? { id: request.team.id, name: request.team.name, coach: request.team.coach } : null
+					},
+					players: clientResponse.body.players
+				};
+
+				response.status(200).json(output);
+
+			})
+			.catch(error => {
+				response.status(561).json({ error: error.message });
+			});
+	},
+
+	evaluationSave: (request, response) => {
+		if (!request.body.player) {
+			response.statusMessage = "Missing player to save";
+			response.status(550).json({ error: "Missing player to save" });
+			return;
+		}
+
+		client.post(`${ request.protocol }://${ request.headers.host }/data/player`)
+			.send({ player: request.body.player })
+			.then(clientResponse => {
+				response.status(200).json({ id: clientResponse.body.id });
+			})
+			.catch(error => {
+				console.log(error);
+				response.statusMessage = error.message;
+				response.status(560).json({ error: error.message });
 			});
 	}
 

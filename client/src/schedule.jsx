@@ -140,7 +140,7 @@ class Schedule extends Component {
 			})
 			.catch(error => {
 				console.log(error);
-				this.showToast("Error loading schedule data", true);
+				this.setState(({ toast: { text: "Error loading schedule data", type: "error" } }));
 			});
 	}
 	
@@ -224,16 +224,13 @@ class Schedule extends Component {
 					})),
 					selectedGame: updatedGame,
 					pageState: "game",
-					isViewGame: false
+					isViewGame: false,
+					toast: { text: "Game Saved", type: "info" }
 				}));
-		
-				this.showToast("Game saved");
 			})
 			.catch(error => {
-				this.setState({ pageState: "game", isViewGame: false });
-				
 				console.warn(error);
-				this.showToast("Error saving game", true);
+				this.setState({ pageState: "game", isViewGame: false, toast: { text: "Error saving game", type: "error" } });
 			});
 
 		})
@@ -258,27 +255,6 @@ class Schedule extends Component {
 		});
 	}
 
-	showToast = (message, isError) => {
-		this.setState(({
-			toast: {
-				text: message,
-				isActive: true,
-				type: isError ? "error" : "info"
-			}
-		}), // After updating the state set a timer to clear toast
-		() => {
-			setTimeout(() => {
-				this.setState({
-					toast: {
-						text: "",
-						isActive: false,
-						type: "info"
-					}
-				})
-			}, 4000) // 4 seconds to clear
-		})
-	}
-	
 	render() { return (
 		<div className="pageContainer">
 			<Toolbar navBack={ this.navBack } teamName={ this.state.managedTeam.name } adminMenu={ this.state.user.modules } />

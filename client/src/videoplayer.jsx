@@ -13,7 +13,7 @@ class VideoPlayer extends Component {
 		this.state = {
 			user: { team: {} },
 			isLoading: true,
-			toast: { text: "", isActive: false, type: "info" }
+			toast: { text: "", type: "info" }
 		};
 
 		this.keyHandler = this.keyHandler.bind(this);
@@ -23,6 +23,10 @@ class VideoPlayer extends Component {
 	componentDidMount() {
         const cookies = new Cookies();
         const divisionId = cookies.get("division");
+
+		if (!divisionId) {
+			window.location = "/";
+		}
 
 		document.addEventListener("keydown", this.keyHandler, false);
 
@@ -36,23 +40,13 @@ class VideoPlayer extends Component {
 				}
 			})
 			.then(data => {
-				const files = data.files.map(file => {
-					let fileDate = new Date(file.modified);
-					fileDate.setHours(0,0,0,0);
-					
-					return {
-						...file,
-						modifiedDate: fileDate,
-						displayDate: fileDate.toLocaleDateString()
-					};
-				});
-
-				const videoDates = [... new Set(files.map(file => file.displayDate))]
-					.map(date => ({
-						display: date,
-						date: Date.parse(date),
-						files: files.filter(file => file.displayDate === date),
-						ref: React.createRef()
+				const videoDates = data.videos
+					.map(videoDate => ({
+						date: new Date((new Date(videoDate.date)).setMinutes((new Date(videoDate.date)).getTimezoneOffset())),
+						ref: React.createRef(),
+						files: videoDate.files
+							.map(file => ({ ...file, fileNumber: +file.name.match(/^[^/.]+/)[0]}))
+							.sort((fileA, fileB) => fileA.fileNumber - fileB.fileNumber)
 					}))
 					.sort((dayA, dayB) => dayB.date - dayA.date);
 
@@ -64,7 +58,7 @@ class VideoPlayer extends Component {
 			})
 			.catch(error => {
 				console.log(error);
-				this.showToast("Error loading video player data", true);
+				this.setState(({ toast: { text: "Error loading video player data", type: "error" } }));
 			});
 	};
 
@@ -122,12 +116,13 @@ class VideoPlayer extends Component {
 
 	openVideo = (event, fileIndex) => {
 		this.setState(({
-			selectedVideo: this.state.selectedDay.files[fileIndex]
+			videoIndex: fileIndex,
+			videoState: "grow"
 		}), () => {
 			
 			setTimeout(() => {
-				this.setState(({ videoActive: true }));
-			}, 500);
+				this.setState(({ videoState: "active" }));
+			}, 300);
 		});
 
 		event.preventDefault();
@@ -135,9 +130,13 @@ class VideoPlayer extends Component {
 
 	closeVideo = () => {
 		this.setState(({
-			selectedVideo: null,
-			videoActive: false
-		}));
+			videoIndex: null,
+			videoState: "grow"
+		}), () => {
+			setTimeout(() => {
+				this.setState(({ videoState: null }));
+			}, 500);
+		});
 	};
 
 	keyHandler = (event) => {
@@ -145,13 +144,22 @@ class VideoPlayer extends Component {
 			const span = event.ctrlKey ? 1 : (1 / 59.94);
 
 			if (event.keyCode === 32) {
+				// Space
 				this.videoPlayer.current.paused ? this.videoPlayer.current.play() : this.videoPlayer.current.pause()
 			}
 			else if (event.keyCode === 39 && this.videoPlayer.current.currentTime + span <= this.videoPlayer.current.duration) {
+				// Right
 				this.videoPlayer.current.currentTime += span;
 			}
 			else if (event.keyCode === 37 && this.videoPlayer.current.currentTime - span >= 0) {
+				// Left
 				this.videoPlayer.current.currentTime -= span;
+			}
+			else if (event.keyCode === 78) {
+				// n
+				this.setState(({ 
+					videoIndex: this.state.videoIndex < this.state.selectedDay.files.length ? this.state.videoIndex + 1 : this.state.videoIndex
+				}));
 			}
 		}
 	};
@@ -171,20 +179,20 @@ class VideoPlayer extends Component {
 				{
 				this.state.videoDates.map((day, dayIndex) =>
 					<div key={ dayIndex } ref={ day.ref } className="box" onClick={ () => { this.selectDay(dayIndex) }}>
-						<div>{ day.display }</div>
+						<div>{ day.date.toLocaleDateString() }</div>
 						<div>{ day.files.length } files</div>
 					</div>
 				)
 				}
 				</div>
 				
-				<div className="selectedDay" style={ this.state.selectedDayStyle } onClick={ () => { this.closeDay() }}>
+				<div className="selectedDay" style={ this.state.selectedDayStyle } onClick={ () => { /*this.closeDay()*/ }}>
 				{
 				this.state.selectedDay ? this.state.selectedDay.files.map((file, fileIndex) => 
 					<div key={ fileIndex } className={ file.thumb ? "boxImage" : "box" } onClick={ (event) => { this.openVideo(event, fileIndex) }}>
 					{
 					file.thumb ?
-						<img src={ `/media/video/${ file.thumb }` } />
+						<img src={ `${ file.path }/${ file.thumb }` } />
 					: file.name
 					}
 					</div>
@@ -193,7 +201,7 @@ class VideoPlayer extends Component {
 				}
 				</div>
 
-				<div className={ `videoViewer ${ this.state.selectedVideo ? "active" : "" }` }>
+				<div className={ `videoViewer ${ this.state.videoState }` }>
 					<div className="videoAction" onClick={ this.closeVideo }>
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 							<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
@@ -201,9 +209,9 @@ class VideoPlayer extends Component {
 					</div>
 
 				{
-				this.state.selectedVideo ?
-					<video ref={ this.videoPlayer } className={ this.state.videoActive ? "active" : "" } controls>
-						<source src={ `/media/video/${ this.state.selectedVideo.name }` } type="video/mp4" />
+				this.state.videoIndex ?
+					<video ref={ this.videoPlayer } className={ this.state.videoState }>
+						<source src={ `${ this.state.selectedDay.files[this.state.videoIndex].path }/${ this.state.selectedDay.files[this.state.videoIndex].name }` } type="video/mp4" />
 					</video>
 				: ""
 				}

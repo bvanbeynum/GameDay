@@ -15,5 +15,4 @@ jspm_packages/
 
 config.js
 client/dev/
-client/static/
 client/media/video/

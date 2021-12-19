@@ -50,6 +50,9 @@ router.post("/api/gamesave", api.gameSave);
 router.post("/api/videoplayerupload", api.videoPlayerUpload);
 router.get("/api/videoplayerload", api.videoPlayerLoad);
 
+router.get("/api/evaluationload", api.loadState, api.evaluationLoad);
+router.post("/api/evaluationsave", api.loadState, api.evaluationSave);
+
 // ************************* Routes
 
 router.get("/access", api.validateAccess);
