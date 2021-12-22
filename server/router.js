@@ -44,14 +44,18 @@ router.delete("/data/play", data.playDelete);
 // ************************* API
 
 router.get("/api/divisionload", api.divisionsLoad);
+router.post("/api/divisionsave", api.divisionSave);
+
 router.get("/api/scheduleload", api.scheduleLoad);
 router.post("/api/gamesave", api.gameSave);
 
-router.post("/api/videoplayerupload", api.videoPlayerUpload);
 router.get("/api/videoplayerload", api.videoPlayerLoad);
+router.post("/api/videoplayerupload", api.videoPlayerUpload);
 
 router.get("/api/evaluationload", api.loadState, api.evaluationLoad);
 router.post("/api/evaluationsave", api.loadState, api.evaluationSave);
+
+router.get("/api/playermanageload", api.loadState, api.playerManageLoad);
 
 // ************************* Routes
 

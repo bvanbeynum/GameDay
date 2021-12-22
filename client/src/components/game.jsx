@@ -17,7 +17,7 @@ const Game = (props) => {
 				
 				<div className="teamContainer">
 					<div className="team">
-						<div><img src={ `/media/logos/${ props.game.awayTeam.name.toLowerCase() }.png` } className="teamImage" /></div>
+						<div><img src={ `/media/logos/${ props.game.awayTeam.name.replace(/[ ]*/g, "").toLowerCase() }.png` } className="teamImage" /></div>
 						<div className="teamName">{ props.game.awayTeam.name }</div>
 						<div className="teamRecord">({ props.game.awayTeam.wins } - { props.game.awayTeam.losses })</div>
 					</div>
@@ -29,7 +29,7 @@ const Game = (props) => {
 					<div className="teamScore">{ props.game.homeTeam.score }</div>
 					
 					<div className="gamePageTeam">
-						<div><img src={ `/media/logos/${ props.game.homeTeam.name.toLowerCase() }.png` } className="teamImage" /></div>
+						<div><img src={ `/media/logos/${ props.game.homeTeam.name.replace(/[ ]*/g, "").toLowerCase() }.png` } className="teamImage" /></div>
 						<div className="teamName">{ props.game.homeTeam.name }</div>
 						<div className="teamRecord">({ props.game.homeTeam.wins } - { props.game.homeTeam.losses })</div>
 					</div>

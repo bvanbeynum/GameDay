@@ -24,6 +24,7 @@ table {
 #root {
 	display: flex;
 	flex: 1;
+	width: 100%;
 }
 
 .pageContainer {
@@ -32,6 +33,7 @@ table {
 	flex: 1;
 	align-items: center;
 	outline: none;
+	width: 100%;
 }
 
 .loading {
@@ -40,4 +42,97 @@ table {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+}
+
+.popupBackground {
+	position: absolute;
+	background-color: rgb(0 0 0 / 67%);
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: none;
+	justify-content: center;
+	align-items: center;
+}
+.popupBackground.active {
+	display: flex;
+}
+
+.popup {
+	position: fixed;
+	background-color: white;
+	flex: 1;
+	box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 10%);
+	flex-direction: column;
+}
+
+.popupHeader {
+	background-color: rgb(246, 246, 246);
+	display: flex;
+	padding: 0px 15px;
+	align-items: center;
+	justify-content: space-between;
+	box-shadow: 0px 0px 1px 1px rgb(0 0 0 / 14%), 0px 0px 2px 2px rgb(0 0 0 / 10%), 0px 0px 5px 1px rgb(0 0 0 / 8%);
+}
+
+.popup .loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+}
+
+.popup .button {
+	cursor: pointer;
+}
+
+.popup .button svg {
+	fill: rgb(0 0 0);
+	width: 28px;
+	margin: 0px 15px;
+}
+
+.popupContainer {
+	padding: 35px;
+	display: flex;
+	flex-direction: column;
+}
+
+.popup .spacer {
+	margin: 10px 0px;
+	border-bottom: 1px solid rgb(220,220,220);
+}
+
+.popup .label {
+	font-size: 1.2em;
+	margin-right: 80px;
+}
+
+.popupFormRow {
+	display: flex;
+	justify-content: space-between;
+	margin: 15px 0px;
+}
+
+.popupFormInput select {
+	border: 0;
+	border-bottom: 1px solid rgb(175 175 175);
+	padding: 5px 20px 0px 20px;
+	font-size: 1.4em;
+	background-color: rgb(255,255,255);
+	text-align: right;
+}
+
+.popupFormInput input {
+	border: 0;
+	border-bottom: 1px solid rgb(175 175 175);
+	font-size: 1.4em;
+	width: 100px;
+	text-align: right;
+}
+
+.popupFormInput select:focus-visible, .popupFormInput input[type=number]:focus-visible {
+	outline: none;
 }

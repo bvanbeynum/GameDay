@@ -128,6 +128,58 @@ export default {
 			})
 	},
 
+	divisionSave: (request, response) => {
+		if (!request.body.teamdivision) {
+			response.statusMessage = "Missing division and team to save";
+			response.status(550).json({ error: "Missing division and team to save" });
+			return;
+		}
+
+		const newDivision = {
+			name: request.body.teamdivision.name,
+			year: request.body.teamdivision.year,
+			season: request.body.teamdivision.season
+		};
+
+		client.post(`${ request.protocol }://${ request.headers.host }/data/division`)
+			.send({ division: newDivision })
+			.then(clientResponse => {
+				newDivision.id = clientResponse.body.id;
+				
+				const newTeam = {
+					division: newDivision,
+					name: request.body.teamdivision.teamName,
+					coach: request.body.teamdivision.teamCoach,
+					isManaged: true
+				};
+
+				client.post(`${ request.protocol }://${ request.headers.host }/data/team`)
+					.send({ team: newTeam })
+					.then(() => {
+
+						client.get(`${ request.protocol }://${ request.headers.host }/data/team?managed=true`)
+							.then(clientResponse => {
+
+								response.status(200).json({ teams: clientResponse.body.teams });
+								
+							})
+							.catch(error => {
+								response.statusMessage = error.message;
+								response.status(562).json({ error: error.message });
+							});
+
+					})
+					.catch(error => {
+						response.statusMessage = error.message;
+						response.status(561).json({ error: error.message });
+					});
+			})
+			.catch(error => {
+				response.statusMessage = error.message;
+				response.status(560).json({ error: error.message });
+			});
+	},
+
 	scheduleLoad: (request, response) => {
 		if (!request.query.divisionid) {
 			response.status(550).json({ error: "Missing division" });
@@ -330,6 +382,27 @@ export default {
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
+	},
+
+	playerManageLoad: (request, response) => {
+
+		client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.cookies.division }`)
+			.then(clientResponse => {
+
+				const output = {
+					user: {
+						firstName: request.user.firstName,
+						lastName: request.user.lastname,
+						modules: request.user.modules,
+						division: request.team ? request.team.division : null,
+						team: request.team ? { id: request.team.id, name: request.team.name, coach: request.team.coach } : null
+					},
+					players: clientResponse.body.players
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => response.status(561).json({ error: error.message }));
 	}
 
 }

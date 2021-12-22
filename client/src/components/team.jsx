@@ -6,7 +6,7 @@ const Team = (props) => {
 	return (
 		<div className="scheduleContainer">
 			<div className="teamHeader">
-				<img src={ `/media/logos/${ props.team.name.toLowerCase() }.png` } />
+				<img src={ `/media/logos/${ props.team.name.replace(/[ ]*/g, "").toLowerCase() }.png` } />
 				<h2 className="header">{ props.team.name } - { props.team.coach }</h2>
 			</div>
 			
@@ -22,7 +22,7 @@ const Team = (props) => {
 							<div>{ `(${ (game.homeTeam.wins || 0) }-${ (game.homeTeam.losses || 0) })`}</div>
 						</div>
 
-						<img src={ `/media/logos/${ game.homeTeam.name.toLowerCase() }.png` } />
+						<img src={ `/media/logos/${ game.homeTeam.name.replace(/[ ]*/g, "").toLowerCase() }.png` } />
 
 						<div className="gameWinner">
 						{ 
@@ -46,7 +46,7 @@ const Team = (props) => {
 						}
 						</div>
 
-						<img src={ `/media/logos/${ game.awayTeam.name.toLowerCase() }.png` } />
+						<img src={ `/media/logos/${ game.awayTeam.name.replace(/[ ]*/g, "").toLowerCase() }.png` } />
 
 						<div className="gameTeam">
 							<div>{ game.awayTeam.name }</div>

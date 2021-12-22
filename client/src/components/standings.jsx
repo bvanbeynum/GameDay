@@ -25,7 +25,7 @@ const Standings = (props) => {
 					{
 					confrence.teams.map((team, teamIndex) => 
 						<tr key={ teamIndex } onClick={ () => { props.selectTeam(team) } } >
-							<td><img src={ `/media/logos/${ team.name.toLowerCase() }.png` } /></td>
+							<td><img src={ `/media/logos/${ team.name.replace(/[ ]*/g, "").toLowerCase() }.png` } /></td>
 							<td>{team.name}</td>
 							<td>{team.wins}</td>
 							<td>{team.losses}</td>
@@ -54,7 +54,7 @@ const Standings = (props) => {
 									<div>{ `(${ (game.homeTeam.wins || 0) }-${ (game.homeTeam.losses || 0) })`}</div>
 								</div>
 
-								<img src={ `/media/logos/${ game.homeTeam.name.toLowerCase() }.png` } />
+								<img src={ `/media/logos/${ game.homeTeam.name.replace(/[ ]*/g, "").toLowerCase() }.png` } />
 
 								<div className="gameWinner">
 								{ 
@@ -78,7 +78,7 @@ const Standings = (props) => {
 								}
 								</div>
 
-								<img src={ `/media/logos/${ game.awayTeam.name.toLowerCase() }.png` } />
+								<img src={ `/media/logos/${ game.awayTeam.name.replace(/[ ]*/g, "").toLowerCase() }.png` } />
 
 								<div className="gameTeam">
 									<div>{ game.awayTeam.name }</div>

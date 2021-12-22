@@ -54,3 +54,18 @@
 	font-size: .8em;
 	color: rgb(150,150,150);
 }
+
+.floatingButton {
+	position: fixed;
+	bottom: 3%;
+	right: 5%;
+}
+
+.floatingButton svg {
+	width: 36px;
+	background-color: white;
+	padding: 10px;
+	border: 2px solid rgb(200 200 200);
+	border-radius: 30px;
+	box-shadow: 0px 0px 5px rgb(100 100 100 / 48%);
+}
