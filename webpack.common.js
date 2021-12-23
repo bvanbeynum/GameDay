@@ -5,7 +5,8 @@ export default {
 		index: "./client/src/index.jsx",
 		schedule: "./client/src/schedule.jsx",
 		videoPlayer: "./client/src/videoplayer.jsx",
-		eval: "./client/src/eval.jsx"
+		eval: "./client/src/eval.jsx",
+		playermanage: "./client/src/playermanage.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -46,6 +47,16 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "eval" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "playermanage.html",
+			title: "Game Day - Player Management",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "playermanage" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],

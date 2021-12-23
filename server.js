@@ -21,7 +21,7 @@ const currentDirectory = dirname(currentFile);
 
 app.set("x-powered-by", false);
 app.set("root", currentDirectory);
-app.use(json());
+app.use(json({ limit: "50mb" }));
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(busboy()); 

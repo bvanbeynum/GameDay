@@ -56,6 +56,7 @@ router.get("/api/evaluationload", api.loadState, api.evaluationLoad);
 router.post("/api/evaluationsave", api.loadState, api.evaluationSave);
 
 router.get("/api/playermanageload", api.loadState, api.playerManageLoad);
+router.post("/api/playermanagesave", api.loadState, api.playerManageSave);
 
 // ************************* Routes
 

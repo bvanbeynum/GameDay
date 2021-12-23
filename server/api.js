@@ -400,9 +400,52 @@ export default {
 					players: clientResponse.body.players
 				};
 
-				response.status(200).json(output);
+				client.get(`${ request.protocol }://${ request.headers.host }/data/player`)
+					.then(clientResponse => {
+						output.attributes = [... new Set(clientResponse.body.players.map(player => Object.keys(player)).flat()) ]
+							.filter(attribute => attribute !== "id")
+							.sort((attributeA, attributeB) => attributeA.toLowerCase() > attributeB.toLowerCase() ? 1 : -1);
+
+						response.status(200).json(output);
+					})
+					.catch(error => response.status(562).json({ error: error.message }))
 			})
 			.catch(error => response.status(561).json({ error: error.message }));
+	},
+
+	playerManageSave: (request, response) => {
+		if (!request.body.saveplayers) {
+			response.statusMessage = "Missing player list to save";
+			response.status(550).json({ error: "Missing player list to save" });
+			return;
+		}
+
+		const output = { requestCount: 0, completeCount: 0, error: [], response: [] };
+
+		request.body.saveplayers.forEach(player => {
+			output.requestCount++;
+			client.post(`${ request.protocol }://${ request.headers.host }/data/player`)
+				.send({ player: player })
+				.end(onComplete);
+		})
+		
+		function onComplete(error, clientResponse) {
+			if (error) {
+				output.error.push(error.message);
+			}
+			else {
+				output.response.push(clientResponse.body.id);
+			}
+
+			output.completeCount++;
+			if (output.requestCount === output.completeCount) {
+				client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.cookies.division }`)
+					.then(clientResponse => {
+						response.status(200).json({ players: clientResponse.body.players });
+					})
+					.catch(error => response.status(561).json({ error: error.message }));
+			}
+		}
 	}
 
 }
