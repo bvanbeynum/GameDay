@@ -3,12 +3,42 @@
 	flex-direction: column;
 	overflow-y: auto;
 	width: 100%;
+	margin: 8px 0px;
+}
+
+.viewPanel {
+	display: flex;
+	justify-content: space-evenly;
+	margin: 15px 0px;
+}
+
+.viewButton {
+	width: 36px;
+	padding: 2px 7px;
+	border-radius: 8px;
+	fill: rgb(50 183 104 / 40%);
+	border: 2px solid rgb(50 183 104 / 40%);
+	box-shadow: 0px 0px 6px -2px rgb(0 0 0);
+}
+.viewButton.active {
+	fill: rgb(50 183 104);
+	border: 2px solid rgb(50 183 104);
+	background-color: rgb(206 253 225);
+	box-shadow: 0px 0px 1px -2px rgb(0 0 0);
 }
 
 .playerTable {
 	border-collapse: collapse;
-	margin: 20px 10px 100px 10px;
+	margin: 0px 10px 100px 10px;
 	font-size: 10px;
+}
+
+.playerTable th {
+	cursor: pointer;
+}
+
+.playerTable .sorted {
+	color: rgb(50 183 104);
 }
 
 .playerTable th, .playerTable td {
@@ -24,14 +54,22 @@
 	background-color: rgb(240 240 240);
 }
 
-.uploadButton {
+.floatingButtonContainer {
 	position: fixed;
-	bottom: 3%;
+	bottom: 1%;
 	right: 5%;
 }
 
-.uploadButton svg {
-	width: 36px;
+.floatingButton {
+	margin: 20px 0px;
+	display: none;
+}
+.floatingButton.active {
+	display: block;
+}
+
+.floatingButton svg {
+	width: 24px;
 	background-color: white;
 	padding: 10px;
 	border: 2px solid rgb(200 200 200);
