@@ -16,7 +16,7 @@ export default {
 			return;
 		}
 
-		client.get(request.protocol + "://" + request.headers.host + "/data/user?usertoken=" + request.query.token)
+		client.get(`${request.protocol}://${request.headers.host}/data/user?usertoken=${request.query.token}`)
 			.then(clientResponse => {
 				if (clientResponse.body.users && clientResponse.body.users.length === 1) {
 					const user = clientResponse.body.users[0];
@@ -30,13 +30,14 @@ export default {
 					user.devices.push({
 						requestDate: new Date(),
 						agent: request.headers["user-agent"],
+						domain: request.headers.host,
 						ip: ipAddress,
 						token: request.query.token
 					});
 
 					user.tokens = user.tokens.filter(token => token !== request.query.token);
 
-					client.post(request.protocol + "://" + request.headers.host + "/data/user")
+					client.post(`${request.protocol}://${request.headers.host}/data/user`)
 						.send({ user: user })
 						.then(clientResponse => {
 

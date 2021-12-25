@@ -4,6 +4,7 @@ const deviceSchema = new mongoose.Schema({
 	requestDate: Date,
 	agent: String,
 	ip: String,
+	domain: String,
 	token: String
 });
 
