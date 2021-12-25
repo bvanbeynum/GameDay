@@ -203,12 +203,6 @@ class PlayerManager extends Component {
 		}))
 	};
 
-	cancelPopup = () => {
-		this.setState(({
-			fileData: null
-		}));
-	};
-
 	savePopup = () => {
 		const filePlayers = this.state.fileData.players.map(player => 
 				this.state.fileData.mappings
@@ -275,10 +269,6 @@ class PlayerManager extends Component {
 		}));
 	};
 
-	cancelRanking = () => {
-		this.setState(({ customRanking: null }));
-	};
-
 	calculateRanking = () => {
 		const catchMin = Math.min(...this.state.players.filter(player => player.catching).map(player => player.catching)) - .1,
 			catchMax = Math.max(...this.state.players.filter(player => player.catching).map(player => player.catching)) + .1,
@@ -289,10 +279,8 @@ class PlayerManager extends Component {
 			seasonsMin = Math.min(...this.state.players.map(player => player.prev.length)) - .1,
 			seasonsMax = Math.max(...this.state.players.map(player => player.prev.length)) + .1,
 			ageMin = Math.min(...this.state.players.map(player => Date.now() - player.dateOfBirth)) - .1,
-			ageMax = Math.max(...this.state.players.map(player => Date.now() - player.dateOfBirth)) + .1;
-		
-		this.setState(({ players }) => ({
-			players: players
+			ageMax = Math.max(...this.state.players.map(player => Date.now() - player.dateOfBirth)) + .1,
+			savePlayers = this.state.players
 				.map(player => ({
 					...player,
 					brettRank: 
@@ -303,11 +291,108 @@ class PlayerManager extends Component {
 						(this.state.customRanking.age ? ((((Date.now() - player.dateOfBirth) - ageMin) / (ageMax - ageMin)) * 100) * this.state.customRanking.age : 1)
 				}))
 				.sort((playerA, playerB) => playerB.brettRank - playerA.brettRank)
-				.map((player, playerIndex) => ({ ...player, brettRank: playerIndex + 1 })),
-			playerSort: "brettRank",
-			playerSortDirection: 1,
-			customRanking: null
-		}));
+				.map((player, playerIndex) => ({ ...player, brettRank: playerIndex + 1 }));
+		
+		this.setState(({ customRanking: null, isLoading: true }));
+
+		fetch(`/api/playermanagesave`, {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ saveplayers: savePlayers })})
+			.then(response => {
+				if (response.ok) {
+					return response.json();
+				}
+				else {
+					throw Error(response.statusText);
+				}
+			})
+			.then(data => {
+				this.setState(({
+					isLoading: false,
+					playerSort: "brettRank",
+					playerSortDirection: 1,
+					toast: { message: "Rankings saved", type: "info" },
+					players: data.players.sort((playerA, playerB) => playerA.brettRank - playerB.brettRank)
+						.map(player => ({
+							...player,
+							dateOfBirth: new Date(player.dateOfBirth)
+						}))
+				}));
+			})
+			.catch(error => {
+				console.log(error);
+				this.setState(({
+					isLoading: false,
+					playerSort: "brettRank",
+					playerSortDirection: 1,
+					toast: { message: "Error saving rankings", type: "error" }
+				}));
+			});
+			
+	};
+
+	selectPlayers = playerIndex => {
+		if (playerIndex) {
+			this.setState(({ players }) => ({
+				players: [
+					...players.slice(0, playerIndex),
+					{
+						...players[playerIndex],
+						selected: !players[playerIndex].selected
+					},
+					...players.slice(playerIndex + 1)
+				]
+			}))
+		}
+		else {
+			const selected = this.state.players.filter(player => player.selected).length !== this.state.players.length;
+
+			this.setState(({ players }) => ({
+				players: players.map(player => ({ ...player, selected: selected })),
+				floatingMenuOpen: false
+			}))
+		}
+	};
+
+	deletePlayers = () => {
+		const deleteIds = this.state.players
+			.filter(player => player.selected)
+			.map(player => player.id);
+		
+		this.setState(({ isLoading: true, floatingMenuOpen: false }));
+
+		if (deleteIds.length > 0 ) {
+			fetch(`/api/playermanagedelete`, {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ playerids: deleteIds })})
+				.then(response => {
+					if (response.ok) {
+						return response.json();
+					}
+					else {
+						throw Error(response.statusText);
+					}
+				})
+				.then(data => {
+					this.setState(({
+						isLoading: false,
+						playerSort: "draftNumber",
+						playerSortDirection: 1,
+						toast: { message: "Players deleted", type: "info" },
+						players: data.players.sort((playerA, playerB) => playerA.draftNumber - playerB.draftNumber)
+							.map(player => ({
+								...player,
+								dateOfBirth: new Date(player.dateOfBirth)
+							}))
+					}));
+				})
+				.catch(error => {
+					console.log(error);
+					this.setState(({
+						isLoading: false,
+						toast: { message: "Error saving rankings", type: "error" }
+					}));
+				});
+		}
+		else {
+			this.setState(({ isLoading: false }));
+		}
 	};
 
 	navBack = () => {
@@ -385,7 +470,7 @@ class PlayerManager extends Component {
 				<tbody>
 				{
 				this.state.players.map((player, playerIndex) => 
-					<tr key={ playerIndex }>
+					<tr key={ playerIndex } onClick={ () => { this.selectPlayers(playerIndex) }} className={ player.selected ? "selected" : "" }>
 					<td>{ player.draftNumber }</td>
 					<td>{ player.firstName }</td>
 					<td>{ player.lastName }</td>
@@ -412,6 +497,20 @@ class PlayerManager extends Component {
 				</table>
 				
 				<div className="floatingButtonContainer">
+					{/* Delete */}
+					<div className={ `floatingButton ${ this.state.floatingMenuOpen ? "active" : "" }` } onClick={ () => { this.deletePlayers() }}>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+							<path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/>
+						</svg>
+					</div>
+
+					{/* Select All */}
+					<div className={ `floatingButton ${ this.state.floatingMenuOpen ? "active" : "" }` } onClick={ () => { this.selectPlayers() }}>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+							<path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2zM7 17h10V7H7v10zm2-8h6v6H9V9z"/>
+						</svg>
+					</div>
+
 					{/* Rank Function */}
 					<div className={ `floatingButton ${ this.state.floatingMenuOpen ? "active" : "" }` } onClick={ () => { this.setState(({ customRanking: {}, floatingMenuOpen: false })) }}>
 						<svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" viewBox="0 0 24 24">
@@ -456,7 +555,7 @@ class PlayerManager extends Component {
 
 						<h2 className="label">Map File Fields</h2>
 						
-						<div onClick={ () => { this.cancelPopup() }} className="button">
+						<div onClick={ () => { this.setState(({ fileData: null })) }} className="button">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 								<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
 							</svg>
@@ -502,7 +601,7 @@ class PlayerManager extends Component {
 
 						<h2 className="label">Custom Ranking</h2>
 						
-						<div onClick={ () => { this.cancelRanking() }} className="button">
+						<div onClick={ () => { this.setState(({ customRanking: null })) }} className="button">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 								<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
 							</svg>

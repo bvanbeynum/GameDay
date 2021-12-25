@@ -54,6 +54,10 @@
 	background-color: rgb(240 240 240);
 }
 
+.playerTable tr.selected {
+	background-color: rgb(209 243 209);
+}
+
 .floatingButtonContainer {
 	position: fixed;
 	bottom: 1%;

@@ -100,6 +100,7 @@ export default {
 			client.get(`${ request.protocol }://${ request.headers.host }/data/team?divisionid=${ divisionId }&managed=true`)
 				.then(clientResponse => {
 					if (clientResponse.body.teams && clientResponse.body.teams.length === 1) {
+						request.division = clientResponse.body.teams[0].division;
 						request.team = clientResponse.body.teams[0];
 					}
 
@@ -440,6 +441,37 @@ export default {
 			output.completeCount++;
 			if (output.requestCount === output.completeCount) {
 				client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.cookies.division }`)
+					.then(clientResponse => {
+						response.status(200).json({ players: clientResponse.body.players });
+					})
+					.catch(error => response.status(561).json({ error: error.message }));
+			}
+		}
+	},
+
+	playerManageDelete: (request, response) => {
+		if (!request.body.playerids) {
+			response.statusMessage = "Missing player IDs to delete";
+			response.status(550).json({ error: response.statusMessage });
+			return;
+		}
+
+		const output = { deleteCount: 0, completeCount: 0, error: [] };
+
+		request.body.playerids.forEach(playerId => {
+			output.deleteCount++;
+			client.delete(`${ request.protocol }://${ request.headers.host }/data/player?id=${ playerId }`)
+				.end(onComplete);
+		});
+
+		function onComplete(error, clientReponse) {
+			if (error) {
+				output.error.push(error.message);
+			}
+
+			output.completeCount++;
+			if (output.deleteCount === output.completeCount) {
+				client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.division.id }`)
 					.then(clientResponse => {
 						response.status(200).json({ players: clientResponse.body.players });
 					})
