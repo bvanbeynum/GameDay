@@ -7,6 +7,7 @@ import Team from "./components/team";
 import Game from "./components/game";
 import PlayerPopup from "./components/playerpopup";
 import GamePopup from "./components/gamepopup";
+import NewTeamPopup from "./components/newteampopup";
 import Cookies from "universal-cookie";
 import "./css/common.css";
 
@@ -255,6 +256,55 @@ class Schedule extends Component {
 		});
 	}
 
+	addTeam = () => {
+		this.setState({ showTeamPopup: true });
+	}
+
+	cancelTeam = () => {
+		this.setState({ showTeamPopup: false });
+	}
+
+	saveTeam = (confrence, coach, name) => {
+		const newTeam = { 
+			division: this.state.managedTeam.division,
+			confrence: confrence || null,
+			coach: coach,
+			name: name
+		};
+
+		this.setState({ pageState: "loading" }, () => {
+			fetch("/api/teamsave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ team: newTeam }) })
+				.then(response => {
+					if (response.ok) {
+						return response.json();
+					}
+					else {
+						throw Error(response.statusText);
+					}
+				})
+				.then(data => {
+					newTeam.id = data.id;
+
+					this.setState(({ confrences }) => ({
+						confrences: confrences.map(confrence => ({
+							...confrence,
+							teams: [
+								...confrence.teams,
+								...(confrence.name === (newTeam.confrence || "") ? [newTeam] : [])
+							]
+						})),
+						showTeamPopup: false,
+						pageState: "standings",
+						toast: { text: "Team saved", type: "info" }
+					}));
+				})
+				.catch(error => {
+					console.warn(error);
+					this.setState({ pageState: "standings", showTeamPopup: false, toast: { text: "Error saving team", type: "error" } });
+				})
+		});
+	}
+
 	render() { return (
 		<div className="pageContainer">
 			<Toolbar navBack={ this.navBack } teamName={ this.state.managedTeam.name } adminMenu={ this.state.user.modules } />
@@ -265,7 +315,7 @@ class Schedule extends Component {
 					<img alt="Loading" src="/media/images/loading.gif" />
 				</div>
 			: this.state.pageState === "standings" ?
-				<Standings confrences={ this.state.confrences } schedule={ this.state.schedule } selectTeam={ this.selectTeam } selectGame={ this.selectGame } />
+				<Standings confrences={ this.state.confrences } schedule={ this.state.schedule } selectTeam={ this.selectTeam } selectGame={ this.selectGame } addTeam={ this.addTeam } />
 			
 			: this.state.pageState === "team" ?
 				<Team team={ this.state.selectedTeam } games={ this.state.teamGames } selectGame={ this.selectGame } viewPlayer={ this.viewPlayer } />
@@ -279,6 +329,12 @@ class Schedule extends Component {
 			{
 			this.state.pageState === "game" ?
 				<GamePopup game={ this.state.selectedGame } isActive={ this.state.isViewGame } closeGame={ this.closeGame } saveGame={ this.saveGame } />
+			: ""
+			}
+
+			{
+			this.state.showTeamPopup ?
+				<NewTeamPopup saveTeam={ this.saveTeam } cancelTeam={ this.cancelTeam } />
 			: ""
 			}
 

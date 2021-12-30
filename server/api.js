@@ -229,6 +229,24 @@ export default {
 			});
 	},
 
+	teamSave: (request, response) => {
+		if (!request.body.team) {
+			response.statusMessage = "Missing team to save";
+			response.status(550).json({ error: "Missing team to save" });
+			return;
+		}
+
+		client.post(`${ request.protocol }://${ request.headers.host }/data/team`)
+			.send({ team: request.body.team })
+			.then(clientReponse => {
+				response.status(200).json({ id: clientReponse.body.id });
+			})
+			.catch(error => {
+				response.statusMessage = error.message;
+				response.status.json({ error: error.message });
+			});
+	},
+
 	gameSave: (request, response) => {
 		if (!request.body.game) {
 			response.statusMessage = "Missing game to save";
@@ -479,6 +497,24 @@ export default {
 					.catch(error => response.status(561).json({ error: error.message }));
 			}
 		}
+	},
+
+	draftLoad: (request, response) => {
+		
+		client.get(`${ request.protocol }://${ request.headers.host }/data/team?divisionid=${ request.division.id }`)
+			.then(clientResponse => {
+				const output = {
+					user: {
+						firstName: request.user.firstName,
+						lastName: request.user.lastName,
+						modules: request.user.modules,
+						division: request.division,
+						team: request.team ? { id: request.team.id, name: request.team.name, coach: request.team.coach } : null
+					},
+					teams: clientResponse.body.teams
+				}
+			})
+
 	}
 
 }

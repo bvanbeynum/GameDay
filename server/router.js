@@ -47,6 +47,7 @@ router.get("/api/divisionload", api.divisionsLoad);
 router.post("/api/divisionsave", api.divisionSave);
 
 router.get("/api/scheduleload", api.scheduleLoad);
+router.post("/api/teamsave", api.teamSave);
 router.post("/api/gamesave", api.gameSave);
 
 router.get("/api/videoplayerload", api.videoPlayerLoad);

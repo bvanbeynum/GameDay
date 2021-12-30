@@ -25,8 +25,14 @@ const Standings = (props) => {
 					{
 					confrence.teams.map((team, teamIndex) => 
 						<tr key={ teamIndex } onClick={ () => { props.selectTeam(team) } } >
-							<td><img src={ `/media/logos/${ team.name.replace(/[ ]*/g, "").toLowerCase() }.png` } /></td>
-							<td>{team.name}</td>
+							<td>
+							{ 
+							team.name ?
+								<img src={ `/media/logos/${ team.name.replace(/[ ]*/g, "").toLowerCase() }.png` } />
+							: "" 
+							}
+							</td>
+							<td>{team.name || team.coach}</td>
 							<td>{team.wins}</td>
 							<td>{team.losses}</td>
 							<td>{team.ratio}</td>
@@ -90,6 +96,15 @@ const Standings = (props) => {
 				</div>
 			)}
 			</div>
+
+			<div className="floatingButtonContainer">
+				<div className="floatingButton active" onClick={ () => { props.addTeam() }}>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+						<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+					</svg>
+				</div>
+			</div>
+
 		</div>
 
 	);
