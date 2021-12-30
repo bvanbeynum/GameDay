@@ -60,6 +60,8 @@ router.get("/api/playermanageload", api.loadState, api.playerManageLoad);
 router.post("/api/playermanagesave", api.loadState, api.playerManageSave);
 router.post("/api/playermanagedelete", api.loadState, api.playerManageDelete);
 
+router.get("/api/draftload", api.loadState, api.draftLoad);
+
 // ************************* Routes
 
 router.get("/access", api.validateAccess);

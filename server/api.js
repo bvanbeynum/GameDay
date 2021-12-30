@@ -511,9 +511,18 @@ export default {
 						division: request.division,
 						team: request.team ? { id: request.team.id, name: request.team.name, coach: request.team.coach } : null
 					},
-					teams: clientResponse.body.teams
-				}
+					teams: clientResponse.body.teams.map(team => (({ id, division, coach, name }) => ({ id, division, coach, name }))(team))
+				};
+
+				client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.division.id }`)
+					.then(clientResponse => {
+						output.players = clientResponse.body.players;
+
+						response.status(200).json(output);
+					})
+					.catch(error => response.status(562).json({ error: error.message }));
 			})
+			.catch(error => response.status(561).json({ error: error.message }));
 
 	}
 
