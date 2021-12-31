@@ -6,7 +6,8 @@ export default {
 		schedule: "./client/src/schedule.jsx",
 		videoPlayer: "./client/src/videoplayer.jsx",
 		eval: "./client/src/eval.jsx",
-		playermanage: "./client/src/playermanage.jsx"
+		playermanage: "./client/src/playermanage.jsx",
+		draft: "./client/src/draft.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -57,6 +58,16 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "playermanage" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "draft.html",
+			title: "Game Day - Draft",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "draft" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],
