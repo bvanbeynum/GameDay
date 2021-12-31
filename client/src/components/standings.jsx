@@ -23,7 +23,8 @@ const Standings = (props) => {
 					</thead>
 					<tbody>
 					{
-					confrence.teams.map((team, teamIndex) => 
+					confrence.teams.sort((teamA, teamB) => (teamA.name || teamA.coach) > (teamB.name || teamB.coach) ? 1 : -1)
+						.map((team, teamIndex) => 
 						<tr key={ teamIndex } onClick={ () => { props.selectTeam(team) } } >
 							<td>
 							{ 
