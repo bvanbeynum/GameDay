@@ -483,7 +483,7 @@ export default {
 				.end(onComplete);
 		});
 
-		function onComplete(error, clientReponse) {
+		function onComplete(error) {
 			if (error) {
 				output.error.push(error.message);
 			}
@@ -511,7 +511,7 @@ export default {
 						division: request.division,
 						team: request.team ? { id: request.team.id, name: request.team.name, coach: request.team.coach } : null
 					},
-					teams: clientResponse.body.teams.map(team => (({ id, division, coach, name }) => ({ id, division, coach, name }))(team))
+					teams: clientResponse.body.teams.map(team => (({ id, division, draftRound, coach, name }) => ({ id, division, draftRound, coach, name }))(team))
 				};
 
 				client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.division.id }`)
@@ -524,6 +524,84 @@ export default {
 			})
 			.catch(error => response.status(561).json({ error: error.message }));
 
-	}
+	},
 
+	draftRefresh: (request, response) => {
+		if (!request.query.version) {
+			response.statusMessage = "Missing version";
+			response.status(550).json({ error: "Missing version" });
+			return;
+		}
+
+		if (request.body.team) {
+			// Update draft round
+			if (!request.body.team.id) {
+				response.statusMessage = "Invalid team";
+				response.status(561).json({ error: "Invalid team" });
+				return;
+			}
+
+			client.post(`${ request.protocol }://${ request.headers.host }/data/team`)
+				.send({ team: {
+					id: request.body.team.id,
+					draftRound: request.body.team.draftRound || null
+				} })
+				.then(() => {
+					loadDraft();
+				})
+				.catch(error => {
+					response.statusMessage = error.message;
+					response.status(562).json({ error: error.message });
+					return;
+				});
+		}
+		else if (request.body.players) {
+			// Update draft picks
+			const status = { queued: 0, updated: 0 };
+
+			request.body.players.forEach(player => {
+				status.queued++;
+
+				client.post(`${ request.protocol }://${ request.headers.host }/data/player`)
+					.send({ player: {
+						id: player.id,
+						draftPick: player.draftPick || null,
+						team: player.team || null
+					} })
+					.end(() => {
+						status.updated++;
+
+						if (status.queued == status.updated) {
+							loadDraft();
+						}
+					});
+			})
+		}
+		else {
+			// Refresh data
+			loadDraft();
+		}
+		
+		function loadDraft() {
+			client.get(`${ request.protocol }://${ request.headers.host }/data/team?divisionid=${ request.division.id }`)
+				.then(clientResponse => {
+					const output = {
+						version: request.query.version,
+						teams: clientResponse.body.teams.map(team => (({ id, draftRound }) => ({ id, draftRound }))(team))
+					};
+
+					client.get(`${ request.protocol }://${ request.headers.host }/data/player?divisionid=${ request.division.id }`)
+						.then(clientResponse => {
+							output.players = clientResponse.body.players.map(player =>
+								(({ id, draftPick, team }) => ({ id, draftPick, team }))(player)
+								);
+
+							response.status(200).json(output);
+						})
+						.catch(error => response.status(566).json({ error: error.message }));
+				})
+				.catch(error => response.status(565).json({ error: error.message }));
+		}
+	}
+	
 }

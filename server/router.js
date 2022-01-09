@@ -61,6 +61,7 @@ router.post("/api/playermanagesave", api.loadState, api.playerManageSave);
 router.post("/api/playermanagedelete", api.loadState, api.playerManageDelete);
 
 router.get("/api/draftload", api.loadState, api.draftLoad);
+router.post("/api/draftrefresh", api.loadState, api.draftRefresh);
 
 // ************************* Routes
 
