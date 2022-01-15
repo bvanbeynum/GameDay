@@ -96,7 +96,6 @@ const DraftPick = (props) => {
 			
 		</div>
 	)
-	}
+}
 	
 export default DraftPick;
-	

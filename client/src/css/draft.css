@@ -202,7 +202,11 @@
 	vertical-align: sub;
 }
 
-.playerStats {
+.playerHeader td {
+	border-bottom: none;
+}
+
+.playerStats table {
 	margin: 11px auto;
 	width: 98%;
 }
