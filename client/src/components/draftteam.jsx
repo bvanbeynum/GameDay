@@ -52,7 +52,13 @@ const DraftTeam = (props) => {
 					
 					{
 					team.picks.map(pick =>
-						<DraftPick key={ pick.pick } pick={ pick } allPicks={ props.picks } allPlayers={ props.players } allTeams={ props.teams } setPick={ props.setPick } />
+						<div key={ pick.pick } className="teamPick">
+							<div className="roundNumber">
+								{ `${ pick.round } / ${ pick.pick }` }
+							</div>
+						
+							<DraftPick pick={ pick } allPicks={ props.picks } allPlayers={ props.players } allTeams={ props.teams } setPick={ props.setPick } />
+						</div>
 					)
 					}
 					

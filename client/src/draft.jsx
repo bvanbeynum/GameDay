@@ -4,7 +4,8 @@ import Cookies from "universal-cookie";
 import Toolbar from "./components/toolbar";
 import Toast from "./components/toast";
 import DraftTeam from "./components/draftteam";
-import DraftPlayers from "./components/draftplayers"
+import DraftPlayers from "./components/draftplayers";
+import DraftPicks from "./components/draftpicks";
 import "./css/common.css";
 import "./css/draft.css";
 
@@ -69,13 +70,15 @@ class Draft extends Component {
 						pickPlayer = updatedPlayers.find(pickPlayer => pickPlayer.draftPick == pick) || null,
 						draftNumber = round % 2 === 1 ? 
 							(pick % teams.length) || teams.length
-							: (teams.length + 1) - ((pick % teams.length) || teams.length);
+							: (teams.length + 1) - ((pick % teams.length) || teams.length),
+						draftTeam = this.state.teams.find(team => team.draftRound == draftNumber);
 
 					return {
 						pick: pick,
 						round: round,
 						draftNumber: draftNumber,
-						player: pickPlayer
+						player: pickPlayer,
+						team: draftTeam
 					}
 				}),
 				updatedTeams = this.state.teams
@@ -235,11 +238,12 @@ class Draft extends Component {
 					<DraftTeam teams={ this.state.teams } picks={ this.state.picks } players={ this.state.players } changeDraftRound={ this.changeDraftRound } setPick={ this.setPick } />
 				: this.state.page === "player" ?
 					<DraftPlayers players={ this.state.players } />
-				: ""
+				:
+					<DraftPicks teams={ this.state.teams } picks={ this.state.picks } players={ this.state.players } setPick={ this.setPick } />
 				}
 
 				<div className="draftNav">
-					<div>
+					<div className="draftRefresh">
 					{
 					this.state.isRefreshing ?
 						<svg viewBox="0 0 10 10" width="10" height="10">

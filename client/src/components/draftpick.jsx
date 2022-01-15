@@ -43,12 +43,7 @@ const DraftPick = (props) => {
 	}
 
 	return (
-		<div className="teamPick">
-			
-			<div className="roundNumber">
-				{ `${ props.pick.round } / ${ props.pick.pick }` }
-			</div>
-			
+		<div className="draftPick">
 			<div className="pickNumber">
 				<input type="number" value={ selectedNumber } onChange={ event => { updateSelectedNumber(event) } } />
 			</div>
@@ -93,8 +88,7 @@ const DraftPick = (props) => {
 				: ""
 				}
 			</div>
-			
-		</div>
+		</div>	
 	)
 }
 	
