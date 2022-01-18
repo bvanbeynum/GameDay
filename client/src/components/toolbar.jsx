@@ -47,7 +47,9 @@ const Toolbar = (props) => {
 				<div className={`adminMenuContainer ${ props.adminMenu.length > 0 ? "active" : "" }` }>
 					<div className="adminMenu">
 						{
-						props.adminMenu.map((item, itemIndex) => (
+						props.adminMenu
+							.sort((itemA, itemB) => itemA.name > itemB.name ? 1 : -1)
+							.map((item, itemIndex) => (
 							<div key={ itemIndex } className="adminMenuItem" onClick={ () => { openItem(item.url) }}>{ item.name }</div>
 						))
 						}
