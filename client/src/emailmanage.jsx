@@ -39,6 +39,11 @@ class EmailManage extends Component {
 				this.setState({
 					isLoading: false,
 					user: data.user,
+					emails: data.emails.map(email => ({ 
+						...email,
+						sent: new Date(email.sent),
+						sentFormatted: `${ (((new Date(email.sent)).getMonth() + 1) + "").padStart(2, "0") }/${ ((new Date(email.sent)).getDate() + "").padStart(2, "0") }` 
+					})),
 					emailLists: data.emailLists,
 					emailListDelete: [],
 					locations: data.locations,
@@ -222,6 +227,25 @@ class EmailManage extends Component {
 						</svg>
 					</div>
 				</div>
+
+				<div className="emailItem">
+					<div className="emailSubect">New Email</div>
+				</div>
+
+				{
+				this.state.emails
+				.sort((emailA, emailB) => emailB.sent - emailA.sent)
+				.map(email => 
+					<div key={ email.id } className="emailItem">
+						<div className="emailSubect">{ email.subject }</div>
+
+						<div className="emailDetails">
+							<div>To { email.to.length }</div>
+							<div>{ email.sentFormatted }</div>
+						</div>
+					</div>
+				)
+				}
 
 			</div>
 			}
