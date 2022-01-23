@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
 import ffmpeg from "fluent-ffmpeg";
+import request from "superagent";
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
@@ -602,6 +603,119 @@ export default {
 				})
 				.catch(error => response.status(565).json({ error: error.message }));
 		}
+	},
+
+	emailManageLoad: (request, response) => {
+		const output = {
+			user: (
+				({ firstName, lastName, modules }) => ({ firstName, lastName, modules, division: request.division, team: request.team })
+				)(request.user)
+		};
+
+		client.get(`${ request.protocol }://${ request.headers.host }/data/location`)
+			.then(clientResponse => {
+				output.locations = clientResponse.body.locations;
+
+				client.get(`${ request.protocol }://${ request.headers.host }/data/emaillist?divisionid=${ request.division.id }`)
+					.then(clientResponse => {
+						output.emailLists = clientResponse.body.emailLists;
+						
+						client.get(`${ request.protocol }://${ request.headers.host }/data/email?divisionid=${ request.division.id }`)
+							.then(clientResponse => {
+								output.emails = clientResponse.body.emails.map(({ emailText, ...email }) => email);
+
+								response.status(200).json(output);
+							})
+					})
+					.catch(error => response.status(562).json({ error: error.message }));
+			})
+			.catch(error => response.status(561).json({ error: error.message }));
+	},
+
+	emailManageSave: (request, response) => {
+		const saveStatus = { 
+				emailLists: { queued: 0, complete: 0},
+				emailListDelete: { queued: 0, complete: 0 },
+				locations: { queued: 0, complete: 0},
+				locationDelete: { queued: 0, complete: 0 }
+			},
+			output = { emailLists: [], locations: [] };
+		
+		const onComplete = () => {
+			if (
+				saveStatus.emailLists.queued === saveStatus.emailLists.complete && 
+				saveStatus.emailListDelete.queued === saveStatus.emailListDelete.complete &&
+				saveStatus.locations.queued === saveStatus.locations.complete &&
+				saveStatus.locationDelete.queued === saveStatus.locationDelete.complete
+				) {
+
+				client.get(`${ request.protocol }://${ request.headers.host }/data/location`)
+					.then(clientResponse => {
+						output.locations = clientResponse.body.locations;
+		
+						client.get(`${ request.protocol }://${ request.headers.host }/data/emaillist?divisionid=${ request.division.id }`)
+							.then(clientResponse => {
+								output.emailLists = clientResponse.body.emailLists;
+								
+								response.status(200).json(output);
+							})
+							.catch(error => response.status(562).json({ error: error.message }));
+					})
+					.catch(error => response.status(561).json({ error: error.message }));
+					
+			}
+		};
+
+		if (request.body.emaillists) {
+			request.body.emaillists.forEach(emailList => {
+				saveStatus.emailLists.queued++;
+
+				client.post(`${ request.protocol }://${ request.headers.host }/data/emaillist`)
+					.send({ emaillist: emailList })
+					.then(() => {
+						saveStatus.emailLists.complete++;
+						onComplete();
+					});
+			});
+		}
+
+		if (request.body.emaillistdelete) {
+			request.body.emaillistdelete.forEach(emailList => {
+				saveStatus.emailListDelete.queued++;
+
+				client.delete(`${ request.protocol }://${ request.headers.host }/data/emaillist?id=${ emailList }`)
+					.then(() => {
+						saveStatus.emailListDelete.complete++;
+						onComplete();
+					})
+			})
+		}
+
+		if (request.body.locations) {
+			request.body.locations.forEach(location => {
+				saveStatus.locations.queued++;
+				
+				client.post(`${ request.protocol }://${ request.headers.host }/data/location`)
+					.send({ location: location })
+					.then(() => {
+						saveStatus.locations.complete++;
+						onComplete();
+					});
+			})
+		}
+
+		if (request.body.locationdelete) {
+			request.body.locationdelete.forEach(location => {
+				saveStatus.locationDelete.queued++;
+
+				client.delete(`${ request.protocol }://${ request.headers.host }/data/location?id=${ location }`)
+					.then(() => {
+						saveStatus.locationDelete.complete++;
+						onComplete();
+					})
+			})
+		}
+
 	}
 	
 }

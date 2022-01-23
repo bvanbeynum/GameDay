@@ -173,5 +173,35 @@ export default {
 		sort: Number,
 		players: [ playerSchema ]
 	}),
+
+	emailList: mongoose.model("emailList", {
+		division: {
+			id: String,
+			name: String,
+			year: Number,
+			season: String
+		},
+		name: String,
+		members: [{ name: String, email: String }]
+	}),
+
+	fieldLocation: mongoose.model("fieldLocation", {
+		name: String,
+		address: String,
+		map: String
+	}),
+
+	email: mongoose.model("emaillog", {
+		division: {
+			id: String,
+			name: String,
+			year: String,
+			season: String
+		},
+		sent: Date,
+		to: [ String ],
+		subject: String,
+		emailText: String
+	})
 	
 }

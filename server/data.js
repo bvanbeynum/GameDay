@@ -616,6 +616,257 @@ export default {
 			.catch(error => {
 				response.status(560).json({ error: error.message });
 			});
+	},
+
+	
+	emailListGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+		if (request.query.divisionid) {
+			filter["division.id"] = request.query.divisionid;
+		}
+
+		data.emailList.find(filter)
+			.lean()
+			.exec()
+			.then(emailListsDb => {
+				const output = {
+					emailLists: emailListsDb.map(({ _id, __v, ...emailList }) => ({ 
+						...emailList,
+						id: _id,
+						members: emailList.members.map(({ _id, ...member }) => ({ ...member, id: _id }))
+					}))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			})
+	},
+
+	emailListSave: (request, response) => {
+		if (!request.body.emaillist) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const emailListSave = request.body.emaillist;
+
+		if (emailListSave.id) {
+			data.emailList.findById(emailListSave.id)
+				.exec()
+				.then(emailListDb => {
+					if (!emailListDb) {
+						throw new Error("Not found in database");
+					}
+
+					Object.keys(emailListSave).forEach(field => {
+						if (field != "id") {
+							emailListDb[field] = emailListSave[field];
+						}
+					})
+
+					return emailListDb.save();
+				})
+				.then(emailListDb => {
+					response.status(200).json({ id: emailListDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.emailList(emailListSave)
+				.save()
+				.then(emailListDb => {
+					response.status(200).json({ id: emailListDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	emailListDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.emailList.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	locationGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+
+		data.fieldLocation.find(filter)
+			.lean()
+			.exec()
+			.then(locationsDb => {
+				const output = {
+					locations: locationsDb.map(({ _id, __v, ...location }) => ({ id: _id, ...location }))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			})
+	},
+
+	locationSave: (request, response) => {
+		if (!request.body.location) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const locationSave = request.body.location;
+
+		if (locationSave.id) {
+			data.fieldLocation.findById(locationSave.id)
+				.exec()
+				.then(locationDb => {
+					if (!locationDb) {
+						throw new Error("Not found in database");
+					}
+
+					Object.keys(locationSave).forEach(field => {
+						if (field != "id") {
+							locationDb[field] = locationSave[field];
+						}
+					})
+
+					return locationDb.save();
+				})
+				.then(locationDb => {
+					response.status(200).json({ id: locationDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.fieldLocation(locationSave)
+				.save()
+				.then(locationDb => {
+					response.status(200).json({ id: locationDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	locationDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.fieldLocation.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	emailGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+		if (request.query.divisionid) {
+			filter["division.id"] = request.query.divisionid;
+		}
+
+		data.email.find(filter)
+			.lean()
+			.exec()
+			.then(emailsDb => {
+				const output = {
+					emails: emailsDb.map(({ _id, __v, ...email }) => ({ id: _id, ...email }))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			})
+	},
+
+	emailSave: (request, response) => {
+		if (!request.body.email) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const emailSave = request.body.email;
+
+		if (emailSave.id) {
+			data.email.findById(emailSave.id)
+				.exec()
+				.then(emailDb => {
+					if (!emailDb) {
+						throw new Error("Not found in database");
+					}
+
+					Object.keys(emailSave).forEach(field => {
+						if (field != "id") {
+							emailDb[field] = emailSave[field];
+						}
+					})
+
+					return emailDb.save();
+				})
+				.then(emailDb => {
+					response.status(200).json({ id: emailDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.email(emailSave)
+				.save()
+				.then(emailDb => {
+					response.status(200).json({ id: emailDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	emailDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+		
+		data.email.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
 	}
 
 }

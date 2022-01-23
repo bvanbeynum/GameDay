@@ -100,6 +100,11 @@ table {
 	flex-direction: column;
 }
 
+.popupContainerThin {
+	display: flex;
+	flex-direction: column;
+}
+
 .popup .spacer {
 	margin: 10px 0px;
 	border-bottom: 1px solid rgb(220,220,220);
@@ -125,7 +130,7 @@ table {
 	text-align: right;
 }
 
-.popupFormInput input {
+.popupFormInput input[type="number"] {
 	border: 0;
 	border-bottom: 1px solid rgb(175 175 175);
 	font-size: 1.4em;

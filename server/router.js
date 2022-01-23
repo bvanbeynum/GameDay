@@ -41,6 +41,18 @@ router.get("/data/play", data.playGet);
 router.post("/data/play", data.playSave);
 router.delete("/data/play", data.playDelete);
 
+router.get("/data/emaillist", data.emailListGet);
+router.post("/data/emaillist", data.emailListSave);
+router.delete("/data/emaillist", data.emailListDelete);
+
+router.get("/data/location", data.locationGet);
+router.post("/data/location", data.locationSave);
+router.delete("/data/location", data.locationDelete);
+
+router.get("/data/email", data.emailGet);
+router.post("/data/email", data.emailSave);
+router.delete("/data/email", data.emailDelete);
+
 // ************************* API
 
 router.get("/api/divisionload", api.divisionsLoad);
@@ -62,6 +74,9 @@ router.post("/api/playermanagedelete", api.loadState, api.playerManageDelete);
 
 router.get("/api/draftload", api.loadState, api.draftLoad);
 router.post("/api/draftrefresh", api.loadState, api.draftRefresh);
+
+router.get("/api/emailmanageload", api.loadState, api.emailManageLoad);
+router.post("/api/emailmanagesave", api.loadState, api.emailManageSave);
 
 // ************************* Routes
 
