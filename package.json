@@ -20,7 +20,8 @@
 		"universal-cookie": "^4.0.4",
 		"fluent-ffmpeg": "^2.1.2",
 		"@ffmpeg-installer/ffmpeg": "^1.0.20",
-		"connect-busboy": "0.0.2"
+		"connect-busboy": "0.0.2",
+		"nodemailer": "^6.4.16"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.14.3",

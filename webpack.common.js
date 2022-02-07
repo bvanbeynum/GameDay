@@ -8,7 +8,8 @@ export default {
 		eval: "./client/src/eval.jsx",
 		playermanage: "./client/src/playermanage.jsx",
 		draft: "./client/src/draft.jsx",
-		emailManage: "./client/src/emailmanage.jsx"
+		emailManage: "./client/src/emailmanage.jsx",
+		emailEdit: "./client/src/emailedit.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -79,6 +80,16 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "emailManage" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "emailedit.html",
+			title: "Game Day - Email",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "emailEdit" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],

@@ -29,6 +29,10 @@
 	cursor: pointer;
 }
 
+.emailItem:nth-child(2) {
+	border-top: 1px solid rgb(215 215 215);
+}
+
 .emailSubect {
 	font-size: 11px;
 	font-weight: bold;

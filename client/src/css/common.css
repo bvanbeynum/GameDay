@@ -65,6 +65,7 @@ table {
 	flex: 1;
 	box-shadow: 0px 1px 3px 1px rgb(0 0 0 / 10%);
 	flex-direction: column;
+	max-width: 98%;
 }
 
 .popupHeader {
@@ -74,6 +75,11 @@ table {
 	align-items: center;
 	justify-content: space-between;
 	box-shadow: 0px 0px 1px 1px rgb(0 0 0 / 14%), 0px 0px 2px 2px rgb(0 0 0 / 10%), 0px 0px 5px 1px rgb(0 0 0 / 8%);
+}
+
+.popup h2, .popup h2.label {
+	font-size: 1.2em;
+	margin-right: 80px;
 }
 
 .popup .loading {
@@ -95,7 +101,7 @@ table {
 }
 
 .popupContainer {
-	padding: 35px;
+	padding: 35px 15px;
 	display: flex;
 	flex-direction: column;
 }
@@ -112,7 +118,7 @@ table {
 
 .popup .label {
 	font-size: 1.2em;
-	margin-right: 80px;
+	margin-right: 20px;
 }
 
 .popupFormRow {

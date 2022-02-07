@@ -1,0 +1,54 @@
+.emailPage {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	width: 100%;
+}
+
+.editContent {
+	flex: 1;
+	margin-bottom: 45px;
+	padding: 20px 10px;
+	display: flex;
+	flex-direction: column;
+}
+
+.contentContainer {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.email {
+	flex: 1;
+	border: solid 1px rgb(187 187 187);
+	outline: none;
+}
+
+.actionBar {
+	position: fixed;
+	bottom: 0px;
+	height: 45px;
+	left: 0px;
+	right: 0px;
+	display: flex;
+	box-shadow: 0px 0px 6px 1px rgb(0 0 0 / 9%), 0px 0px 3px 2px rgb(0 0 0 / 1%), 0px 0px 5px 1px rgb(0 0 0 / 8%);
+}
+
+.actionItem {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.actionItem svg {
+	width: 36px;
+	height: 36px;
+	cursor: pointer;
+}
+
+.actionItem.disabled svg {
+	fill: rgb(159 159 159);
+	cursor: default;
+}

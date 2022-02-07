@@ -78,6 +78,9 @@ router.post("/api/draftrefresh", api.loadState, api.draftRefresh);
 router.get("/api/emailmanageload", api.loadState, api.emailManageLoad);
 router.post("/api/emailmanagesave", api.loadState, api.emailManageSave);
 
+router.get("/api/emaileditload", api.loadState, api.emailEditLoad);
+router.post("/api/emaileditsend", api.loadState, api.emailEditSend);
+
 // ************************* Routes
 
 router.get("/access", api.validateAccess);

@@ -24,6 +24,7 @@ class EmailManage extends Component {
 
 		if (!cookies.get("division")) {
 			window.location = "/";
+			return;
 		}
 
 		fetch("/api/emailmanageload")
@@ -194,7 +195,11 @@ class EmailManage extends Component {
 					this.setState({ toast: { text: "Error loading data", type: "error" } });
 				});
 		});
-	}
+	};
+
+	editEmail = emailId => {
+		window.location = `/emailedit.html${ emailId ? `?id=${ emailId }` : "" }`;
+	};
 	
 	navBack = () => {
 		window.location = "/schedule.html";
@@ -228,7 +233,7 @@ class EmailManage extends Component {
 					</div>
 				</div>
 
-				<div className="emailItem">
+				<div className="emailItem" onClick={ () => { this.editEmail() }}>
 					<div className="emailSubect">New Email</div>
 				</div>
 
@@ -236,7 +241,7 @@ class EmailManage extends Component {
 				this.state.emails
 				.sort((emailA, emailB) => emailB.sent - emailA.sent)
 				.map(email => 
-					<div key={ email.id } className="emailItem">
+					<div key={ email.id } className="emailItem" onClick={ () => { this.editEmail(email.id) }}>
 						<div className="emailSubect">{ email.subject }</div>
 
 						<div className="emailDetails">

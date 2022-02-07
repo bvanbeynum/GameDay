@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
 import ffmpeg from "fluent-ffmpeg";
-import request from "superagent";
+import nodemailer from "nodemailer";
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
@@ -626,6 +626,7 @@ export default {
 
 								response.status(200).json(output);
 							})
+							.catch(error => response.status(563).json({ error: error.message }));
 					})
 					.catch(error => response.status(562).json({ error: error.message }));
 			})
@@ -716,6 +717,147 @@ export default {
 			})
 		}
 
+	},
+
+	emailEditLoad: (request, response) => {
+		const output = {
+			user: (
+				({ firstName, lastName, modules }) => ({ firstName, lastName, modules, division: request.division, team: request.team })
+				)(request.user)
+		};
+
+		client.get(`${ request.protocol }://${ request.headers.host }/data/location`)
+			.then(clientResponse => {
+				output.locations = clientResponse.body.locations;
+
+				client.get(`${ request.protocol }://${ request.headers.host }/data/emaillist?divisionid=${ request.division.id }`)
+					.then(clientResponse => {
+						output.emailLists = clientResponse.body.emailLists;
+						
+						if (request.query.id) {
+							client.get(`${ request.protocol }://${ request.headers.host }/data/email?id=${ request.query.id }`)
+								.then(clientResponse => {
+									output.emailText = clientResponse.body.emails[0].emailText;
+
+									response.status(200).json(output);
+								})
+								.catch(error => response.status(563).json({ error: error.message }));
+						}
+						else {
+							response.status(200).json(output);
+						}
+					})
+					.catch(error => response.status(562).json({ error: error.message }));
+			})
+			.catch(error => response.status(561).json({ error: error.message }));
+	},
+
+	emailEditSend: (request, response) => {
+		if (!request.body.email) {
+			response.statusMessage = "Missing email to send";
+			response.status(550).json({ error: "Missing email to send" });
+			return;
+		}
+
+		const email = request.body.email,
+			images = RegExp("<img [\\w =\"]*src=[\"]?([^\" ]+)", "gim"),
+			css = RegExp("background:[\w -]*url\([\"]?([^\"]+)[\"]?\)", "gim"),
+			attachments = RegExp("<attach [\\w =\"]*src=[\"]?([^\" ]+)[\"]?[\w =\"]*\/>", "gim"),
+			emailAttachments = [];
+		let matches = null,
+			emailBody = email.text,
+			subject = (RegExp("<title>([^<]+)</title>", "gi")).exec(emailBody);
+
+		if (!subject) {
+			response.statusMessage = "Missing subject";
+			response.status(561).json({ error: "Missing subject" });
+			return;
+		}
+		else {
+			subject = `${ subject[1] } \uD83C\uDFC8`;
+		}
+
+		// Images
+		while ((matches = images.exec(emailBody)) != null) {
+			let cidName = matches[1].substring(matches[1].lastIndexOf("/") + 1, matches[1].lastIndexOf("."))
+
+			emailAttachments.push({
+				fileName: matches[1].substring(matches[1].lastIndexOf("/") + 1),
+				path: path.join(request.app.get("root"), `client/${ matches[1] }`),
+				cid: cidName
+			});
+			emailBody = emailBody.replace(matches[1], `cid:${ cidName }`);
+		}
+		
+		// CSS
+		while ((matches = css.exec(emailBody)) != null) {
+			let cidName = matches[1].substring(matches[1].lastIndexOf("/") + 1, matches[1].lastIndexOf("."))
+
+			emailAttachments.push({
+				fileName: matches[1].substring(matches[1].lastIndexOf("/") + 1),
+				path: path.join(request.app.get("root"), `client/${ matches[1] }`),
+				cid: cidName
+			});
+			emailBody = emailBody.replace(matches[1], `cid:${ cidName }`);
+		}
+		
+		// Attachments
+		while ((matches = attachments.exec(emailBody)) != null) {
+			emailAttachments.push({
+				fileName: matches[1].substring(matches[1].lastIndexOf("/") + 1),
+				path: path.join(request.app.get("root"), `client/${ matches[1] }`)
+			});
+			
+			emailBody = emailBody.replace(matches[0], "");
+		}
+
+		const service = nodemailer.createTransport({
+			host: "smtp.gmail.com",
+			port: 465,
+			secure: true,
+			auth: {
+				type: "OAuth2",
+				clientId: "743032936512-vpikma7crc8dssoah9bv1la06s2sl4a2.apps.googleusercontent.com",
+				clientSecret: "EGD193Mwf6kO798wdP9Bq7lf"
+			}
+		});
+		
+		var options = {
+			from: "\"Brett van Beynum\" <bvanbeynum@gmail.com>",
+			to: email.to,
+			subject: subject,
+			html: emailBody,
+			attachments: emailAttachments,
+			auth: {
+				user: "bvanbeynum@gmail.com",
+				refreshToken: "1//04K4dB_Z_X1rQCgYIARAAGAQSNwF-L9Irhjcc5YawPcBGv-zZuBiZHm2-s3bgPEJf6VQm6b9eTs7E4iuRbUij6-tzAVYi_3ZXbVU",
+				accessToken: "ya29.a0AfH6SMCf0nD3px4QPS-MABYUSpsEEPPdOGAJkvCfOE5eMiuBIUPw-EWunj6wsbEXtJthE16v02r6VWhdcjOaUEmqGFQsD7iEZR26h4B8Lzfh-NAw2OjpfApxfjNz5NEv-JAT6kBTA4J7G2rntClDhTxanW-6_s2y528",
+				expires: 3460
+			}
+		};
+		
+		service.sendMail(options, (error, mailResponse) => {
+			if (error) {
+				response.status(562).json({error: error.message});
+				return;
+			}
+			else {
+				const saveEmail = {
+					division: request.division,
+					sent: new Date(),
+					to: email.to,
+					subject: subject,
+					emailText: email.text
+				};
+
+				client.post(`${ request.protocol }://${ request.headers.host }/data/email`)
+					.send({ email: saveEmail })
+					.then(clientResponse => {
+						response.status(200).json({ emailId: clientResponse.body.id });
+					})
+					.catch(error => response.status(563).json({ error: error.message }));
+			}
+		});
 	}
 	
 }
