@@ -81,8 +81,11 @@ router.post("/api/emailmanagesave", api.loadState, api.emailManageSave);
 router.get("/api/emaileditload", api.loadState, api.emailEditLoad);
 router.post("/api/emaileditsend", api.loadState, api.emailEditSend);
 
+router.get("/api/usermanageload", api.loadState, api.userManageLoad);
+
 // ************************* Routes
 
 router.get("/access", api.validateAccess);
+router.post("/requestaccess", api.requestAccess);
 
 export default router;

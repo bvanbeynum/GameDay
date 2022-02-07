@@ -9,7 +9,8 @@ export default {
 		playermanage: "./client/src/playermanage.jsx",
 		draft: "./client/src/draft.jsx",
 		emailManage: "./client/src/emailmanage.jsx",
-		emailEdit: "./client/src/emailedit.jsx"
+		emailEdit: "./client/src/emailedit.jsx",
+		userManage: "./client/src/usermanage.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -90,6 +91,16 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "emailEdit" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "usermanage.html",
+			title: "Game Day - User Management",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "userManage" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],

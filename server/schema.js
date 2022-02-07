@@ -42,12 +42,15 @@ export default {
 		firstName: String,
 		lastName: String,
 		createdDate: Date,
+		email: String,
+		isAdmin: Boolean,
 		devices: [{ type: deviceSchema }],
 		tokens: [ String ],
 		modules: [{ name: String, url: String }]
 	}),
 
 	request: mongoose.model("request", {
+		userId: String,
 		isActive: Boolean,
 		device: { type: deviceSchema }
 	}),

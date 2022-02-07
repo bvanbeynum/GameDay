@@ -11,6 +11,88 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 export default {
 
+	requestAccess: (request, response) => {
+		if (!request.body.email || !request.body.email.indexOf("@") < 0) {
+			response.statusMessage = "Error";
+			response.status(550).send("error");
+			return;
+		}
+
+		client.get(`${ request.protocol}://${ request.headers.host }/data/user?email=${ request.body.email }`)
+			.then(clientResponse => {
+				let ipAddress = (request.headers["x-forwarded-for"] || "").split(",").pop().trim() || 
+					request.connection.remoteAddress || 
+					request.socket.remoteAddress || 
+					request.connection.socket.remoteAddress;
+				ipAddress = ipAddress.match(/[^:][\d.]+$/g).join("");
+
+				const agent = request.headers["user-agent"],
+					domain = request.headers.host,
+					token = (Math.random() + 1).toString(36).substring(2,12),
+					encryptedToken = jwt.sign({ token: token }, config.jwt),
+					userRequest = {
+						isActive: true,
+						device: {
+								requestDate: new Date(),
+								agent: agent,
+								ip: ipAddress,
+								domain: domain,
+								token: token
+							}
+						},
+					email = {
+							from: "\"Gameday Website\" <bvanbeynum@gmail.com>",
+							subject: "Game Day Access Requested",
+							html: `Access requested from:<br><br>Domain: ${ domain }<br>IP: ${ ipAddress }<br>Browser: ${ agent }<br><br><a href="http://${ domain }">http://${ domain }</a>`,
+							auth: {
+								user: "bvanbeynum@gmail.com",
+								refreshToken: "1//04K4dB_Z_X1rQCgYIARAAGAQSNwF-L9Irhjcc5YawPcBGv-zZuBiZHm2-s3bgPEJf6VQm6b9eTs7E4iuRbUij6-tzAVYi_3ZXbVU",
+								accessToken: "ya29.a0AfH6SMCf0nD3px4QPS-MABYUSpsEEPPdOGAJkvCfOE5eMiuBIUPw-EWunj6wsbEXtJthE16v02r6VWhdcjOaUEmqGFQsD7iEZR26h4B8Lzfh-NAw2OjpfApxfjNz5NEv-JAT6kBTA4J7G2rntClDhTxanW-6_s2y528",
+								expires: 3460
+							}
+						};
+				
+				if (clientResponse.body.users && clientResponse.body.users.length === 1) {
+					userRequest.userId = clientResponse.body.users[0].id;
+					email.to = clientResponse.body.users[0].email;
+				}
+				else {
+					email.to = "maildrop444@gmail.com";
+				}
+				
+				client.post(`${ request.protocol }://${ request.headers.host }/data/request`)
+					.send({ request: userRequest })
+					.then(() => {
+						response.cookie("gd", encryptedToken, { maxAge: 999999999999 });
+						
+						const service = nodemailer.createTransport({
+							host: "smtp.gmail.com",
+							port: 465,
+							secure: true,
+							auth: {
+								type: "OAuth2",
+								clientId: "743032936512-vpikma7crc8dssoah9bv1la06s2sl4a2.apps.googleusercontent.com",
+								clientSecret: "EGD193Mwf6kO798wdP9Bq7lf"
+							}
+						});
+						
+						service.sendMail(email, (error, mailResponse) => {
+							if (error) {
+								response.status(561).send("Error");
+								return;
+							}
+							else {
+								response.status(200).send("Ok");
+								return;
+							}
+						});
+					})
+					.catch(() => response.status(562).send("Error"));
+					
+			})
+			.catch(() => response.status(560).send("Error"));
+	},
+	
 	validateAccess: (request, response) => {
 		if (!request.query.token) {
 			response.redirect("/noaccess.html");
@@ -40,7 +122,7 @@ export default {
 
 					client.post(`${request.protocol}://${request.headers.host}/data/user`)
 						.send({ user: user })
-						.then(clientResponse => {
+						.then(() => {
 
 							const encryptedToken = jwt.sign({ token: request.query.token }, config.jwt);
 							response.cookie("gd", encryptedToken, { maxAge: 999999999999 });
@@ -62,6 +144,7 @@ export default {
 			request.url.toLowerCase().startsWith("/noaccess.html") ||
 			request.url.toLowerCase().startsWith("/data") ||
 			request.url.toLowerCase().startsWith("/access") ||
+			request.url.toLowerCase().startsWith("/requestaccess") ||
 			request.url.toLowerCase().startsWith("/api/videoplayerupload")
 			) {
 			next();
@@ -858,6 +941,37 @@ export default {
 					.catch(error => response.status(563).json({ error: error.message }));
 			}
 		});
+	},
+
+	userManageLoad: (request, response) => {
+		const output = {
+			user: (
+				({ firstName, lastName, modules, isAdmin }) => ({ firstName, lastName, modules, isAdmin, division: request.division, team: request.team })
+				)(request.user)
+		};
+
+		let userFilter = "";
+		if (!request.user.isAdmin) {
+			userFilter = `&userid=${ request.user.id }`;
+		}
+
+		client.get(`${ request.protocol }://${ request.headers.host }/data/request?isactive=true${ userFilter }`)
+			.then(clientResponse => {
+				output.requests = clientResponse.body.requests;
+
+				if (request.user.isAdmin) {
+					client.get(`${ request.protocol }://${ request.headers.host }/data/user`)
+						.then(clientResponse => {
+							output.users = clientResponse.body.users;
+							response.status(200).json(output);
+						})
+						.catch(error => response.status(562).json({ error: error.message }));
+				}
+				else {
+					response.status(200).json(output);
+				}
+			})
+			.catch(error => response.status(561).json({ error: error.message }));
 	}
 	
 }

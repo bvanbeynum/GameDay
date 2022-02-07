@@ -14,6 +14,9 @@ export default {
 		if (request.query.devicetoken) {
 			filter["devices.token"] = request.query.devicetoken
 		}
+		if (request.query.email) {
+			filter["email"] = request.query.email;
+		}
 
 		data.user.find(filter)
 			.lean()
@@ -93,6 +96,9 @@ export default {
 		}
 		if (request.query.isactive) {
 			filter.isActive = request.query.isactive === "true";
+		}
+		if (request.query.userid) {
+			filter.userId = request.query.userid;
 		}
 
 		data.request.find(filter)
