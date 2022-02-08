@@ -38,7 +38,12 @@ class Evaluation extends Component {
 				this.setState(({
 					user: data.user,
 					isLoading: false,
-					players: data.players.sort((playerA, playerB) => playerA.draftNumber - playerB.draftNumber)
+					players: data.players
+						.sort((playerA, playerB) => playerA.draftNumber - playerB.draftNumber)
+						.map(player => ({
+							...player,
+							completed: player.height || player.evalCatch || player.route || player.speed || player.hands || player.draftBlock || player.draftWatch
+						}))
 				}));
 			})
 			.catch(error => {
@@ -49,28 +54,46 @@ class Evaluation extends Component {
 	};
 
 	savePlayer = () => {
-		fetch("/api/evaluationsave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ player: this.state.selectedPlayer }) })
-			.then(response => {
-				if (response.ok) {
-					return response.json();
-				}
-				else {
-					throw Error(response.statusText);
-				}
-			})
-			.then(() => {
-				this.setState(({
-					selectedPlayer: null,
-					toast: { text: "Player Saved", type: "info" }
-				}));
-			})
-			.catch(error => {
-				console.warn(error);
-				this.setState({
-					selectedPlayer: null,
-					toast: { text: "Error saving player", type: "error" }
+		this.setState(({ selectedPlayer, players }) => ({
+			players: players.map(player => ({
+				...player,
+				height: (player.id === selectedPlayer.id ? selectedPlayer : player).height,
+				evalCatch: (player.id === selectedPlayer.id ? selectedPlayer : player).evalCatch,
+				route: (player.id === selectedPlayer.id ? selectedPlayer : player).route,
+				speed: (player.id === selectedPlayer.id ? selectedPlayer : player).speed,
+				hands: (player.id === selectedPlayer.id ? selectedPlayer : player).hands,
+				draftBlock: (player.id === selectedPlayer.id ? selectedPlayer : player).draftBlock,
+				draftWatch: (player.id === selectedPlayer.id ? selectedPlayer : player).draftWatch,
+				completed: player.id === selectedPlayer.id ?
+					selectedPlayer.height || selectedPlayer.evalCatch || selectedPlayer.route || selectedPlayer.speed || selectedPlayer.hands || selectedPlayer.draftBlock || selectedPlayer.draftWatch
+					: player.completed
+			}))
+		}), () => {
+			
+			fetch("/api/evaluationsave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ player: this.state.selectedPlayer }) })
+				.then(response => {
+					if (response.ok) {
+						return response.json();
+					}
+					else {
+						throw Error(response.statusText);
+					}
+				})
+				.then(() => {
+					this.setState(({
+						selectedPlayer: null,
+						toast: { text: "Player Saved", type: "info" }
+					}));
+				})
+				.catch(error => {
+					console.warn(error);
+					this.setState({
+						selectedPlayer: null,
+						toast: { text: "Error saving player", type: "error" }
+					});
 				});
-			});
+		});
+		
 	};
 
 	resetPlayer = () => {
@@ -85,9 +108,7 @@ class Evaluation extends Component {
 				draftBlock: null,
 				draftWatch: null
 			}
-		}));
-
-		this.savePlayer();
+		}), () => this.savePlayer());
 	};
 
 	cancel = () => {
@@ -113,7 +134,7 @@ class Evaluation extends Component {
 			<div className="evalPage">
 				{ 
 				this.state.players.map((player, playerIndex) => 
-				<div key={ playerIndex } className={ `playerContainer ${ player.completed ? "completed" : player.coachProtect ? "protected" : "available"}` } onClick={ () => { this.setState(({ selectedPlayer: player }))} }>
+				<div key={ playerIndex } className={ `playerContainer ${ player.completed ? "completed" : "" } ${ player.coachProtect ? "protected" : "" } ${ !player.completed && !player.coachProtect ? "available" : "" }` } onClick={ () => { this.setState(({ selectedPlayer: player }))} }>
 					<div className="draftNumber">{ player.draftNumber }</div>
 					<div className="playerName">{ player.firstName } { player.lastName }</div>
 					<div className="playerName">{ player.coachProtect }</div>
