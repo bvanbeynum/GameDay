@@ -64,6 +64,86 @@ class UserManage extends Component {
 
 	};
 
+	deleteRequest = requestId => {
+		fetch("/api/usermanagesave", {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ requestaccept: { id: requestId, userId: null } })})
+			.then(response => {
+				if (response.ok) {
+					return response.json();
+				}
+				else {
+					throw Error(response.statusText);
+				}
+			})
+			.then(data => {
+				this.setState(({
+					selectedRequest: null,
+					users: data.users
+						.filter(user => user.firstName)
+						.map(user => ({
+							...user,
+							lastAccessed: user.devices && user.devices.some(device => device.lastAccess) ? 
+								user.devices.reduce((lastAccess, device) => new Date(device.lastAccess) > lastAccess ? new Date(device.lastAccess) : lastAccess, new Date(1900,0,1)) 
+								: null,
+							devices: user.devices ? user.devices.map(device => ({ ...device, lastAccess: new Date(device.lastAccess) })) : null
+						})),
+					requests: data.requests.map(userRequest => ({
+						...userRequest,
+						device: {
+							...userRequest.device,
+							lastAccess: new Date(userRequest.device.lastAccess)
+						}
+					}))
+				}));
+			})
+			.catch(error => {
+				console.log(error);
+				this.setState(({
+					selectedRequest: null,
+					toast: { message: "Error loading player data", type: "error" }
+				}));
+			});
+	};
+
+	acceptRequest = (requestId, userId) => {
+		fetch("/api/usermanagesave", {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ requestaccept: { id: requestId, userId: userId } })})
+			.then(response => {
+				if (response.ok) {
+					return response.json();
+				}
+				else {
+					throw Error(response.statusText);
+				}
+			})
+			.then(data => {
+				this.setState(({
+					selectedRequest: null,
+					users: data.users
+						.filter(user => user.firstName)
+						.map(user => ({
+							...user,
+							lastAccessed: user.devices && user.devices.some(device => device.lastAccess) ? 
+								user.devices.reduce((lastAccess, device) => new Date(device.lastAccess) > lastAccess ? new Date(device.lastAccess) : lastAccess, new Date(1900,0,1)) 
+								: null,
+							devices: user.devices ? user.devices.map(device => ({ ...device, lastAccess: new Date(device.lastAccess) })) : null
+						})),
+					requests: data.requests.map(userRequest => ({
+						...userRequest,
+						device: {
+							...userRequest.device,
+							lastAccess: new Date(userRequest.device.lastAccess)
+						}
+					}))
+				}));
+			})
+			.catch(error => {
+				console.log(error);
+				this.setState(({
+					selectedRequest: null,
+					toast: { message: "Error loading player data", type: "error" }
+				}));
+			});
+	};
+
 	navBack = () => {
 		window.location = "/schedule.html";
 	};
@@ -132,7 +212,7 @@ class UserManage extends Component {
 
 			{
 			this.state.selectedRequest ?
-				<RequestEditPopup userRequest={ this.state.selectedRequest } users={ this.state.users } close={ () => { this.setState({ selectedRequest: null }) }} />
+				<RequestEditPopup userRequest={ this.state.selectedRequest } users={ this.state.users } close={ () => { this.setState({ selectedRequest: null }) }} accept={ this.acceptRequest } delete={ this.deleteRequest } />
 			: ""
 			}
 

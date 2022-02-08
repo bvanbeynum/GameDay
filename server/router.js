@@ -82,6 +82,7 @@ router.get("/api/emaileditload", api.loadState, api.emailEditLoad);
 router.post("/api/emaileditsend", api.loadState, api.emailEditSend);
 
 router.get("/api/usermanageload", api.loadState, api.userManageLoad);
+router.post("/api/usermanagesave", api.loadState, api.userManageSave);
 
 // ************************* Routes
 

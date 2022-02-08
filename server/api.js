@@ -991,7 +991,74 @@ export default {
 
 	userManageSave: (request, response) => {
 		if (request.body.requestaccept) {
-			
+			if (!request.body.requestaccept.id) {
+				response.statusMessage = "Invalid request to accept/delete";
+				response.status(550).json({ error: "Invalid request to accept/delete" });
+				return;				
+			}
+
+			const getOutput = () => {
+				const output = {};
+
+				let userFilter = "";
+				if (!request.user.isAdmin) {
+					userFilter = `&userid=${ request.user.id }`;
+				}
+		
+				client.get(`${ request.protocol }://${ request.headers.host }/data/request?isactive=true${ userFilter }`)
+					.then(clientResponse => {
+						output.requests = clientResponse.body.requests;
+		
+						client.get(`${ request.protocol }://${ request.headers.host }/data/user`)
+							.then(clientResponse => {
+								output.requests = output.requests.map(userRequest => ({
+									...userRequest,
+									user: clientResponse.body.users.find(user => user.id === userRequest.userId)
+								}));
+		
+								if (request.user.isAdmin) {
+										output.users = clientResponse.body.users;
+								}
+								
+								response.status(200).json(output);
+							})
+							.catch(error => response.status(565).json({ error: error.message }));
+					})
+					.catch(error => response.status(564).json({ error: error.message }));
+			}
+
+			client.get(`${ request.protocol }://${ request.headers.host }/data/request?id=${ request.body.requestaccept.id }`)
+				.then(clientResponse => {
+					const userRequest = clientResponse.body.requests[0];
+
+					if (request.body.requestaccept.userId) {
+						client.get(`${ request.protocol }://${ request.headers.host }/data/user?id=${ request.body.requestaccept.userId }`)
+							.then(clientResponse => {
+								const updatedUser = {
+									...clientResponse.body.user[0],
+									devices: [
+										...clientResponse.body.user[0].devices,
+										userRequest.device
+									]
+								}
+
+								client.post(`${ request.protocol }://${ request.headers.host }/data/user`)
+									.send({ user: updatedUser })
+									.then(() => getOutput())
+									.catch(error => response.status(564).json({ error: error.message }));
+							})
+							.catch(error => response.status(563).json({ error: error.message }));
+					}
+					else {
+						userRequest.isActive = false;
+
+						client.post(`${ request.protocol }://${ request.headers.host }/data/request`)
+							.send({ request: userRequest })
+							.then(() => getOutput())
+							.catch(error => response.status(562).json({ error: error.message }));
+					}
+				})
+				.catch(error => response.status(561).json({ error: error.message }));
 		}
 	}
 	
