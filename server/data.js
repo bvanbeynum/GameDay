@@ -466,13 +466,16 @@ export default {
 					prev: playersDb.filter(playerAll => 
 						player.division
 						&& player.firstName
-						&& player.parentEmail
+						&& player.lastName
+						// && player.parentEmail
 						&& playerAll.division
 						&& playerAll.firstName
-						&& playerAll.parentEmail
+						&& playerAll.lastName
+						// && playerAll.parentEmail
 						&& player.division.id !== playerAll.division.id
-						&& player.parentEmail.toLowerCase() == playerAll.parentEmail.toLowerCase()
+						// && player.parentEmail.toLowerCase() == playerAll.parentEmail.toLowerCase()
 						&& player.firstName.toLowerCase() == playerAll.firstName.toLowerCase()
+						&& player.lastName.toLowerCase() == playerAll.lastName.toLowerCase()
 						)
 				}));
 
