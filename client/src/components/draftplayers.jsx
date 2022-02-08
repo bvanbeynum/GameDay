@@ -222,7 +222,7 @@ const DraftPlayers = (props) => {
 							</thead>
 							<tbody>
 							<tr>
-								<td>{ `${ player.division.name } ${ player.division.year } ${ player.division.season } `}</td>
+								<td>{ `${ player.division.year } ${ player.division.season } ${ player.division.name }`}</td>
 								<td>{ player.draftRank }</td>
 								<td>{ player.draftRound }</td>
 								<td>{ player.catching }</td>
@@ -231,9 +231,14 @@ const DraftPlayers = (props) => {
 								<td></td>
 							</tr>
 							{
-							player.prev.map((season, seasonIndex) => 
+							player.prev
+								.sort((seasonA, seasonB) => 
+									seasonA.division.year !== seasonB.division.year ? seasonB.division.year - seasonA.division.year
+									: seasonA.division.season > seasonB.division.season ? 1 : -1
+								)
+								.map((season, seasonIndex) => 
 							<tr key={ seasonIndex }>
-								<td>{ season.division.name } { season.division.year } { season.division.season }</td>
+								<td>{ season.division.year } { season.division.season } { season.division.name }</td>
 								<td>{ season.draftRank }</td>
 								<td>{ season.draftRound }</td>
 								<td>{ season.catching }</td>
