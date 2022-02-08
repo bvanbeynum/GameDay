@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const deviceSchema = new mongoose.Schema({
-	requestDate: Date,
+	lastAccess: Date,
 	agent: String,
 	ip: String,
 	domain: String,
@@ -44,6 +44,7 @@ export default {
 		createdDate: Date,
 		email: String,
 		isAdmin: Boolean,
+		teams: [String],
 		devices: [{ type: deviceSchema }],
 		tokens: [ String ],
 		modules: [{ name: String, url: String }]
@@ -52,6 +53,8 @@ export default {
 	request: mongoose.model("request", {
 		userId: String,
 		isActive: Boolean,
+		name: String,
+		email: String,
 		device: { type: deviceSchema }
 	}),
 

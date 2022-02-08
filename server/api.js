@@ -32,8 +32,10 @@ export default {
 					encryptedToken = jwt.sign({ token: token }, config.jwt),
 					userRequest = {
 						isActive: true,
+						name: request.body.name,
+						email: request.body.email,
 						device: {
-								requestDate: new Date(),
+								lastAccess: new Date(),
 								agent: agent,
 								ip: ipAddress,
 								domain: domain,
@@ -111,7 +113,7 @@ export default {
 					ipAddress = ipAddress.match(/[^:][\d.]+$/g).join("");
 
 					user.devices.push({
-						requestDate: new Date(),
+						lastAccess: new Date(),
 						agent: request.headers["user-agent"],
 						domain: request.headers.host,
 						ip: ipAddress,
@@ -158,6 +160,16 @@ export default {
 						.then(clientResponse => {
 							if (clientResponse.body.users && clientResponse.body.users.length === 1) {
 								request.user = clientResponse.body.users[0];
+								request.user.devices = request.user.devices.map(device => ({
+									...device,
+									lastAccess: tokenData.token === device.token ? new Date() : device.lastAccess
+								}));
+
+								client.post(`${ request.protocol }://${ request.headers.host }/data/user`)
+									.send({ user: request.user })
+									.then(() => {})
+									.catch(() => {});
+
 								next();
 							}
 							else {
@@ -201,10 +213,10 @@ export default {
 	},
 
 	divisionsLoad: (request, response) => {
-		client.get(request.protocol + "://" + request.headers.host + "/data/team?managed=true")
+		client.get(request.protocol + "://" + request.headers.host + "/data/team")
 			.then(clientResponse => {
 				const output = {
-					teams: clientResponse.body.teams
+					teams: clientResponse.body.teams.filter(team => request.user.teams && request.user.teams.some(userTeam => userTeam === team.id))
 				}
 
 				response.status(200).json(output);
@@ -959,19 +971,28 @@ export default {
 			.then(clientResponse => {
 				output.requests = clientResponse.body.requests;
 
-				if (request.user.isAdmin) {
-					client.get(`${ request.protocol }://${ request.headers.host }/data/user`)
-						.then(clientResponse => {
-							output.users = clientResponse.body.users;
-							response.status(200).json(output);
-						})
-						.catch(error => response.status(562).json({ error: error.message }));
-				}
-				else {
-					response.status(200).json(output);
-				}
+				client.get(`${ request.protocol }://${ request.headers.host }/data/user`)
+					.then(clientResponse => {
+						output.requests = output.requests.map(userRequest => ({
+							...userRequest,
+							user: clientResponse.body.users.find(user => user.id === userRequest.userId)
+						}));
+
+						if (request.user.isAdmin) {
+								output.users = clientResponse.body.users;
+						}
+						
+						response.status(200).json(output);
+					})
+					.catch(error => response.status(562).json({ error: error.message }));
 			})
 			.catch(error => response.status(561).json({ error: error.message }));
+	},
+
+	userManageSave: (request, response) => {
+		if (request.body.requestaccept) {
+			
+		}
 	}
 	
 }
