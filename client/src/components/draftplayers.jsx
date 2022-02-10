@@ -12,11 +12,11 @@ const DraftPlayers = (props) => {
 			<table className="playerTable">
 			<thead>
 			<tr>
-				<th className={ playerSort === "draftRank" ? "draftSorted" : "" } onClick={ () => { setPlayerSort("draftRank"); setSortDirection(sortDirection * -1); }}>Rnk</th>
-				<th className={ playerSort === "brettRank" ? "draftSorted" : "" } onClick={ () => { setPlayerSort("brettRank"); setSortDirection(sortDirection * -1); }}>BvB</th>
-				<th className={ playerSort === "catching" ? "draftSorted" : "" } onClick={ () => { setPlayerSort("catching"); setSortDirection(sortDirection * -1); }}>C</th>
-				<th className={ playerSort === "draftNumber" ? "draftSorted" : "" } onClick={ () => { setPlayerSort("draftNumber"); setSortDirection(sortDirection * -1); }}>#</th>
-				<th className={ playerSort === "firstName" ? "draftSorted" : "" } onClick={ () => { setPlayerSort("firstName"); setSortDirection(sortDirection * -1); }}>Name</th>
+				<th className={ playerSort === "draftRank" ? "draftSorted" : "" } onClick={ () => { playerSort === "draftRank" ? setSortDirection(sortDirection * -1) : setSortDirection(1); setPlayerSort("draftRank");  }}>Rnk</th>
+				<th className={ playerSort === "brettRank" ? "draftSorted" : "" } onClick={ () => { playerSort === "brettRank" ? setSortDirection(sortDirection * -1) : setSortDirection(1); setPlayerSort("brettRank"); }}>BvB</th>
+				<th className={ playerSort === "catching" ? "draftSorted" : "" } onClick={ () => { playerSort === "catching" ? setSortDirection(sortDirection * -1) : setSortDirection(-1); setPlayerSort("catching"); }}>C</th>
+				<th className={ playerSort === "draftNumber" ? "draftSorted" : "" } onClick={ () => { playerSort === "draftNumber" ? setSortDirection(sortDirection * -1) : setSortDirection(1); setPlayerSort("draftNumber"); }}>#</th>
+				<th className={ playerSort === "firstName" ? "draftSorted" : "" } onClick={ () => { playerSort === "firstName" ? setSortDirection(sortDirection * -1) : setSortDirection(1); setPlayerSort("firstName"); }}>Name</th>
 				<th>Notes</th>
 			</tr>
 			</thead>
@@ -35,14 +35,14 @@ const DraftPlayers = (props) => {
 					<td>
 					{
 					player.draftRank ?
-						<div ng-show="player.draftRank">
+						<div>
 							{ `${ player.draftRound }/${ player.draftRank }` }
 						</div>
 					: ""
 					}
 					</td>
 					<td>
-						<div>{ player.brettRank }</div>
+						<div className={ player.height === 1 ? "negative" : player.height === 3 ? "draftAvailable" : "" }>{ player.brettRank }</div>
 						
 						<div>
 						{
@@ -65,7 +65,7 @@ const DraftPlayers = (props) => {
 						
 						{
 						player.evalCatch ?
-						<div ng-show="player.evalCatch">
+						<div>
 							{
 							player.catching < player.evalCatch ?
 							<span className="positive">
@@ -74,7 +74,7 @@ const DraftPlayers = (props) => {
 							: ""
 							}{
 							player.catching > player.evalCatch ?
-							<span ng-show="player.catching > player.evalCatch" className="negative">
+							<span className="negative">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>{ (player.evalCatch - player.catching) }
 							</span>
 							: "" 
@@ -90,7 +90,7 @@ const DraftPlayers = (props) => {
 						</div>
 						{
 						player.team ?
-						<div ng-show="player.draftTeam">
+						<div>
 							{ player.team.coach }
 						</div>
 						: ""
@@ -177,7 +177,7 @@ const DraftPlayers = (props) => {
 								<td>
 								{
 								player.hands == -1 ?
-									<span ng-show="player.hands == -1" className="negative">
+									<span className="negative">
 										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3 0-.72.58-1.3 1.3-1.3.72 0 1.3.58 1.3 1.3 0 .72-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z"/></svg>
 									</span>
 								: player.hands == 1 ?

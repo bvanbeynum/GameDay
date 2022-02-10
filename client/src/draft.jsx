@@ -45,7 +45,7 @@ class Draft extends Component {
 					isLoading: false,
 					page: "team",
 					user: data.user,
-					players: data.players,
+					players: data.players.map(player => ({ ...player, age: ((Date.now() - (new Date(player.dateOfBirth))) / 1000 / 60 / 60 / 24 / 365).toFixed(1)})),
 					teams: data.teams.map(team => ({ ...team, picks: [], draftRound: team.draftRound || "" }))
 				}, () => {
 					this.refreshDraft(this.state.teams, this.state.players, this.state.draftVersion);
