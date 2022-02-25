@@ -355,7 +355,7 @@ class PlayBook extends Component {
 								
 								<div className="playsheetPlay">
 									<Play play={ play } />
-									<div className="playName">{ `${ play.formation } ${ play.name } Left` }</div>
+									<div className="playName">{ `${ play.formation } ${ play.name } Right` }</div>
 								</div>
 							</React.Fragment>
 							)

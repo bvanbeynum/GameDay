@@ -219,7 +219,7 @@ table {
 	height: 75px;
 }
 
-.playCell .flipped svg {
+.flipped svg {
 	transform: scale(-1,1);
 }
 
