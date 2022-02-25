@@ -15,7 +15,6 @@
 	border-bottom: 1px solid rgb(128 128 128);
 	padding: 0px 10px;
 	height: 50px;
-	cursor: pointer;
 }
 
 .playBook input[type="text"] {
@@ -31,11 +30,17 @@
 	font-size: 14px;
 	color: rgb(78 78 78);
 	font-weight: bold;
+	cursor: pointer;
+}
+
+.playBookName.edit {
+	cursor: default;
 }
 
 .playBookEdit {
 	display: flex;
 	align-items: center;
+	cursor: pointer;
 }
 
 .playBook svg {

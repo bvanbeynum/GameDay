@@ -190,7 +190,7 @@ class PlayBook extends Component {
 				<div className="playBooksContainer">
 
 					<div className="playBook">
-						<div className="playBookName" onClick={ () => { this.setState({ newPlaybook: { division: this.state.user.division, name: "" }}) }}>
+						<div className={ `playBookName ${ this.state.newPlaybook ? "edit" : "" }` } onClick={ () => { if (!this.state.newPlaybook) { this.setState({ newPlaybook: { division: this.state.user.division, name: "" }}) } }}>
 							{
 							this.state.newPlaybook ?
 								<input type="text" value={ this.state.newPlaybook.name } onChange={ event => this.setState(({ newPlaybook }) => ({ newPlaybook: { ...newPlaybook, name: event.target.value }})) } />
@@ -216,7 +216,7 @@ class PlayBook extends Component {
 					{
 					this.state.playBooks.map((playBook, playBookIndex) => (
 					<div key={ playBook.id } className="playBook">
-						<div className="playBookName" onClick={ () => { this.setState({ selectedPlayBook: playBook }) }}>
+						<div className={ `playBookName ${ this.state.editPlayBook === playBook.id ? "edit" : "" }` } onClick={ () => { if (this.state.editPlayBook !== playBook.id) { this.setState({ selectedPlayBook: playBook }) } }}>
 							<div>
 							{
 							this.state.editPlayBook === playBook.id ?
