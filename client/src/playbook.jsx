@@ -55,7 +55,19 @@ class PlayBook extends Component {
 				this.setState({
 					isLoading: false,
 					user: data.user,
-					playBooks: data.playBooks
+					playBooks: data.playBooks.map(playBook => ({
+						...playBook,
+						plays: playBook.plays
+							.sort((playA, playB) => 
+								(playA.sort || 999) > (playB.sort || 999) ? 1
+								: (playA.sort || 999) < (playB.sort || 999) ? -1
+								: playA.formation > playB.formation ? 1
+								: playA.formation < playB.formation ? -1
+								: playA.name > playB.name ? 1
+								: -1
+							)
+							.map((play, playIndex) => ({ ...play, sort: playIndex }))
+					}))
 				});
 			})
 			.catch(error => {
@@ -271,7 +283,7 @@ class PlayBook extends Component {
 									<div className="playActions">
 										<div className="playAction">
 											{
-											playIndex < this.state.selectedPlayBook.plays.length ?
+											playIndex < this.state.selectedPlayBook.plays.length - 1 ?
 											// Move down
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, 1) }>
 												<path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/>
