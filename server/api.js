@@ -164,8 +164,9 @@ export default {
 									...device,
 									lastAccess: tokenData.token === device.token ? new Date() : device.lastAccess
 								}));
+								request.serverPath = `${ request.protocol }://${ request.headers.host }`;
 
-								client.post(`${ request.protocol }://${ request.headers.host }/data/user`)
+								client.post(`${ request.serverPath }/data/user`)
 									.send({ user: request.user })
 									.then(() => {})
 									.catch(() => {});
@@ -1059,6 +1060,138 @@ export default {
 					}
 				})
 				.catch(error => response.status(561).json({ error: error.message }));
+		}
+	},
+
+	playBookLoad: (request, response) => {
+		const output = {
+			user: (
+				({ firstName, lastName, modules, isAdmin }) => ({ firstName, lastName, modules, isAdmin, division: request.division, team: request.team })
+				)(request.user)
+		};
+
+		client.get(`${ request.serverPath }/data/playbook?divisionid=${ request.division.id }`)
+			.then(clientResponse => {
+				output.playBooks = clientResponse.body.playBooks;
+
+				client.get(`${ request.serverPath }/data/play?divisionid=${ request.division.id }`)
+					.then(clientResponse => {
+						output.playBooks = output.playBooks.map(playBook => ({
+							...playBook,
+							plays: clientResponse.body.plays
+								.filter(play => play.playBookId === playBook.id)
+								.map(({ playBookIds, ...play }) => ({ ...play }))
+						}));
+
+						response.status(200).json(output);
+					})
+					.catch(error => response.status(561).json({ error: error.message }));
+			})
+			.catch(error => response.status(560).json({ error: error.message }));
+	},
+
+	playBookSave: (request, response) => {
+		const updates = { queue: 0, complete: 0, errors: [] };
+
+		const updateComplete = error => {
+			updates.complete++;
+			console.log(`${ updates.queue } / ${ updates.complete } - ${ error ? error.message : "" }`);
+			
+			if (error) {
+				updates.errors.push(error.message);
+			}
+
+			if (updates.queue === updates.complete) {
+				response.status(200).json({ updateCount: updates.complete, errors: updates.errors });
+			}
+		}
+
+		if (request.body.playbook) {
+			client.post(`${ request.serverPath }/data/playbook`)
+				.send({ playbook: request.body.playbook })
+				.then(() => {
+
+					client.get(`${ request.serverPath }/data/playbook?divisionid=${ request.division.id }`)
+						.then(clientResponse => {
+							const output = { playBooks: clientResponse.body.playBooks };
+			
+							client.get(`${ request.serverPath }/data/play?divisionid=${ request.division.id }`)
+								.then(clientResponse => {
+									output.playBooks = output.playBooks.map(playBook => ({
+										...playBook,
+										plays: clientResponse.body.plays
+											.filter(play => play.playBookId === playBook.id)
+											.map(({ playBookIds, ...play }) => ({ ...play }))
+									}));
+			
+									response.status(200).json(output);
+								})
+								.catch(error => response.status(561).json({ error: error.message }));
+						})
+						.catch(error => response.status(562).json({ error: error.message }));
+					
+				})
+				.catch(error => response.status(560).json({ error: error.message }));
+		}
+
+		if (request.body.plays && request.body.plays.length > 0) {
+			request.body.plays.forEach(play => {
+				updates.queue++;
+
+				client.get(`${ request.serverPath }/data/play?id=${ play.id }`)
+					.then(clientResponse => 
+						client.post(`${ request.serverPath }/data/play`)
+							.send({ play: { ...clientResponse.body.plays[0], sort: play.sort } })
+							.then(() => updateComplete())
+							.catch(error => updateComplete(error))
+						)
+					.catch(error => updateComplete(error));
+			});
+			
+		}
+	},
+
+	playEditorLoad: (request, response) => {
+		const output = {
+			user: (
+				({ firstName, lastName, modules, isAdmin }) => ({ firstName, lastName, modules, isAdmin, division: request.division, team: request.team })
+				)(request.user)
+		};
+
+		client.get(`${ request.serverPath }/data/playbook?divisionid=${ request.division.id }`)
+			.then(clientResponse => {
+				output.playBooks = clientResponse.body.playBooks;
+
+				if (request.query.id) {
+					client.get(`${ request.serverPath }/data/play?id=${ request.query.id }`)
+						.then(clientResponse => {
+							output.play = clientResponse.body.plays[0];
+
+							response.status(200).json(output);
+						})
+						.catch(error => response.status(561).json({ error: error.message }));
+				}
+				else {
+					response.status(200).json(output);
+				}
+			})
+			.catch(error => response.status(560).json({ error: error.message }));
+	},
+
+	playEditorSave: (request, response) => {
+		if (request.query.deleteid) {
+			client.delete(`${ request.serverPath }/data/play?id=${ request.query.deleteid }`)
+				.then(() => response.status(200).json({ status: "ok" }))
+				.catch(error => response.status(560).json({ error: error.message }));
+		}
+		else if (request.body.play) {
+			client.post(`${ request.serverPath }/data/play`)
+				.send({ play: request.body.play })
+				.then(clientResponse => response.status(200).json({ id: clientResponse.body.id }))
+				.catch(error => response.status(561).json({ error: error.message }));
+		}
+		else {
+			response.status(200).json({ status: "nothing to update "});
 		}
 	}
 	

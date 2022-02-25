@@ -52,3 +52,8 @@
 	fill: rgb(159 159 159);
 	cursor: default;
 }
+
+.emailTo {
+	display: flex;
+	flex-direction: column;
+}

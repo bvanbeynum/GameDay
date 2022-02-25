@@ -274,10 +274,13 @@ class EmailEdit extends Component {
 						</div>
 
 						<div className="popupFormRow">
-						{
-						this.state.emailTo ? this.state.emailTo.map((member, memberIndex) => (
-							<span key={ memberIndex }>{ `${ member.name } <${ member.email }>;` }</span>
-						)) : "" }
+							<div className="emailTo">
+							{
+							this.state.emailTo ? this.state.emailTo.map((member, memberIndex) => (
+								<span key={ memberIndex }>{ `${ member.name } <${ member.email }>;` }</span>
+							)) : "" 
+							}
+							</div>
 						</div>
 					</div>
 				</div>

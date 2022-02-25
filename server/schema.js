@@ -164,6 +164,16 @@ export default {
 		field: String,
 		gameDivision: { type: {}, select: false }
 	}),
+
+	playBook: mongoose.model("playbook", {
+		division: {
+			id: String,
+			name: String,
+			year: Number,
+			season: String
+		},
+		name: String
+	}),
 	
 	play: mongoose.model("play", {
 		division: {
@@ -177,6 +187,7 @@ export default {
 		field: String,
 		rating: Number,
 		sort: Number,
+		playBookId: String,
 		players: [ playerSchema ]
 	}),
 

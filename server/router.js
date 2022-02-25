@@ -37,6 +37,10 @@ router.get("/data/player", data.playerGet);
 router.post("/data/player", data.playerSave);
 router.delete("/data/player", data.playerDelete);
 
+router.get("/data/playbook", data.playBookGet);
+router.post("/data/playbook", data.playBookSave);
+router.delete("/data/playbook", data.playBookDelete);
+
 router.get("/data/play", data.playGet);
 router.post("/data/play", data.playSave);
 router.delete("/data/play", data.playDelete);
@@ -83,6 +87,12 @@ router.post("/api/emaileditsend", api.loadState, api.emailEditSend);
 
 router.get("/api/usermanageload", api.loadState, api.userManageLoad);
 router.post("/api/usermanagesave", api.loadState, api.userManageSave);
+
+router.get("/api/playbookload", api.loadState, api.playBookLoad);
+router.post("/api/playbooksave", api.loadState, api.playBookSave);
+
+router.get("/api/playeditorload", api.loadState, api.playEditorLoad);
+router.post("/api/playeditorsave", api.loadState, api.playEditorSave);
 
 // ************************* Routes
 

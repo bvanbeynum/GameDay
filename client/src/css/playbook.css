@@ -1,0 +1,229 @@
+.playBookPage {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.playBooksContainer {
+	display: flex;
+	flex-direction: column;
+}
+
+.playBook {
+	display: flex;
+	border-bottom: 1px solid rgb(128 128 128);
+	padding: 0px 10px;
+	height: 50px;
+	cursor: pointer;
+}
+
+.playBook input[type="text"] {
+	border: none;
+	border-bottom: 1px solid rgb(118 118 118);
+	outline: none;
+}
+
+.playBookName {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	font-size: 14px;
+	color: rgb(78 78 78);
+	font-weight: bold;
+}
+
+.playBookEdit {
+	display: flex;
+	align-items: center;
+}
+
+.playBook svg {
+	width: 24px;
+	cursor: pointer;
+}
+
+.playBookContainer {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.playBookContainer h2 {
+	color: rgb(78 78 78);
+	margin-left: 10px;
+}
+
+.playsContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin-bottom: 100px;
+}
+
+.playContainer {
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 2px 1px -1px rgb(0 0 0 / 12%);
+	outline: none;
+	margin: 20px 10px;
+}
+
+.play {
+	outline: none;
+	width: 110px;
+	height: 110px;
+	cursor: pointer;
+}
+
+.playInfoContainer {
+	display: flex;
+	flex-direction: column;
+	background-color: rgb(234 234 234);
+	border-top: 1px solid rgb(196 196 196);
+}
+
+.playInfo {
+	text-align: center;
+	font-size: .75em;
+}
+
+.playActions {
+	display: flex;
+	justify-content: space-between;
+}
+
+.playAction {
+	width: 24px;
+	cursor: pointer;
+}
+
+.playBookActions {
+	display: flex;
+	justify-content: space-around;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: rgb(240 240 240);
+	align-items: center;
+	padding: 4px 5px;
+	height: 40px;
+	border-top: 1px solid rgb(150 150 150);
+}
+
+.playBookAction.selected {
+	background-color: rgb(253 253 150);
+	border: 2px solid rgb(251 210 135);
+}
+
+.playBookAction {
+	width: 36px;
+	cursor: pointer;
+}
+
+.play line {
+	stroke: rgb(0 0 0);
+	stroke-width: 2px;
+}
+
+.play circle {
+	cursor: pointer;
+	stroke-width: 2px;
+	outline: none;
+}
+
+.play path {
+	stroke-width: 3px;
+	fill: none;
+}
+
+.play path.run {
+	stroke-dasharray: 7;
+}
+
+.playSheetContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+	padding: 0px 70px;
+	justify-content: space-evenly;
+}
+
+.playsheetPlays {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.playSheetContainer table.playerColor {
+	border-collapse: collapse;
+}
+
+.playsheetPlay {
+	margin: 0px 15px;
+}
+
+table {
+	font-size: 12px;
+}
+
+.playsheetPlays .playName {
+	font-size: 9px;
+}
+
+.playerColor th {
+	color: rgb(255 255 255);
+}
+
+.playerColor th:nth-child(1), .playerColor td:nth-child(1) {
+	border-left: 1px solid rgb(200 200 200);
+	border-top: 1px solid rgb(200 200 200);
+	color: black;
+}
+
+.playerColor th, .playerColor td {
+	padding: 8px 4px;
+	border-bottom: 1px solid rgb(200 200 200);
+}
+
+.wristCoachContainer {
+	display: flex;
+	flex: 1;
+	align-items: center;
+}
+
+.wristCoach {
+	flex: 1;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.playCell {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid rgb(0 0 0);
+	width: 100px;
+	height: 90px;
+}
+
+.playCell svg {
+	width: 100px;
+	height: 75px;
+}
+
+.playCell .flipped svg {
+	transform: scale(-1,1);
+}
+
+.playCell .playName {
+	font-size: 9px;
+}
+
+@media print {
+	.toolbar, .playBookActions, h2 {
+		display: none;
+	}
+}

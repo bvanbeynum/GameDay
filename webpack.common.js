@@ -10,7 +10,9 @@ export default {
 		draft: "./client/src/draft.jsx",
 		emailManage: "./client/src/emailmanage.jsx",
 		emailEdit: "./client/src/emailedit.jsx",
-		userManage: "./client/src/usermanage.jsx"
+		userManage: "./client/src/usermanage.jsx",
+		playBook: "./client/src/playbook.jsx",
+		playEditor: "./client/src/playeditor.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -101,6 +103,26 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "userManage" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "playbook.html",
+			title: "Game Day - Playbook",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "playBook" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "playeditor.html",
+			title: "Game Day - Play Editor",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "playEditor" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],

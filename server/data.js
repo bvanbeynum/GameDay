@@ -544,6 +544,89 @@ export default {
 			});
 	},
 
+	playBookGet: (request, response) => {
+		const filter = {};
+
+		if (request.query.id) {
+			filter._id = request.query.id;
+		}
+		if (request.query.divisionid) {
+			filter["division.id"] = request.query.divisionid;
+		}
+
+		data.playBook.find(filter)
+			.lean()
+			.exec()
+			.then(playBooksDb => {
+				const output = {
+					playBooks: playBooksDb.map(({ _id, __v, ...playBook }) => ({ id: _id, ...playBook }))
+				};
+
+				response.status(200).json(output);
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+
+	playBookSave: (request, response) => {
+		if (!request.body.playbook) {
+			response.status(550).json({ error: "Missing object to save" });
+			return;
+		}
+
+		const playBookSave = request.body.playbook;
+
+		if (playBookSave.id) {
+			data.playBook.findById(playBookSave.id)
+				.exec()
+				.then(playBookDb => {
+					if (!playBookDb) {
+						throw new Error("Playbook not found");
+					}
+
+					Object.keys(playBookSave).forEach(field => {
+						if (field != "id") {
+							playBookDb[field] = playBookSave[field];
+						}
+					})
+
+					return playBookDb.save();
+				})
+				.then(playBookDb => {
+					response.status(200).json({ id: playBookDb["_id"] });
+				})
+				.catch(error => {
+					response.status(561).json({ error: error.message });
+				});
+		}
+		else {
+			new data.playBook(playBookSave)
+				.save()
+				.then(playBookDb => {
+					response.status(200).json({ id: playBookDb["_id"] });
+				})
+				.catch(error => {
+					response.status(562).json({ error: error.message });
+				})
+		}
+	},
+	
+	playBookDelete: (request, response) => {
+		if (!request.query.id) {
+			response.status(550).json({ error: "Missing ID to delete" });
+			return;
+		}
+
+		data.playBook.deleteOne({ _id: request.query.id })
+			.then(() => {
+				response.status(200).json({ status: "ok" });
+			})
+			.catch(error => {
+				response.status(560).json({ error: error.message });
+			});
+	},
+	
 	playGet: (request, response) => {
 		const filter = {};
 
@@ -626,7 +709,6 @@ export default {
 				response.status(560).json({ error: error.message });
 			});
 	},
-
 	
 	emailListGet: (request, response) => {
 		const filter = {};

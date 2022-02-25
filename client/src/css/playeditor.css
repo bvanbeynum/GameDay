@@ -1,0 +1,90 @@
+.editorPage {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	width: 100%;
+}
+
+.playName {
+	color: rgb(94 94 94);
+	margin-left: 10px;
+}
+
+.playContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex: 1;
+	margin: 0px 5px 50px 5px;
+	max-width: 600px;
+	min-width: 400px;
+}
+
+.play {
+	background-color: rgb(204 232 204);
+	outline: none;
+}
+
+.controlContainer {
+	display: flex;
+	align-items: center;
+	background-color: rgb(230 230 230);
+}
+
+.controlButton {
+	margin: 10px;
+	cursor: pointer;
+	outline: none;
+	width: 24px;
+}
+
+.controlSelected {
+	background-color: rgb(255 255 0);
+}
+
+.actionContainer {
+	display: flex;
+	justify-content: space-around;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: rgb(240 240 240);
+	align-items: center;
+	padding: 4px 5px;
+	height: 40px;
+	border-top: 1px solid rgb(150 150 150);
+}
+
+.action {
+	width: 36px;
+	cursor: pointer;
+}
+
+.play line {
+	stroke: rgb(0 0 0);
+	stroke-width: 2px;
+}
+
+.play circle {
+	cursor: pointer;
+	stroke-width: 2px;
+	outline: none;
+}
+
+.play path {
+	stroke-width: 3px;
+	fill: none;
+}
+
+.play path.run {
+	stroke-dasharray: 7;
+}
+
+.play circle.playerSelected {
+	fill: rgb(255 255 0);
+}
+
+.play circle.routeSelected {
+	stroke: rgb(255 255 0);
+}
