@@ -112,7 +112,7 @@ class PlayEditor extends Component {
 	selectPlayer = playerIndex => {
 		this.setState(({ play }) => ({ 
 			selectedPlayerIndex: playerIndex,
-			selectedColor: play.players[playerIndex].color
+			selectedColor: playerIndex ? play.players[playerIndex].color : "red"
 		}))
 	};
 
@@ -136,7 +136,7 @@ class PlayEditor extends Component {
 				this.setState(({ play, selectedPlayerIndex }) => ({
 					play: {
 						...play,
-						players: play.players.map((player, playerIndex) => ({ ...player, route: playerIndex !== selectedPlayerIndex ? player.route : null }))
+						players: play.players.map((player, playerIndex) => ({ ...player, route: playerIndex !== selectedPlayerIndex ? player.route : [] }))
 					}
 				}));
 			}
