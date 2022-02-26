@@ -52,6 +52,8 @@ class PlayBook extends Component {
 				}
 			})
 			.then(data => {
+				console.log(data.playBooks[1].plays);
+
 				this.setState({
 					isLoading: false,
 					user: data.user,
@@ -59,8 +61,8 @@ class PlayBook extends Component {
 						...playBook,
 						plays: playBook.plays
 							.sort((playA, playB) => 
-								(playA.sort || 999) > (playB.sort || 999) ? 1
-								: (playA.sort || 999) < (playB.sort || 999) ? -1
+								playA.sort > playB.sort ? 1
+								: playA.sort < playB.sort ? -1
 								: playA.formation > playB.formation ? 1
 								: playA.formation < playB.formation ? -1
 								: playA.name > playB.name ? 1
