@@ -90,7 +90,7 @@ h2 svg {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	margin-bottom: 100px;
+	margin-bottom: 80px;
 }
 
 .playContainer {
@@ -174,10 +174,7 @@ h2 svg {
 
 .playSheetContainer {
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	flex: 1;
-	padding: 0px 70px;
+	align-items: start;
 	justify-content: space-evenly;
 }
 
@@ -187,35 +184,40 @@ h2 svg {
 	justify-content: center;
 }
 
-.playSheetContainer table.playerColor {
-	border-collapse: collapse;
+.playsheetSection:nth-child(1) {
+	width: 570px;
+}
+
+.playsheetSection:nth-child(2) {
+	width: 100px;
 }
 
 .playsheetPlay {
 	margin: 0px 15px;
 }
 
-table {
-	font-size: 12px;
-}
-
 .playsheetPlays .playName {
 	font-size: 9px;
 }
 
-.playerColor th {
-	color: rgb(255 255 255);
+.depthChartContainer {
+	display: flex;
+	justify-content: space-evenly;
+	margin-bottom: 100px;
 }
 
-.playerColor th:nth-child(1), .playerColor td:nth-child(1) {
-	border-left: 1px solid rgb(200 200 200);
-	border-top: 1px solid rgb(200 200 200);
-	color: black;
+.depthChartContainer th, .depthChartContainer td {
+	padding: 3px 10px;
 }
 
-.playerColor th, .playerColor td {
-	padding: 8px 4px;
-	border-bottom: 1px solid rgb(200 200 200);
+.depthChartContainer th {
+	text-align: left;
+	border-bottom: 2px solid rgb(193 193 193);
+}
+
+.depthChartContainer td {
+	border-bottom: 1px solid rgb(193 193 193);
+	color: white;
 }
 
 .wristCoachContainer {
@@ -257,5 +259,9 @@ table {
 @media print {
 	.toolbar, .playBookActions, h2 {
 		display: none;
+	}
+
+	.depthChartContainer {
+		margin-bottom: 0px;
 	}
 }

@@ -28,6 +28,8 @@ class PlayBook extends Component {
 			return;
 		}
 
+		const queryString = new Proxy(new URLSearchParams(window.location.search), { get: (searchParams, prop) => searchParams.get(prop) });
+		
 		const head = document.head || document.getElementsByTagName("head")[0],
 			style = document.createElement("style");
 	
@@ -65,6 +67,10 @@ class PlayBook extends Component {
 						}))
 						: []
 					}))
+				}, () => {
+					if (queryString.playbookid) {
+						this.setState({ selectedPlayBook: this.state.playBooks.find(playBook => playBook.id === queryString.playbookid) });
+					}
 				});
 				
 			})
@@ -259,15 +265,67 @@ class PlayBook extends Component {
 			: 
 			<div className="playBookPage">
 				{
-				this.state.selectedPlayBook ?
-				
+				this.state.allPlays ?
+					<>
+					<div className="playBookHeader">
+						<h2>All Plays</h2>
+						
+						<select value={ this.state.filterPlayBookId } onChange={ event => { this.setState({ filterPlayBookId: event.target.value }) }}>
+							<option value="">Filter Playbook</option>
+							{
+							this.state.playBooks.map(playBook =>
+								<option key={ playBook.id } value={ playBook.id }>{ playBook.name }</option>
+							)
+							}
+						</select>
+					</div>
+					
+					<div className="playsContainer">
+						{
+						this.state.plays
+						.filter(play => !this.state.filterPlayBookId || this.state.playBooks.find(playBook => playBook.id === this.state.filterPlayBookId).plays.some(playBookPlay => playBookPlay.id === play.id))
+						.sort((playA, playB) => playA.formation > playB.formation ? 1
+							: playA.formation < playB.formation ? -1
+							: playA.name > playB.name ? 1
+							: -1
+						)
+						.map((play) =>
+						
+						<div key={ play.id } className="playContainer">
+							<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }` }}>
+								<Play play={ play } />
+							</div>
+
+							<div className="playInfoContainer">
+								<div className="playInfo">{ `${ play.formation } ${ play.name }` }</div>
+							</div>
+						</div>
+						)
+						}
+					</div>
+
+					<div className="playBookActions">
+						<div className="playBookAction" onClick={ () => { window.location = "/playeditor.html" }}>
+							{/* New */}
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+								<path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+							</svg>
+						</div>
+					</div>
+					</>
+
+				: this.state.selectedPlayBook ?
+					<div>
+					{
 					this.state.printMode === "wrist" ?
 	
 					<div className="wristCoachContainer">
 			
 						<div className="wristCoach">
 							{
-							this.state.selectedPlayBook.plays.map(play => 
+							this.state.selectedPlayBook.plays
+							.filter(play => play.strategy === "offense")
+							.map(play => 
 							<React.Fragment key={ play.id }>
 								<div className="playCell flipped">
 									<Play play={ play } />
@@ -285,7 +343,9 @@ class PlayBook extends Component {
 						
 						<div className="wristCoach">
 							{
-							this.state.selectedPlayBook.plays.map(play => 
+							this.state.selectedPlayBook.plays
+							.filter(play => play.strategy === "offense")
+							.map(play => 
 							<React.Fragment key={ play.id }>
 								<div className="playCell flipped">
 									<Play play={ play } />
@@ -304,101 +364,235 @@ class PlayBook extends Component {
 					</div>
 
 					: this.state.printMode === "playsheet" ?
+					<>
 
 					<div className="playSheetContainer">
 
-						<div className="playsheetPlays">
+						<div className="playsheetSection">
+							<h4>Offense</h4>
+
+							<div className="playsheetPlays">
+								{
+								this.state.selectedPlayBook.plays
+								.filter(play => play.strategy === "offense")
+								.map(play => 
+								<React.Fragment key={ play.id }>
+									<div className="playsheetPlay flipped">
+										<Play play={ play } />
+										<div className="playName">{ `${ play.formation } ${ play.name } Left` }</div>
+									</div>
+									
+									<div className="playsheetPlay">
+										<Play play={ play } />
+										<div className="playName">{ `${ play.formation } ${ play.name } Right` }</div>
+									</div>
+								</React.Fragment>
+								)
+								}
+							</div>
+						</div>
+						
+						<div className="playsheetSection">
+							<h4>Defense</h4>
+
+							<div className="playsheetPlays">
+								{
+								this.state.selectedPlayBook.plays
+								.filter(play => play.strategy === "defense")
+								.map(play => 
+									<div key={ play.id } className="playsheetPlay">
+										<Play play={ play } />
+										<div className="playName">{ `${ play.formation } ${ play.name }` }</div>
+									</div>
+								)
+								}
+							</div>
+						</div>
+
+					</div>
+
+					<div className="depthChartContainer">
+						<div>
+							<h4>Offense</h4>
+
+							<table>
+							<thead>
+							<tr>
+								<th>Color</th>
+								<th>Group 1</th>
+								<th>Group 2</th>
+							</tr>
+							</thead>
+							<tbody>
 							{
-							this.state.selectedPlayBook.plays.map(play => 
-							<React.Fragment key={ play.id }>
-								<div className="playsheetPlay flipped">
+							this.state.selectedPlayBook.offense.positions
+								.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
+								.map((position, positionIndex) =>
+							<tr key={ positionIndex } style={{ backgroundColor: position.color }}>
+								<td>{ position.color }</td>
+								<td>{ position.group1 }</td>
+								<td>{ position.group2 }</td>
+							</tr>
+							)
+							}
+							</tbody>
+							</table>
+						</div>
+						
+						<div>
+							<h4>Defense</h4>
+							<table>
+							<thead>
+							<tr>
+								<th>Color</th>
+								<th>Group 1</th>
+								<th>Group 2</th>
+							</tr>
+							</thead>
+							<tbody>
+							{
+							this.state.selectedPlayBook.defense.positions
+								.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
+								.map((position, positionIndex) =>
+							<tr key={ positionIndex } style={{ backgroundColor: position.color }}>
+								<td>{ position.color }</td>
+								<td>{ position.group1 }</td>
+								<td>{ position.group2 }</td>
+							</tr>
+							)
+							}
+							</tbody>
+							</table>
+						</div>
+					</div>
+					</>
+					: !this.state.printMode ?
+					
+					<>
+						<div className="playBookHeader">
+							{
+							this.state.editPlayBook ?
+							<div className="playbookEdit">
+								<input type="text" value={ this.state.playBookName } onChange={ event => { this.setState(({ playBookName }) => ({ playBookName: event.target.value })) }} />
+
+								{/* Yes */}
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ this.savePlayBook }>
+									<path d="M2 20h2c.55 0 1-.45 1-1v-9c0-.55-.45-1-1-1H2v11zm19.83-7.12c.11-.25.17-.52.17-.8V11c0-1.1-.9-2-2-2h-5.5l.92-4.65c.05-.22.02-.46-.08-.66-.23-.45-.52-.86-.88-1.22L14 2 7.59 8.41C7.21 8.79 7 9.3 7 9.83v7.84C7 18.95 8.05 20 9.34 20h8.11c.7 0 1.36-.37 1.72-.97l2.66-6.15z"></path>
+								</svg>
+
+								{/* No */}
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => { this.setState({ playBookName: null, editPlayBook: null }) }}>
+									<path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"></path>
+								</svg>
+							</div>
+							:
+							<h2>
+								{ this.state.selectedPlayBook.name }
+								{/* Edit */}
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => { this.setState({ editPlayBook: this.state.selectedPlayBook, playBookName: this.state.selectedPlayBook.name }) }}>
+									<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+								</svg>
+							</h2>
+							}
+						</div>
+
+						<h4>Offense</h4>
+						
+						<div className="playsContainer">
+							{
+							this.state.selectedPlayBook.plays
+							.filter(play => play.strategy === "offense")
+							.sort((playA, playB) => playA.sort - playB.sort)
+							.map((play, playIndex) =>
+							
+							<div key={ play.id } className="playContainer">
+								<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }&playbookid=${ this.state.selectedPlayBook.id }` }}>
 									<Play play={ play } />
-									<div className="playName">{ `${ play.formation } ${ play.name } Left` }</div>
 								</div>
-								
-								<div className="playsheetPlay">
-									<Play play={ play } />
-									<div className="playName">{ `${ play.formation } ${ play.name } Right` }</div>
+
+								<div className="playInfoContainer">
+									<div className="playInfo">{ `${ play.formation } ${ play.name }` }</div>
+									
+									<div className="playActions">
+										<div className="playAction">
+											{
+											playIndex > 0 ?
+											// Move up
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, -1) }>
+												<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/>
+											</svg>
+											: ""
+											}
+										</div>
+										
+										<div className="playAction">
+											{
+											playIndex < this.state.selectedPlayBook.plays.length - 1 ?
+											// Move down
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, 1) }>
+												<path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/>
+												<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/>
+											</svg>
+											: ""
+											}
+										</div>
+									</div>
 								</div>
-							</React.Fragment>
+							</div>
 							)
 							}
 						</div>
 						
-					</div>
-					:
-					
-					<>
-					<div className="playBookHeader">
-						{
-						this.state.editPlayBook ?
-						<div className="playbookEdit">
-							<input type="text" value={ this.state.playBookName } onChange={ event => { this.setState(({ playBookName }) => ({ playBookName: event.target.value })) }} />
-
-							{/* Yes */}
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ this.savePlayBook }>
-								<path d="M2 20h2c.55 0 1-.45 1-1v-9c0-.55-.45-1-1-1H2v11zm19.83-7.12c.11-.25.17-.52.17-.8V11c0-1.1-.9-2-2-2h-5.5l.92-4.65c.05-.22.02-.46-.08-.66-.23-.45-.52-.86-.88-1.22L14 2 7.59 8.41C7.21 8.79 7 9.3 7 9.83v7.84C7 18.95 8.05 20 9.34 20h8.11c.7 0 1.36-.37 1.72-.97l2.66-6.15z"></path>
-							</svg>
-
-							{/* No */}
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => { this.setState({ playBookName: null, editPlayBook: null }) }}>
-								<path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"></path>
-							</svg>
-						</div>
-						:
-						<h2>
-							{ this.state.selectedPlayBook.name }
-							{/* Edit */}
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => { this.setState({ editPlayBook: this.state.selectedPlayBook, playBookName: this.state.selectedPlayBook.name }) }}>
-								<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
-							</svg>
-						</h2>
-						}
-					</div>
-					
-					<div className="playsContainer">
-						{
-						this.state.selectedPlayBook.plays
-						.sort((playA, playB) => playA.sort - playB.sort)
-						.map((play, playIndex) =>
+						<h4>Defense</h4>
 						
-						<div key={ play.id } className="playContainer">
-							<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }` }}>
-								<Play play={ play } />
-							</div>
+						<div className="playsContainer">
+							{
+							this.state.selectedPlayBook.plays
+							.filter(play => play.strategy === "defense")
+							.sort((playA, playB) => playA.sort - playB.sort)
+							.map((play, playIndex) =>
+							
+							<div key={ play.id } className="playContainer">
+								<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }` }}>
+									<Play play={ play } />
+								</div>
 
-							<div className="playInfoContainer">
-								<div className="playInfo">{ `${ play.formation } ${ play.name }` }</div>
-								
-								<div className="playActions">
-									<div className="playAction">
-										{
-										playIndex > 0 ?
-										// Move up
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, -1) }>
-											<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/>
-										</svg>
-										: ""
-										}
-									</div>
+								<div className="playInfoContainer">
+									<div className="playInfo">{ `${ play.formation } ${ play.name }` }</div>
 									
-									<div className="playAction">
-										{
-										playIndex < this.state.selectedPlayBook.plays.length - 1 ?
-										// Move down
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, 1) }>
-											<path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/>
-											<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/>
-										</svg>
-										: ""
-										}
+									<div className="playActions">
+										<div className="playAction">
+											{
+											playIndex > 0 ?
+											// Move up
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, -1) }>
+												<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/>
+											</svg>
+											: ""
+											}
+										</div>
+										
+										<div className="playAction">
+											{
+											playIndex < this.state.selectedPlayBook.plays.length - 1 ?
+											// Move down
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, 1) }>
+												<path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/>
+												<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/>
+											</svg>
+											: ""
+											}
+										</div>
 									</div>
 								</div>
 							</div>
+							)
+							}
 						</div>
-						)
-						}
-					</div>
+						
+					</>
+					: ""
+					}
 
 					<div className="playBookActions">
 						<div className="playBookAction" onClick={ () => { window.location = `/depthchart.html?id=${ this.state.selectedPlayBook.id }` }}>
@@ -429,57 +623,8 @@ class PlayBook extends Component {
 							</svg>
 						</div>
 					</div>
-					</>
-				
-				: this.state.allPlays ?
-				<>
-				<div className="playBookHeader">
-					<h2>All Plays</h2>
-					
-					<select value={ this.state.filterPlayBookId } onChange={ event => { this.setState({ filterPlayBookId: event.target.value }) }}>
-						<option value="">Filter Playbook</option>
-						{
-						this.state.playBooks.map(playBook =>
-							<option key={ playBook.id } value={ playBook.id }>{ playBook.name }</option>
-						)
-						}
-					</select>
-				</div>
-				
-				<div className="playsContainer">
-					{
-					this.state.plays
-					.filter(play => !this.state.filterPlayBookId || this.state.playBooks.find(playBook => playBook.id === this.state.filterPlayBookId).plays.some(playBookPlay => playBookPlay.id === play.id))
-					.sort((playA, playB) => playA.formation > playB.formation ? 1
-						: playA.formation < playB.formation ? -1
-						: playA.name > playB.name ? 1
-						: -1
-					)
-					.map((play) =>
-					
-					<div key={ play.id } className="playContainer">
-						<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }` }}>
-							<Play play={ play } />
-						</div>
 
-						<div className="playInfoContainer">
-							<div className="playInfo">{ `${ play.formation } ${ play.name }` }</div>
-						</div>
-					</div>
-					)
-					}
 				</div>
-
-				<div className="playBookActions">
-					<div className="playBookAction" onClick={ () => { window.location = "/playeditor.html" }}>
-						{/* New */}
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-							<path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-						</svg>
-					</div>
-				</div>
-				</>
-
 				:
 				<div>
 					<div className="playBooksContainer">

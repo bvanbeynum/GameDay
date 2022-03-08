@@ -40,7 +40,7 @@ class DepthChart extends Component {
 				this.setState({
 					isLoading: false,
 					user: data.user,
-					players: data.players.sort((playerA, playerB) => (playerA.firstName + playerA.lastName) > (playerB.firstName + playerB.lastName) ? 1 : -1),
+					players: data.players.sort((playerA, playerB) => (playerA.firstName + playerA.lastName).toLowerCase() > (playerB.firstName + playerB.lastName).toLowerCase() ? 1 : -1),
 					colors: data.colors,
 					playBook: {
 						...data.playBook,
@@ -84,7 +84,7 @@ class DepthChart extends Component {
 				}
 			})
 			.then(() => {
-				window.location = "/playbook.html";
+				window.location = `/playbook.html?playbookid=${ this.state.playBook.id }`;
 			})
 			.catch(error => {
 				console.warn(error);
@@ -94,7 +94,7 @@ class DepthChart extends Component {
 	}
 
 	navBack = () => {
-		window.location = "/playbook.html";
+		window.location = `/playbook.html?playbookid=${ this.state.playBook.id }`;
 	};
 
 	render() { return (

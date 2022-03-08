@@ -44,7 +44,7 @@ class PlayEditor extends Component {
 					isLoading: false,
 					user: data.user,
 					playBooks: data.playBooks,
-					play: data.play || { division: data.user.division, players: [], formation: "", name: "New" }
+					play: data.play || { division: data.user.division, players: [], formation: "", name: "New", strategy: "offense" }
 				});
 			})
 			.catch(error => {
@@ -170,7 +170,7 @@ class PlayEditor extends Component {
 		}));
 	};
 
-	saveDetails = (formation, name, selectedPlayBooks) => {
+	saveDetails = (formation, name, strategy, selectedPlayBooks) => {
 		
 		this.setState(({ playBooks, play }) => ({
 			playEdit: false,
@@ -189,6 +189,7 @@ class PlayEditor extends Component {
 			play: {
 				...play,
 				formation: formation,
+				strategy: strategy,
 				name: name
 			}
 		}));

@@ -4,7 +4,7 @@ const PlayPopup = (props) => {
 
 	const [ formation, setFormation ] = useState(props.play.formation || "");
 	const [ name, setName ] = useState(props.play.name || "");
-	const [ playBookId, setPlayBookId ] = useState(props.play.playBookId);
+	const [ strategy, setStrategy ] = useState(props.play.strategy || "");
 	const [ selectedPlayBooks, setSelectedPlayBooks ] = useState(
 		props.playBooks
 			.filter(playBook => playBook.plays.some(play => play.playId === props.play.id ))
@@ -28,7 +28,7 @@ const PlayPopup = (props) => {
 				<h2 className="label">Play Details</h2>
 
 				{/* Save */}
-				<div onClick={ () => { props.save(formation, name, selectedPlayBooks) }} className="button">
+				<div onClick={ () => { props.save(formation, name, strategy, selectedPlayBooks) }} className="button">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 						<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
 					</svg>
@@ -58,6 +58,18 @@ const PlayPopup = (props) => {
 
 					<div className="popupFormInput">
 						<input type="text" value={ name } onChange={ event => { setName(event.target.value) } } />
+					</div>
+				</div>
+
+				<div className="popupFormRow">
+					<div className="label">Strategy</div>
+
+					<div className="popupFormInput">
+						<select value={ strategy } onChange={ event => { setStrategy(event.target.value) }}>
+							<option value="">Select</option>
+							<option value="offense">Offense</option>
+							<option value="defense">Defense</option>
+						</select>
 					</div>
 				</div>
 

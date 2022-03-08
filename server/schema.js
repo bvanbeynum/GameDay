@@ -194,7 +194,7 @@ export default {
 		field: String,
 		rating: Number,
 		sort: Number,
-		playBookId: String,
+		strategy: String,
 		players: [ playerSchema ]
 	}),
 
