@@ -1085,20 +1085,6 @@ export default {
 	},
 
 	playBookSave: (request, response) => {
-		const updates = { queue: 0, complete: 0, errors: [] };
-
-		const updateComplete = error => {
-			updates.complete++;
-			
-			if (error) {
-				updates.errors.push(error.message);
-			}
-
-			if (updates.queue === updates.complete) {
-				response.status(200).json({ updateCount: updates.complete, errors: updates.errors });
-			}
-		}
-
 		if (request.body.playbook) {
 			client.post(`${ request.serverPath }/data/playbook`)
 				.send({ playbook: request.body.playbook })
@@ -1106,21 +1092,6 @@ export default {
 					response.status(200).json({ id: clientResponse.body.id });
 				})
 				.catch(error => response.status(560).json({ error: error.message }));
-		}
-		else if (request.body.plays && request.body.plays.length > 0) {
-			request.body.plays.forEach(play => {
-				updates.queue++;
-
-				client.get(`${ request.serverPath }/data/play?id=${ play.id }`)
-					.then(clientResponse => 
-						client.post(`${ request.serverPath }/data/play`)
-							.send({ play: { ...clientResponse.body.plays[0], sort: play.sort } })
-							.then(() => updateComplete())
-							.catch(error => updateComplete(error))
-						)
-					.catch(error => updateComplete(error));
-			});
-			
 		}
 		else if (request.query.deleteid) {
 			client.delete(`${ request.serverPath }/data/playbook?id=${ request.query.deleteid }`)

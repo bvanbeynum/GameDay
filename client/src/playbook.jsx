@@ -155,15 +155,13 @@ class PlayBook extends Component {
 					.sort((playA, playB) => playA.sort - playB.sort)
 			}
 		}), () => {
-			const updates = this.state.selectedPlayBook.plays
-				.filter((play, playIndex) => playIndex === changeIndex || playIndex === changeIndex + direction)
-				.map(play => ({ id: play.id, sort: play.sort }));
+			const updatePlaybook = { ...this.state.selectedPlayBook, plays: this.state.selectedPlayBook.plays.map(play => ({ playId: play.id, sort: play.sort })) };
 
 			fetch("/api/playbooksave", 
 				{ 
 					method: "post", 
 					headers: {"Content-Type": "application/json"}, 
-					body: JSON.stringify({ plays: updates })
+					body: JSON.stringify({ playbook: updatePlaybook })
 				}
 				)
 				.then(response => {
@@ -178,6 +176,9 @@ class PlayBook extends Component {
 					if (data.errors && data.errors.length > 0) {
 						console.warn(data.errors);
 						this.setState({ toast: { text: "Error updating play sorting", type: "error" } });
+					}
+					else {
+						console.log(`Playbook ${ this.state.selectedPlayBook.name } plays updated`);
 					}
 				})
 				.catch(error => {
@@ -372,22 +373,22 @@ class PlayBook extends Component {
 								<div className="playActions">
 									<div className="playAction">
 										{
+										playIndex > 0 ?
+										// Move up
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, -1) }>
+											<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/>
+										</svg>
+										: ""
+										}
+									</div>
+									
+									<div className="playAction">
+										{
 										playIndex < this.state.selectedPlayBook.plays.length - 1 ?
 										// Move down
 										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, 1) }>
 											<path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/>
 											<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/>
-										</svg>
-										: ""
-										}
-									</div>
-
-									<div className="playAction">
-										{
-										playIndex > 0 ?
-										// Move up
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, -1) }>
-											<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/>
 										</svg>
 										: ""
 										}
