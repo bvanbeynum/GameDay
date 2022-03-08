@@ -19,6 +19,7 @@ h2 {
 
 table {
 	font-size: 12px;
+	border-collapse: collapse;
 }
 
 #root {

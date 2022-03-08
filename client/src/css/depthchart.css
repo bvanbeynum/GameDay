@@ -1,0 +1,37 @@
+.depthChartPage {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.depthChartPage th, .depthChartPage td {
+	padding: 3px 10px;
+}
+
+.depthChartPage th {
+	text-align: left;
+	border-bottom: 2px solid rgb(193 193 193);
+}
+
+.depthChartPage td {
+	border-bottom: 1px solid rgb(193 193 193);
+}
+
+.depthChartActions {
+	display: flex;
+	justify-content: space-around;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: rgb(240 240 240);
+	align-items: center;
+	padding: 4px 5px;
+	height: 40px;
+	border-top: 1px solid rgb(150 150 150);
+}
+
+.depthChartAction {
+	width: 36px;
+	cursor: pointer;
+}

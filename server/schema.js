@@ -36,6 +36,10 @@ const prevYearSchema = new mongoose.Schema({
 	runTime: Number
 });
 
+const depthChart = new mongoose.Schema({
+	positions: [{ color: String, group1: String, group2: String }]
+})
+
 export default {
 
 	user: mongoose.model("user", {
@@ -173,7 +177,9 @@ export default {
 			season: String
 		},
 		name: String,
-		plays: [{ playId: String, sort: Number }]
+		plays: [{ playId: String, sort: Number }],
+		offense: { type: depthChart },
+		defense: { type: depthChart }
 	}),
 	
 	play: mongoose.model("play", {

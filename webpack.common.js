@@ -12,7 +12,8 @@ export default {
 		emailEdit: "./client/src/emailedit.jsx",
 		userManage: "./client/src/usermanage.jsx",
 		playBook: "./client/src/playbook.jsx",
-		playEditor: "./client/src/playeditor.jsx"
+		playEditor: "./client/src/playeditor.jsx",
+		depthChart: "./client/src/depthchart.jsx"
 	},
 	plugins: [
 		new HtmlWebpackPlugin({ 
@@ -123,6 +124,16 @@ export default {
 				viewport: "width=device-width, initial-scale=1"
 			},
 			chunks: [ "playEditor" ],
+			templateContent: "<html><body><div id='root'></div></body></html>"
+		}),
+		new HtmlWebpackPlugin({
+			filename: "depthchart.html",
+			title: "Game Day - Depth Chart",
+			favicon: "./client/src/components/favicon.ico",
+			meta: {
+				viewport: "width=device-width, initial-scale=1"
+			},
+			chunks: [ "depthChart" ],
 			templateContent: "<html><body><div id='root'></div></body></html>"
 		})
 	],

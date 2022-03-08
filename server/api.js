@@ -1167,6 +1167,57 @@ export default {
 		else {
 			response.status(200).json({ status: "nothing to update "});
 		}
+	},
+
+	depthChartLoad: (request, response) => {
+		const output = {
+			user: (
+				({ firstName, lastName, modules, isAdmin }) => ({ firstName, lastName, modules, isAdmin, division: request.division, team: request.team })
+				)(request.user)
+		};
+
+		client.get(`${ request.serverPath }/data/playbook?id=${ request.query.id }`)
+			.then(clientResponse => {
+				output.playBook = clientResponse.body.playBooks[0];
+				
+				client.get(`${ request.serverPath }/data/player?teamid=${ request.team.id }`)
+					.then(clientResponse => {
+						output.players = clientResponse.body.players.map(player => ({
+							id: player.id,
+							firstName: player.firstName,
+							lastName: player.lastName
+						}));
+
+						client.get(`${ request.serverPath }/data/play?divisionid=${ request.division.id }`)
+							.then(clientResponse => {
+								
+								// Get the colors used on the plays already created for the division
+								output.colors = [ ...new Set(clientResponse.body.plays.flatMap(play => play.players.flatMap(player => player.color))) ]
+									.sort((colorA, colorB) => colorA > colorB ? 1 : -1);
+								
+								response.status(200).json(output);
+
+							})
+							.catch(error => response.status(561).json({ error: error.message }));
+					})
+					.catch(error => response.status(560).json({ error: error.message }));
+			})
+			.catch(error => response.status(562).json({ error: error.message }));
+	},
+
+	depthChartSave: (request, response) => {
+		if (!request.body.playbook) {
+			response.statusMessage = "Missing playbook to save";
+			response.status(550).json({ error: "Missing playbook to save" });
+			return;
+		}
+
+		client.post(`${ request.serverPath }/data/playbook`)
+			.send({ playbook: request.body.playbook })
+			.then(clientResponse => {
+				response.status(200).json({ id: clientResponse.body.id });
+			})
+			.catch(error => response.status(560).json({ error: JSON.stringify(error) }));
 	}
 	
 }
