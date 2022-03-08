@@ -1076,13 +1076,7 @@ export default {
 
 				client.get(`${ request.serverPath }/data/play?divisionid=${ request.division.id }`)
 					.then(clientResponse => {
-						output.playBooks = output.playBooks.map(playBook => ({
-							...playBook,
-							plays: clientResponse.body.plays
-								.filter(play => play.playBookId === playBook.id)
-								.map(({ playBookIds, ...play }) => ({ ...play }))
-						}));
-
+						output.plays = clientResponse.body.plays;
 						response.status(200).json(output);
 					})
 					.catch(error => response.status(561).json({ error: error.message }));
@@ -1095,7 +1089,6 @@ export default {
 
 		const updateComplete = error => {
 			updates.complete++;
-			console.log(`${ updates.queue } / ${ updates.complete } - ${ error ? error.message : "" }`);
 			
 			if (error) {
 				updates.errors.push(error.message);
@@ -1109,32 +1102,12 @@ export default {
 		if (request.body.playbook) {
 			client.post(`${ request.serverPath }/data/playbook`)
 				.send({ playbook: request.body.playbook })
-				.then(() => {
-
-					client.get(`${ request.serverPath }/data/playbook?divisionid=${ request.division.id }`)
-						.then(clientResponse => {
-							const output = { playBooks: clientResponse.body.playBooks };
-			
-							client.get(`${ request.serverPath }/data/play?divisionid=${ request.division.id }`)
-								.then(clientResponse => {
-									output.playBooks = output.playBooks.map(playBook => ({
-										...playBook,
-										plays: clientResponse.body.plays
-											.filter(play => play.playBookId === playBook.id)
-											.map(({ playBookIds, ...play }) => ({ ...play }))
-									}));
-			
-									response.status(200).json(output);
-								})
-								.catch(error => response.status(561).json({ error: error.message }));
-						})
-						.catch(error => response.status(562).json({ error: error.message }));
-					
+				.then(clientResponse => {
+					response.status(200).json({ id: clientResponse.body.id });
 				})
 				.catch(error => response.status(560).json({ error: error.message }));
 		}
-
-		if (request.body.plays && request.body.plays.length > 0) {
+		else if (request.body.plays && request.body.plays.length > 0) {
 			request.body.plays.forEach(play => {
 				updates.queue++;
 
@@ -1148,6 +1121,11 @@ export default {
 					.catch(error => updateComplete(error));
 			});
 			
+		}
+		else if (request.query.deleteid) {
+			client.delete(`${ request.serverPath }/data/playbook?id=${ request.query.deleteid }`)
+				.then(() => response.status(200).json({ status: "ok" }))
+				.catch(error => response.status(561).json({ error: error }));
 		}
 	},
 
@@ -1179,15 +1157,40 @@ export default {
 	},
 
 	playEditorSave: (request, response) => {
+		const updates = { queue: 0, complete: 0, errors: [] };
+
+		const updateComplete = error => {
+			updates.complete++;
+			
+			if (error) {
+				updates.errors.push(error.message);
+			}
+
+			if (updates.queue === updates.complete) {
+				response.status(200).json({ updateCount: updates.complete, errors: updates.errors });
+			}
+		}
+
 		if (request.query.deleteid) {
 			client.delete(`${ request.serverPath }/data/play?id=${ request.query.deleteid }`)
 				.then(() => response.status(200).json({ status: "ok" }))
 				.catch(error => response.status(560).json({ error: error.message }));
 		}
-		else if (request.body.play) {
+		else if (request.body.play && request.body.playbooks) {
 			client.post(`${ request.serverPath }/data/play`)
 				.send({ play: request.body.play })
-				.then(clientResponse => response.status(200).json({ id: clientResponse.body.id }))
+				.then(() => {
+
+					request.body.playbooks.forEach(playBook => {
+						updates.queue++;
+
+						client.post(`${ request.serverPath }/data/playbook`)
+							.send({ playbook: playBook})
+							.then(() => updateComplete())
+							.catch(error => updateComplete(error));
+					});
+					
+				})
 				.catch(error => response.status(561).json({ error: error.message }));
 		}
 		else {

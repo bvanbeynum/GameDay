@@ -172,7 +172,8 @@ export default {
 			year: Number,
 			season: String
 		},
-		name: String
+		name: String,
+		plays: [{ playId: String, sort: Number }]
 	}),
 	
 	play: mongoose.model("play", {

@@ -55,7 +55,7 @@ class PlayEditor extends Component {
 	};
 
 	savePlay = () => {
-		fetch("/api/playeditorsave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ play: this.state.play }) })
+		fetch("/api/playeditorsave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ play: this.state.play, playbooks: this.state.playBooks }) })
 			.then(response => {
 				if (response.ok) {
 					return response.json();
@@ -170,16 +170,29 @@ class PlayEditor extends Component {
 		}));
 	};
 
-	saveDetails = (playBookId, formation, name) => {
-		this.setState(({ play }) => ({
+	saveDetails = (formation, name, selectedPlayBooks) => {
+		
+		this.setState(({ playBooks, play }) => ({
 			playEdit: false,
+			playBooks: playBooks.map(playBook => ({
+				...playBook,
+				plays: selectedPlayBooks.includes(playBook.id) && !playBook.plays.some(playBookPlay => playBookPlay.playId === play.id) ?
+						playBook.plays.concat({ playId: play.id, sort: playBook.plays.length }) // Add play to end of playbook
+					: !selectedPlayBooks.includes(playBook.id) && playBook.plays.some(playBookPlay => playBookPlay.playId === play.id) ?
+						playBook.plays
+							.filter(playBookPlay => playBookPlay.playId !== play.id) // Remove play from playbook
+							.sort((play1, play2) => play1.sort - play2.sort)
+							.map((playBookPlay, playIndex) => ({ ...playBookPlay, sort: playIndex })) // Resort the remaining plays
+					:
+						playBook.plays // Don't change the plays
+			})),
 			play: {
 				...play,
-				playBookId: playBookId,
 				formation: formation,
 				name: name
 			}
 		}));
+
 	};
 
 	changeColor = event => {
