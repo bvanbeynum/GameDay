@@ -497,6 +497,48 @@ class PlayBook extends Component {
 							</table>
 						</div>
 					</div>
+					
+					<table className="scoreboard">
+					<tbody>
+					<tr>
+						<td>{ this.state.user.team.name }</td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+					</tr>
+					<tr>
+						<td>Opponent</td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+						<td><svg viewBox="0 0 40 40"><line x1="0" y1="40" x2="40" y2="0"></line></svg></td>
+					</tr>
+					</tbody>
+					</table>
+
 					</>
 					: !this.state.printMode ?
 					

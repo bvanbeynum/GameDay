@@ -101,8 +101,8 @@ h2 svg {
 
 .play {
 	outline: none;
-	width: 100px;
-	height: 100px;
+	width: 90px;
+	height: 90px;
 	cursor: pointer;
 }
 
@@ -172,6 +172,26 @@ h2 svg {
 	stroke-dasharray: 7;
 }
 
+table.scoreboard {
+	display: none;
+}
+
+.scoreboard td {
+	border: solid 1px black;
+	padding: 0px;
+}
+
+.scoreboard td:nth-child(1) {
+	font-weight: bold;
+	width: 100px;
+}
+
+.scoreboard line {
+	stroke: rgb(0,0,0);
+	stroke-width: 1px;
+	fill: none;
+}
+
 .playSheetContainer {
 	display: flex;
 	align-items: start;
@@ -181,7 +201,11 @@ h2 svg {
 .playsheetPlays {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: center;
+}
+
+.playsheetPlay .play {
+	width: 90px;
+	height: 90px;
 }
 
 .playsheetSection:nth-child(1) {
@@ -285,7 +309,11 @@ h2 svg {
 		display: none;
 	}
 
+	table.scoreboard {
+		display: table;
+	}
+
 	.depthChartContainer {
-		margin-bottom: 0px;
+		margin-bottom: 20px;
 	}
 }
