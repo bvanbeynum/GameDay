@@ -29,6 +29,10 @@ class PlayEditor extends Component {
 		}
 
 		const queryString = new Proxy(new URLSearchParams(window.location.search), { get: (searchParams, prop) => searchParams.get(prop) });
+
+		if (queryString.playbookid) {
+			this.setState({ playbookId: queryString.playbookid });
+		}
 		
 		fetch(`/api/playeditorload${ queryString.id ? `?id=${ queryString.id }` : "" }`)
 			.then(response => {
@@ -65,7 +69,7 @@ class PlayEditor extends Component {
 				}
 			})
 			.then(() => {
-				window.location = "/playbook.html";
+				window.location = `/playbook.html${ this.state.playbookId ? `?playbookid=${ this.state.playbookId }` : "" }`;
 			})
 			.catch(error => {
 				console.warn(error);
@@ -207,7 +211,7 @@ class PlayEditor extends Component {
 	};
 
 	navBack = () => {
-		window.location = "/playbook.html";
+		window.location = `/playbook.html${ this.state.playbookId ? `?playbookid=${ this.state.playbookId }` : "" }`;
 	};
 
 	render() { return (

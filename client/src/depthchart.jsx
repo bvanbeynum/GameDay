@@ -44,8 +44,8 @@ class DepthChart extends Component {
 					colors: data.colors,
 					playBook: {
 						...data.playBook,
-						offense: data.playBook.offense || { positions: data.colors.map(color => ({ color: color })) },
-						defense: data.playBook.defense || { positions: data.colors.map(color => ({ color: color })) }
+						offense: data.playBook.offense || { positions: data.colors.map(color => ({ color: color, group1: { playerId: "" }, group2: { playerId: "" } })) },
+						defense: data.playBook.defense || { positions: data.colors.map(color => ({ color: color, group1: { playerId: "" }, group2: { playerId: "" } })) }
 					}
 				});
 			})
@@ -64,7 +64,11 @@ class DepthChart extends Component {
 					...playBook[strategy].positions.slice(0, positionIndex),
 					{
 						...playBook[strategy].positions[positionIndex],
-						[`group${ group }`]: event.target.value
+						[`group${ group }`]: { 
+							playerId: event.target.value,
+							firstName: this.state.players.filter(player => player.id === event.target.value).map(player => player.firstName)[0],
+							lastName: this.state.players.filter(player => player.id === event.target.value).map(player => player.lastName)[0]
+						}
 					},
 					...playBook[strategy].positions.slice(positionIndex + 1)
 				] }
@@ -126,7 +130,7 @@ class DepthChart extends Component {
 				<tr key={ positionIndex }>
 					<td>{ position.color }</td>
 					<td>
-						<select value={ position.group1 } onChange={ this.selectPosition("offense", positionIndex, 1) }>
+						<select value={ position.group1.playerId || "" } onChange={ this.selectPosition("offense", positionIndex, 1) }>
 							<option value=""> &mdash; </option>
 							{
 							this.state.players.map(player =>
@@ -136,7 +140,7 @@ class DepthChart extends Component {
 						</select>
 					</td>
 					<td>
-						<select value={ position.group2 } onChange={ this.selectPosition("offense", positionIndex, 2) }>
+						<select value={ position.group2.playerId || "" } onChange={ this.selectPosition("offense", positionIndex, 2) }>
 							<option value=""> &mdash; </option>
 							{
 							this.state.players.map(player =>
@@ -169,7 +173,7 @@ class DepthChart extends Component {
 				<tr key={ positionIndex }>
 					<td>{ position.color }</td>
 					<td>
-						<select value={ position.group1 } onChange={ this.selectPosition("defense", positionIndex, 1) }>
+						<select value={ position.group1.playerId || "" } onChange={ this.selectPosition("defense", positionIndex, 1) }>
 							<option value=""> &mdash; </option>
 							{
 							this.state.players.map(player =>
@@ -179,7 +183,7 @@ class DepthChart extends Component {
 						</select>
 					</td>
 					<td>
-						<select value={ position.group2 } onChange={ this.selectPosition("defense", positionIndex, 2) }>
+						<select value={ position.group2.playerId || "" } onChange={ this.selectPosition("defense", positionIndex, 2) }>
 							<option value=""> &mdash; </option>
 							{
 							this.state.players.map(player =>

@@ -37,7 +37,11 @@ const prevYearSchema = new mongoose.Schema({
 });
 
 const depthChart = new mongoose.Schema({
-	positions: [{ color: String, group1: String, group2: String }]
+	positions: [{ 
+		color: String, 
+		group1: { playerId: String, firstName: String, lastName: String }, 
+		group2: { playerId: String, firstName: String, lastName: String } 
+	}]
 })
 
 export default {

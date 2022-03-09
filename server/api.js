@@ -1078,29 +1078,7 @@ export default {
 					.then(clientResponse => {
 						output.plays = clientResponse.body.plays;
 						
-						client.get(`${ request.serverPath }/data/player?teamid=${ request.team.id }`)
-						.then(clientResponse => {
-							output.playBooks = output.playBooks.map(playBook => ({
-								...playBook,
-								offense: playBook.offense ? {
-									positions: playBook.offense.positions.map(position => ({
-										...position,
-										group1: clientResponse.body.players.filter(player => player.id === position.group1).map(player => `${ player.firstName } ${ player.lastName}`)[0],
-										group2: clientResponse.body.players.filter(player => player.id === position.group2).map(player => `${ player.firstName } ${ player.lastName}`)[0]
-									}))
-								} : null,
-								defense: playBook.defense ? {
-									positions: playBook.defense.positions.map(position => ({
-										...position,
-										group1: clientResponse.body.players.filter(player => player.id === position.group1).map(player => `${ player.firstName } ${ player.lastName}`)[0],
-										group2: clientResponse.body.players.filter(player => player.id === position.group2).map(player => `${ player.firstName } ${ player.lastName}`)[0]
-									}))
-								} : null,
-							}));
-
-							response.status(200).json(output);
-						})
-						.catch(error => response.status(562).json({ error: error.message }));
+						response.status(200).json(output);
 					})
 					.catch(error => response.status(561).json({ error: error.message }));
 			})

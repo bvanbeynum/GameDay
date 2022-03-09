@@ -68,7 +68,10 @@ class PlayBook extends Component {
 						: []
 					}))
 				}, () => {
-					if (queryString.playbookid) {
+					if (queryString.playbookid === "all") {
+						this.setState({ allPlays: true });
+					}
+					else if (queryString.playbookid) {
 						this.setState({ selectedPlayBook: this.state.playBooks.find(playBook => playBook.id === queryString.playbookid) });
 					}
 				});
@@ -81,7 +84,7 @@ class PlayBook extends Component {
 	};
 
 	createPlayBook = () => {
-		const savePlayBook = { division: this.state.user.division, name: "New Playbook", plays: [] };
+		const savePlayBook = { division: this.state.user.division, name: "New Playbook", offense: { positions: [] }, defense: { positions: [] }, plays: [] };
 
 		fetch("/api/playbooksave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ playbook: savePlayBook }) })
 			.then(response => {
@@ -147,18 +150,32 @@ class PlayBook extends Component {
 		}))
 	};
 
-	resortPlays = (changeIndex, direction) => {
+	resortPlays = (strategy, changeIndex, direction) => {
+		const offensePlays = this.state.selectedPlayBook.plays
+				.filter(play => play.strategy === "offense")
+				.map((play, playIndex) => ({
+					...play,
+					sort: play.strategy !== strategy ? play.sort // Don't update sorting if not the selected strategy (offense/defense)
+						: playIndex === changeIndex ? play.sort + direction // Move the selected play in the direction indicated
+						: playIndex === changeIndex + direction ? play.sort + (direction * -1) // move the play in the direction indicated in the opposite direction desired
+						: play.sort
+				}))
+				.sort((playA, playB) => playA.sort - playB.sort),
+			defensePlays = this.state.selectedPlayBook.plays
+			.filter(play => play.strategy === "defense")
+			.map((play, playIndex) => ({
+				...play,
+				sort: play.strategy !== strategy ? play.sort // Don't update sorting if not the selected strategy (offense/defense)
+					: playIndex === changeIndex ? play.sort + direction // Move the selected play in the direction indicated
+					: playIndex === changeIndex + direction ? play.sort + (direction * -1) // move the play in the direction indicated in the opposite direction desired
+					: play.sort
+			}))
+			.sort((playA, playB) => playA.sort - playB.sort);
+
 		this.setState(({ selectedPlayBook }) => ({
 			selectedPlayBook: {
 				...selectedPlayBook,
-				plays: selectedPlayBook.plays
-					.map((play, playIndex) => ({
-						...play,
-						sort: playIndex === changeIndex ? play.sort + direction // Move the selected play in the direction indicated
-							: playIndex === changeIndex + direction ? play.sort + (direction * -1) // move the play in the direction indicated in the opposite direction desired
-							: play.sort
-					}))
-					.sort((playA, playB) => playA.sort - playB.sort)
+				plays: [ ...offensePlays, ...defensePlays ]
 			}
 		}), () => {
 			const updatePlaybook = { ...this.state.selectedPlayBook, plays: this.state.selectedPlayBook.plays.map(play => ({ playId: play.id, sort: play.sort })) };
@@ -183,9 +200,6 @@ class PlayBook extends Component {
 						console.warn(data.errors);
 						this.setState({ toast: { text: "Error updating play sorting", type: "error" } });
 					}
-					else {
-						console.log(`Playbook ${ this.state.selectedPlayBook.name } plays updated`);
-					}
 				})
 				.catch(error => {
 					console.warn(error);
@@ -195,30 +209,38 @@ class PlayBook extends Component {
 	};
 
 	savePlayBook = () => {
-		const savePlayBook = { ...this.state.editPlayBook, name: this.state.playBookName };
+		this.setState(({ editPlayBook, playBookName }) => ({
+			selectedPlayBook: { ...editPlayBook, name: playBookName }
+		}), () => {
 
-		fetch("/api/playbooksave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ playbook: savePlayBook }) })
-			.then(response => {
-				if (response.ok) {
-					return response.json();
-				}
-				else {
-					throw Error(response.statusText);
-				}
-			})
-			.then(() => {
-				this.setState(({ playBooks }) => ({ 
-					editPlayBook: null, 
-					playBookName: null, 
-					selectedPlayBook: savePlayBook,
-					playBooks: playBooks.map(playBook => playBook.id === savePlayBook.id ? savePlayBook : playBook),
-					toast: { text: "Play book saved", type: "info" } 
-				}));
-			})
-			.catch(error => {
-				console.warn(error);
-				this.setState({ toast: { text: "Error loading data", type: "error" } });
-			});
+			const savePlayBook = {
+				...this.state.selectedPlayBook,
+				name: this.state.playBookName,
+				plays: this.state.editPlayBook.plays.map(play => ({ playId: play.id, sort: play.sort }))
+			};
+			
+			fetch("/api/playbooksave", { method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ playbook: savePlayBook }) })
+				.then(response => {
+					if (response.ok) {
+						return response.json();
+					}
+					else {
+						throw Error(response.statusText);
+					}
+				})
+				.then(() => {
+					this.setState(({ playBooks }) => ({ 
+						editPlayBook: null, 
+						playBookName: null, 
+						toast: { text: "Play book saved", type: "info" } 
+					}));
+				})
+				.catch(error => {
+					console.warn(error);
+					this.setState({ toast: { text: "Error loading data", type: "error" } });
+				});
+
+		})
 	};
 
 	setPrintMode = mode => {
@@ -292,7 +314,7 @@ class PlayBook extends Component {
 						.map((play) =>
 						
 						<div key={ play.id } className="playContainer">
-							<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }` }}>
+							<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }&playbookid=all` }}>
 								<Play play={ play } />
 							</div>
 
@@ -305,7 +327,7 @@ class PlayBook extends Component {
 					</div>
 
 					<div className="playBookActions">
-						<div className="playBookAction" onClick={ () => { window.location = "/playeditor.html" }}>
+						<div className="playBookAction" onClick={ () => { window.location = "/playeditor.html?playbookid=all" }}>
 							{/* New */}
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 								<path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
@@ -315,7 +337,7 @@ class PlayBook extends Component {
 					</>
 
 				: this.state.selectedPlayBook ?
-					<div>
+					<div className="wristCenter">
 					{
 					this.state.printMode === "wrist" ?
 	
@@ -428,10 +450,15 @@ class PlayBook extends Component {
 							this.state.selectedPlayBook.offense.positions
 								.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
 								.map((position, positionIndex) =>
-							<tr key={ positionIndex } style={{ backgroundColor: position.color }}>
-								<td>{ position.color }</td>
-								<td>{ position.group1 }</td>
-								<td>{ position.group2 }</td>
+							<tr key={ positionIndex }>
+								<td>
+									<div className="colorBoxContainer">
+										<div className="colorBox" style={{ backgroundColor: position.color }}></div>
+										{ position.color.slice(0, 1).toUpperCase() + position.color.slice(1) }
+									</div>
+								</td>
+								<td>{ position.group1 && position.group1.firstName ? `${ position.group1.firstName } ${ position.group1.lastName }` : "" }</td>
+								<td>{ position.group2 && position.group2.firstName ? `${ position.group2.firstName } ${ position.group2.lastName }` : "" }</td>
 							</tr>
 							)
 							}
@@ -454,10 +481,15 @@ class PlayBook extends Component {
 							this.state.selectedPlayBook.defense.positions
 								.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
 								.map((position, positionIndex) =>
-							<tr key={ positionIndex } style={{ backgroundColor: position.color }}>
-								<td>{ position.color }</td>
-								<td>{ position.group1 }</td>
-								<td>{ position.group2 }</td>
+							<tr key={ positionIndex }>
+								<td>
+									<div className="colorBoxContainer">
+										<div className="colorBox" style={{ backgroundColor: position.color }}></div>
+										{ position.color.slice(0, 1).toUpperCase() + position.color.slice(1) }
+									</div>
+								</td>
+								<td>{ position.group1 && position.group1.firstName ? `${ position.group1.firstName } ${ position.group1.lastName }` : "" }</td>
+								<td>{ position.group2 && position.group2.firstName ? `${ position.group2.firstName } ${ position.group2.lastName }` : "" }</td>
 							</tr>
 							)
 							}
@@ -518,7 +550,7 @@ class PlayBook extends Component {
 											{
 											playIndex > 0 ?
 											// Move up
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, -1) }>
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays("offense", playIndex, -1) }>
 												<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/>
 											</svg>
 											: ""
@@ -529,7 +561,7 @@ class PlayBook extends Component {
 											{
 											playIndex < this.state.selectedPlayBook.plays.length - 1 ?
 											// Move down
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, 1) }>
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays("offense", playIndex, 1) }>
 												<path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/>
 												<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/>
 											</svg>
@@ -553,7 +585,7 @@ class PlayBook extends Component {
 							.map((play, playIndex) =>
 							
 							<div key={ play.id } className="playContainer">
-								<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }` }}>
+								<div onClick={ () => { window.location = `/playeditor.html?id=${ play.id }&playbookid=${ this.state.selectedPlayBook.id }` }}>
 									<Play play={ play } />
 								</div>
 
@@ -565,7 +597,7 @@ class PlayBook extends Component {
 											{
 											playIndex > 0 ?
 											// Move up
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, -1) }>
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays("defense", playIndex, -1) }>
 												<path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/>
 											</svg>
 											: ""
@@ -576,7 +608,7 @@ class PlayBook extends Component {
 											{
 											playIndex < this.state.selectedPlayBook.plays.length - 1 ?
 											// Move down
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays(playIndex, 1) }>
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={ () => this.resortPlays("defense", playIndex, 1) }>
 												<path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/>
 												<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/>
 											</svg>

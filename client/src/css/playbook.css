@@ -193,7 +193,11 @@ h2 svg {
 }
 
 .playsheetPlay {
-	margin: 0px 15px;
+	padding: 0px 15px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 1px solid rgb(200 200 200);
 }
 
 .playsheetPlays .playName {
@@ -221,7 +225,23 @@ h2 svg {
 
 .depthChartContainer td {
 	border-bottom: 1px solid rgb(193 193 193);
-	color: white;
+}
+
+.colorBoxContainer {
+	display: flex;
+	justify-content: space-between;
+}
+
+.colorBox {
+	width: 10px;
+	height: 10px;
+	margin-right: 5px;
+}
+
+.wristCenter {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
 }
 
 .wristCoachContainer {
@@ -231,10 +251,10 @@ h2 svg {
 }
 
 .wristCoach {
-	flex: 1;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
+	width: 500px;
 }
 
 .playCell {
