@@ -37,6 +37,8 @@ class DepthChart extends Component {
 				}
 			})
 			.then(data => {
+				const newPositions = data.colors.map(color => ({ color: color, group1: { playerId: "" }, group2: { playerId: "" } }));
+
 				this.setState({
 					isLoading: false,
 					user: data.user,
@@ -44,8 +46,18 @@ class DepthChart extends Component {
 					colors: data.colors,
 					playBook: {
 						...data.playBook,
-						offense: data.playBook.offense || { positions: data.colors.map(color => ({ color: color, group1: { playerId: "" }, group2: { playerId: "" } })) },
-						defense: data.playBook.defense || { positions: data.colors.map(color => ({ color: color, group1: { playerId: "" }, group2: { playerId: "" } })) }
+						offense: { 
+							...data.playBook.offense, 
+							positions: data.playBook.offense.positions && data.playBook.offense.positions.length > 0 ?
+								data.playBook.offense.positions
+								: newPositions
+						},
+						defense: { 
+							...data.playBook.defense, 
+							positions: data.playBook.defense.positions && data.playBook.defense.positions.length > 0 ?
+								data.playBook.defense.positions
+								: newPositions
+						}
 					}
 				});
 			})
