@@ -1099,6 +1099,24 @@ export default {
 				.then(() => response.status(200).json({ status: "ok" }))
 				.catch(error => response.status(561).json({ error: error }));
 		}
+		else if (request.query.copyid) {
+			client.get(`${ request.serverPath }/data/playbook?id=${ request.query.copyid }`)
+				.then(clientResponse => {
+					const newPlayBook = { 
+						...clientResponse.body.playBooks[0],
+						name: clientResponse.body.playBooks[0].name + " - copied",
+						id: null
+					};
+
+					client.post(`${ request.serverPath }/data/playbook`)
+						.send({ playbook: newPlayBook })
+						.then(clientResponse => {
+							response.status(200).json({ playBook: { ...newPlayBook, id: clientResponse.body.id }, server: clientResponse.body });
+						})
+						.catch(error => response.status(562).json({ error: error }));
+				})
+				.catch(error => response.status(561).json({ error: error }));
+		}
 	},
 
 	playEditorLoad: (request, response) => {
