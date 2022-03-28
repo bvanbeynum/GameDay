@@ -66,8 +66,9 @@ router.get("/api/scheduleload", api.scheduleLoad);
 router.post("/api/teamsave", api.teamSave);
 router.post("/api/gamesave", api.gameSave);
 
-router.get("/api/videoplayerload", api.videoPlayerLoad);
-router.post("/api/videoplayerupload", api.videoPlayerUpload);
+router.get("/api/videoplayerload", api.loadState, api.videoPlayerLoad);
+router.post("/api/videoplayerupload", api.loadState, api.videoPlayerUpload);
+router.post("/api/videoplayerexport", api.loadState, api.videoPlayerExport);
 
 router.get("/api/evaluationload", api.loadState, api.evaluationLoad);
 router.post("/api/evaluationsave", api.loadState, api.evaluationSave);

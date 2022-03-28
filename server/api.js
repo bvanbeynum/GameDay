@@ -425,7 +425,7 @@ export default {
 					}
 				};
 
-				const divisionPath = path.join(request.app.get("root"), `client/media/video/${ request.query.divisionid }`);
+				const divisionPath = path.join(request.app.get("root"), `client/media/video/${ request.division.id }`);
 				fs.readdir(divisionPath, (error, files) => {
 					if (error) {
 						response.status(560).json({ error: error.message });
@@ -443,7 +443,8 @@ export default {
 								.filter(file => /.mp4/i.test(file))
 								.map(file => ({
 									name: file,
-									path: `/media/video/${ request.query.divisionid }/${ folder }`,
+									path: `/media/video/${ request.division.id }/${ folder }`,
+									folder: folder,
 									thumb: fs.existsSync(`${ divisionPath }/${ folder }/${ file.replace(/.mp4/i, ".jpg") }`) ? file.replace(/.mp4/i, ".jpg") : null
 								}))
 						};
@@ -455,6 +456,42 @@ export default {
 			.catch(error => {
 				response.status(561).json({ error: error.message });
 			});
+	},
+
+	videoPlayerExport: (request, response) => {
+		if (!request.body.export) {
+			response.statusMessage = "Missing data to export";
+			response.status(550).json({ error: "Missing data to export" });
+			return;
+		}
+
+		const divisionPath = path.join(request.app.get("root"), `client/media/video/${ request.division.id }`),
+			outputFile = Date.now() + ".jpeg",
+			exportOptions = request.body.export;
+		
+		const converter = ffmpeg(`${ divisionPath }/${ exportOptions.folder }/${ exportOptions.fileName }`)
+			.outputOptions(
+				"-vf",
+				"scale=180:-1," + 
+				"framerate=fps=10"
+			)
+			.setStartTime(+exportOptions.start)
+			.setDuration((+exportOptions.end - +exportOptions.start));
+		
+		converter.output(path.join(request.app.get("root"), "client/media/video/temp/" + outputFile))
+			.on("end", () => {
+				
+				const fileData = fs.statSync(path.join(request.app.get("root"), "client/media/video/temp/" + outputFile));
+				const fileSizeInBytes = fileData.size;
+				const fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
+				
+				response.status(200).json({ fileName: outputFile, size: fileSizeInMegabytes });
+				
+			})
+			.on("error", (error) => {
+				response.status(561).json({ error: error.message });
+			})
+			.run();
 	},
 
 	evaluationLoad: (request, response) => {

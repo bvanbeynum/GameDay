@@ -54,36 +54,64 @@
 	top: 57px;
 	left: 0px;
 	width: 100%;
-	height: 0%;
-	background-color: black;
-	display: flex;
-	flex-direction: column;
-	transition: height .3s ease-in-out;
-}
-.videoViewer.grow {
 	height: 100%;
+	background-color: black;
+	display: none;
+	flex-direction: column;
 }
 .videoViewer.active {
-	height: auto;
-	bottom: 0px;
+	display: flex;
 }
 
-.videoAction {
+.videoNav {
 	display: flex;
-	margin: 20px 20px 0px 15px;
 	cursor: pointer;
 }
-.videoAction svg {
+.videoNav svg {
 	width: 36px;
 	fill: rgb(255, 255, 255);
 }
 
+.videoContainer {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
 .videoViewer video {
 	width: 100%;
-	opacity: 0%;
-	transition: opacity .2s ease-in;
+}
+
+.videoBox {
+	position: fixed;
+	border: 4px dashed rgb(193 27 27);
+}
+
+.videoActions {
+	display: flex;
+	height: 40px;
+	justify-content: center;
+	align-items: center;
+}
+
+.videoProgress {
 	flex: 1;
 }
-.videoViewer video.active {
-	opacity: 100%;
+
+.videoActionButton {
+	width: 36px;
+	fill: white;
+	cursor: pointer;
+}
+
+.captureBar {
+	position: absolute;
+	height: 12px;
+	width: 3px;
+	background-color: red;
+	display: none;
+}
+.captureBar.active {
+	display: flex;
 }
