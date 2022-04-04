@@ -217,7 +217,12 @@ const Play = (props) => {
 					}
 					else {
 						// Following paths should be S paths
-						path = "S" +point.x + "," + routes[index - 1].y + " " + point.x + "," + point.y;
+						if (Math.abs(point.x - routes[index - 1].x) > Math.abs(point.y - routes[index - 1].y)) {
+							path = "S" +routes[index - 1].x + "," + point.y + " " + point.x + "," + point.y;
+						}
+						else {
+							path = "S" +point.x + "," + routes[index - 1].y + " " + point.x + "," + point.y;
+						}
 					}
 					
 					return path;
