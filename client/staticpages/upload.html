@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>Game Day - Upload</title>
+<style type="text/css">
+#dropZone {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: none;
+}
+
+#dropZone.enter {
+	border: 4px solid rgb(36,87,47);
+	background-color: rgba(36,255,47,.3);
+	display: block;
+}
+
+#toast {
+	position: absolute;
+	font-weight: bold;
+	bottom: 3%;
+	left: 3%;
+	padding: 8px 15px;
+	display: none;
+}
+#toast.active {
+	display: flex;
+}
+#toast.info {
+	border: solid 2px rgb(79, 116, 128);
+	background-color: rgb(152, 188, 255);
+	color: rgb(79, 116, 128);
+}
+#toast.error {
+	border: solid 2px rgb(220, 80, 80);
+	background-color: rgb(244, 174, 174);
+	color: rgb(222, 23, 23);
+}
+
+</style>
+</head>
+<body>
+
+<div id="dropZone">
+	Drop files to upload
+</div>
+
+<div id="toast">
+</div>
+
+<div class="updates">
+	<h3>Queue</h3>
+	<ul id="queuelist">
+	</ul>
+	
+	<h3>Completed</h3>
+	<ul id="completedlist">
+	</ul>
+	
+	<h3>Error</h3>
+	<ul id="errorlist">
+	</ul>
+</div>
+
+
+<script>
+
+const dropZone = document.getElementById("dropZone"),
+	toast = document.getElementById("toast"),
+	queueList = document.getElementById("queuelist"),
+	completedList = document.getElementById("completedlist"),
+	errorList = document.getElementById("errorlist"),
+	uploadStatus = { queue: [], completed: [], error: [] };
+
+window.ondragenter = event => {
+	event.stopPropagation();
+	event.preventDefault();
+
+	dropZone.classList.add("enter");
+};
+
+dropZone.addEventListener("dragover", event => {
+	event.stopPropagation();
+	event.preventDefault();
+});
+
+dropZone.addEventListener("dragleave", event => {
+	console.log("leaving");
+	event.stopPropagation();
+	event.preventDefault();
+
+	dropZone.classList.remove("enter");
+});
+
+dropZone.addEventListener("drop", event => {
+	event.stopPropagation();
+	event.preventDefault();
+	
+	dropZone.classList.remove("enter");
+	
+	var files = event.dataTransfer.files;
+	console.log(files);
+	
+	console.log(`dropped: ${ files.length }`);
+	
+	uploadStatus.queue = Array.from(files);
+	uploadStatus.error = [];
+	uploadStatus.complete = [];
+	updateStatus();
+	
+	showToast(`uploading ${ files.length } files`, false);
+
+	uploadFile();
+	
+});
+
+const uploadFile = () => {
+
+	const formUpload = new FormData();
+	formUpload.append("file", uploadStatus.queue[0]);
+
+	fetch("/api/uploadfile", { method: "post", body: formUpload})
+		.then(data => {
+			uploadStatus.completed.push(uploadStatus.queue.shift());
+			updateStatus();
+
+			if (uploadStatus.queue.length > 0) {
+				uploadFile();
+			}
+		})
+		.catch(error => {
+			console.log(error);
+			uploadStatus.error.push({ file: uploadStatus.queue.shift(), error: error });
+			updateStatus();
+
+			if (uploadStatus.queue.length > 0) {
+				uploadFile();
+			}
+		});
+};
+
+const updateStatus = () => {
+	queueList.innerHTML = uploadStatus.queue.map(record => `<li>${ record.name } - ${ (record.size / 1024 / 1024).toFixed(2) } MB</li>`).join("\r\n");
+	completedList.innerHTML = uploadStatus.completed.map(record => `<li>${ record.name } - ${ (record.size / 1024 / 1024).toFixed(2) } MB</li>`).join("\r\n");
+	errorList.innerHTML = uploadStatus.error.map(record => `<li>${ record.file.name } - ${ (record.file.size / 1024 / 1024).toFixed(2) } MB<br>${ record.error.statusText }</li>`).join("\r\n");
+};
+
+const showToast = (message, isError) => {
+	toast.classList.add("active");
+	toast.classList.add(isError ? "error" : "info");
+	toast.innerHTML = message;
+
+	setTimeout(() => {
+		toast.classList.remove("active");
+		toast.classList.remove("info");
+		toast.classList.remove("error");
+		toast.innerHTML = "";
+	}, 4000);
+};
+
+</script>
+	
+
+</body>
+</html>

@@ -1274,6 +1274,19 @@ export default {
 				response.status(200).json({ id: clientResponse.body.id });
 			})
 			.catch(error => response.status(560).json({ error: JSON.stringify(error) }));
+	},
+
+	uploadFile: (request, response) => {
+		request.busboy.on("file", (fieldName, file, fileName) => {
+			const emailFolder = path.join(request.app.get("root"), `client/media/email/`);
+			file.pipe(fs.createWriteStream(`${ emailFolder }/${ fileName }`));
+		});
+
+		request.busboy.on("finish", () => {
+			response.status(200).json({ status: "ok" });
+		});
+
+		request.pipe(request.busboy);
 	}
-	
+
 }

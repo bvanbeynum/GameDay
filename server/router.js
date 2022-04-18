@@ -98,6 +98,8 @@ router.post("/api/playeditorsave", api.loadState, api.playEditorSave);
 router.get("/api/depthchartload", api.loadState, api.depthChartLoad);
 router.post("/api/depthchartsave", api.loadState, api.depthChartSave);
 
+router.post("/api/uploadfile", api.loadState, api.uploadFile);
+
 // ************************* Routes
 
 router.get("/access", api.validateAccess);
