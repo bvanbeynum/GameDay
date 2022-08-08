@@ -244,7 +244,7 @@ const DraftPlayers = (props) => {
 								<td>{ season.catching }</td>
 								<td>{ season.throwing }</td>
 								<td>{ season.runTime }</td>
-								<td>{ `${ season.team.coach } - ${ season.team.name }` }</td>
+								<td>{ season.team ? `${ season.team.coach || "" } - ${ season.team.name || "" }` : "" }</td>
 							</tr>
 							)}
 							</tbody>

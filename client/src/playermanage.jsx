@@ -45,7 +45,8 @@ class PlayerManager extends Component {
 					players: data.players.sort((playerA, playerB) => playerA.draftNumber - playerB.draftNumber)
 						.map(player => ({
 							...player,
-							dateOfBirth: new Date(player.dateOfBirth)
+							dateOfBirth: new Date(player.dateOfBirth),
+							age: ((Date.now() - (new Date(player.dateOfBirth))) / 1000 / 60 / 60 / 24 / 365).toFixed(0)
 						})),
 					playerAttributes: data.attributes
 				}));
@@ -459,6 +460,7 @@ class PlayerManager extends Component {
 					{ this.state.view.requests ? <th onClick={ () => { this.sortPlayers("requests") } } className={ this.state.playerSort === "requests" ? "sorted" : "" }>Requests</th> : null }
 					{ this.state.view.requests ? <th onClick={ () => { this.sortPlayers("coachProtect") } } className={ this.state.playerSort === "coachProtect" ? "sorted" : "" }>Coach Protect</th> : null }
 					{ this.state.view.requests ? <th onClick={ () => { this.sortPlayers("coachRequest") } } className={ this.state.playerSort === "coachRequest" ? "sorted" : "" }>Coach Request</th> : null }
+					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("age") } } className={ this.state.playerSort === "age" ? "sorted" : "" }>Age</th> : null }
 					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("dateOfBirth") } } className={ this.state.playerSort === "dateOfBirth" ? "sorted" : "" }>DOB</th> : null }
 					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("parentName") } } className={ this.state.playerSort === "parentName" ? "sorted" : "" }>Parent</th> : null }
 					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("Phone") } } className={ this.state.playerSort === "Phone" ? "sorted" : "" }>Phone</th> : null }
@@ -484,6 +486,7 @@ class PlayerManager extends Component {
 					{ this.state.view.requests ? <td>{ player.requests }</td> : null }
 					{ this.state.view.requests ? <td>{ player.coachProtect }</td> : null }
 					{ this.state.view.requests ? <td>{ player.coachRequest }</td> : null }
+					{ this.state.view.family ? <td>{ player.age }</td> : null }
 					{ this.state.view.family ? <td>{ player.dateOfBirth.toLocaleDateString() }</td> : null }
 					{ this.state.view.family ? <td>{ player.parentName }</td> : null }
 					{ this.state.view.family ? <td>{ player.Phone }</td> : null }
