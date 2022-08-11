@@ -47,6 +47,10 @@
 	border-bottom: 1px solid rgb(200,200,200);
 }
 
+.draftTeam:last-child {
+	margin-bottom: 150px;
+}
+
 .teamHeader {
 	display: flex;
 	align-items: center;
@@ -227,6 +231,10 @@
 .playerStats td:nth-child(6) {
 	color: rgb(0 0 0);
 	font-size: .8em;
+}
+
+td.spacer {
+	height: 150px;
 }
 
 .positive {

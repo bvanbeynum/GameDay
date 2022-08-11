@@ -27,6 +27,7 @@ const DraftPicks = (props) => {
 				</td>
 			</tr>
 			)}
+			<tr><td colSpan="4" className="spacer"></td></tr>
 			</tbody>
 			</table>
 

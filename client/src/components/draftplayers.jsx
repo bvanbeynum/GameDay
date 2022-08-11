@@ -255,6 +255,7 @@ const DraftPlayers = (props) => {
 					</td>
 				</tr>
 			])}
+				<tr><td colSpan="6" className="spacer">&nbsp;</td></tr>
 			</tbody>
 			</table>
 			
