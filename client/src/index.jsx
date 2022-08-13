@@ -43,7 +43,7 @@ class Index extends Component {
 						teamA.division.year !== teamB.division.year ?
 							teamB.division.year - teamA.division.year // Primarily sort by year
 						:
-							teamA.division.season > teamB.division.season ? 1 : -1 // If year is same, sort by season
+							teamA.division.season.toLowerCase() > teamB.division.season.toLowerCase() ? 1 : -1 // If year is same, sort by season
 					)
 			}))
 			.sort((divisionA, divisionB) => divisionB.age - divisionA.age); // sort the divisions by age group
