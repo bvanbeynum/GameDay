@@ -123,3 +123,8 @@
 .playerPopup .boxItem.tall {
 	font-size: 30px;
 }
+
+.playerPopup .dataComments {
+	height: 100px;
+	flex: 1;
+}
