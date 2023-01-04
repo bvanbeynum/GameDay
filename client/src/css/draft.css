@@ -233,6 +233,11 @@
 	font-size: .8em;
 }
 
+.playerStats .evalNotes {
+	width: 98%;
+	margin: 0px auto;
+}
+
 td.spacer {
 	height: 150px;
 }

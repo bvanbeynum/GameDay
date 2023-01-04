@@ -112,6 +112,7 @@ const DraftPlayers = (props) => {
 						{
 						player.id === selectedPlayerId ?
 						<div>
+
 							<table>
 							<thead>
 							<tr>
@@ -207,6 +208,13 @@ const DraftPlayers = (props) => {
 							</tr>
 							</tbody>
 							</table>
+							
+							{
+							<div className="evalNotes">
+								Notes:<br />
+								{ player.notes }
+							</div>
+							}
 							
 							<table className="playerStats">
 							<thead>
