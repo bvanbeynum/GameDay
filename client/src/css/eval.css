@@ -86,6 +86,7 @@
 
 .playerPopup .container {
 	padding: 0px 15px;
+	overflow-y: auto;
 }
 
 .playerPopup .button {

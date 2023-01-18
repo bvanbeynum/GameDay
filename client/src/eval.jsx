@@ -228,7 +228,7 @@ class Evaluation extends Component {
 						</div>
 					</div>
 
-					<h2 className="label">Notes</h2>
+					<h2 className="label">Notes</h2> 
 
 					<div className="dataContainer">
 						<textarea className="dataComments" value={ this.state.selectedPlayer.notes } onChange={ event => this.setState(({ selectedPlayer }) => ({ selectedPlayer: { ...selectedPlayer, notes: event.target.value }})) }></textarea>
