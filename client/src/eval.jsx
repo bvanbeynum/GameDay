@@ -42,7 +42,7 @@ class Evaluation extends Component {
 						.sort((playerA, playerB) => playerA.draftNumber - playerB.draftNumber)
 						.map(player => ({
 							...player,
-							completed: player.height || player.evalCatch || player.route || player.speed || player.hands || player.draftBlock || player.draftWatch
+							completed: player.height || player.evalCatch || player.route || player.speed || player.hands || player.draftBlock || player.draftWatch || player.notes
 						}))
 				}));
 			})
@@ -107,7 +107,8 @@ class Evaluation extends Component {
 				speed: null,
 				hands: null,
 				draftBlock: null,
-				draftWatch: null
+				draftWatch: null,
+				notes: null
 			}
 		}), () => this.savePlayer());
 	};
@@ -233,7 +234,7 @@ class Evaluation extends Component {
 					<div className="dataContainer">
 						<textarea className="dataComments" value={ this.state.selectedPlayer.notes } onChange={ event => this.setState(({ selectedPlayer }) => ({ selectedPlayer: { ...selectedPlayer, notes: event.target.value }})) }></textarea>
 					</div>
-					
+
 				</div>
 			</div>
 			: ""
