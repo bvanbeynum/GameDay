@@ -4,7 +4,7 @@ const DraftPlayers = (props) => {
 
 	const [ playerSort, setPlayerSort ] = useState("draftRank");
 	const [ sortDirection, setSortDirection ] = useState(1);
-	const [ selectedPlayerId, setSelectedPlayerId ] = useState();
+	const [ selectedPlayers, setSelectedPlayers ] = useState([]);
 
 	return (
 		<div className="draftContent">
@@ -31,7 +31,7 @@ const DraftPlayers = (props) => {
 						: playerA[playerSort] > playerB[playerSort] ? sortDirection : sortDirection * -1
 				)
 				.map((player, playerIndex) => [
-				<tr key={ player.id } onClick={ () => { player.id === selectedPlayerId ? setSelectedPlayerId(null) : setSelectedPlayerId(player.id) }} className={ `playerHeader ${ player.id === selectedPlayerId ? "selected" : "" }`}>
+				<tr key={ player.id } onClick={ () => { selectedPlayers.includes(player.id) ? setSelectedPlayers(selectedPlayers.filter(selected => selected !== player.id)) : setSelectedPlayers(selectedPlayers.concat(player.id)) }} className={ `playerHeader ${ selectedPlayers.includes(player.id) ? "selected" : "" }`}>
 					<td>
 					{
 					player.draftRank ?
@@ -107,10 +107,10 @@ const DraftPlayers = (props) => {
 						}
 					</td>
 				</tr>,
-				<tr key={ playerIndex } className={ `playerStats ${ player.id === selectedPlayerId ? "selected" : "" }`}>
+				<tr key={ playerIndex } className={ `playerStats ${ selectedPlayers.includes(player.id) ? "selected" : "" }`}>
 					<td colSpan="6">
 						{
-						player.id === selectedPlayerId ?
+						selectedPlayers.includes(player.id) ?
 						<div>
 
 							<table>

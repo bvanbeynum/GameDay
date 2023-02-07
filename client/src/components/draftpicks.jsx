@@ -6,7 +6,7 @@ const DraftPicks = (props) => {
 	return (
 		<div className="draftContent">
 
-			<table class="draftTable">
+			<table className="draftTable">
 			<thead>
 			<tr>
 				<th>Rnd</th>
