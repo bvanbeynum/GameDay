@@ -46,7 +46,8 @@ class PlayerManager extends Component {
 						.map(player => ({
 							...player,
 							dateOfBirth: new Date(player.dateOfBirth),
-							age: ((Date.now() - (new Date(player.dateOfBirth))) / 1000 / 60 / 60 / 24 / 365).toFixed(0)
+							age: ((Date.now() - (new Date(player.dateOfBirth))) / 1000 / 60 / 60 / 24 / 365).toFixed(0),
+							seasons: player.prev ? player.prev.length : 0
 						})),
 					playerAttributes: data.attributes
 				}));
@@ -239,7 +240,9 @@ class PlayerManager extends Component {
 					players: data.players.sort((playerA, playerB) => playerA.draftNumber - playerB.draftNumber)
 						.map(player => ({
 							...player,
-							dateOfBirth: new Date(player.dateOfBirth)
+							dateOfBirth: new Date(player.dateOfBirth),
+							age: ((Date.now() - (new Date(player.dateOfBirth))) / 1000 / 60 / 60 / 24 / 365).toFixed(0),
+							seasons: player.prev ? player.prev.length : 0
 						}))
 				}));
 			})
@@ -285,10 +288,10 @@ class PlayerManager extends Component {
 				.map(player => ({
 					...player,
 					brettRank: 
-						(this.state.customRanking.runTime && player.runTime ? (((player.runTime - runMax) / (runMin - runMax)) * 100) * this.state.customRanking.runTime : 1) *
-						(this.state.customRanking.catching && player.catching ? (((player.catching - catchMin) / (catchMax - catchMin)) * 100) * this.state.customRanking.catching : 1) *
-						(this.state.customRanking.throwing && player.throwing ? (((player.throwing - throwMin) / (throwMax - throwMin)) * 100) * this.state.customRanking.throwing : 1) *
-						(this.state.customRanking.seasons ? (((player.prev.length - seasonsMin) / (seasonsMax - seasonsMin)) * 100) * this.state.customRanking.seasons : 1) *
+						(this.state.customRanking.catching && player.catching ? (((player.catching - catchMin) / (catchMax - catchMin)) * 100) * this.state.customRanking.catching : 1) +
+						(this.state.customRanking.runTime && player.runTime ? (((player.runTime - runMax) / (runMin - runMax)) * 100) * this.state.customRanking.runTime : 1) +
+						(this.state.customRanking.throwing && player.throwing ? (((player.throwing - throwMin) / (throwMax - throwMin)) * 100) * this.state.customRanking.throwing : 1) +
+						(this.state.customRanking.seasons ? (((player.prev.length - seasonsMin) / (seasonsMax - seasonsMin)) * 100) * this.state.customRanking.seasons : 1) +
 						(this.state.customRanking.age ? ((((Date.now() - player.dateOfBirth) - ageMin) / (ageMax - ageMin)) * 100) * this.state.customRanking.age : 1)
 				}))
 				.sort((playerA, playerB) => playerB.brettRank - playerA.brettRank)
@@ -314,7 +317,9 @@ class PlayerManager extends Component {
 					players: data.players.sort((playerA, playerB) => playerA.brettRank - playerB.brettRank)
 						.map(player => ({
 							...player,
-							dateOfBirth: new Date(player.dateOfBirth)
+							dateOfBirth: new Date(player.dateOfBirth),
+							age: ((Date.now() - (new Date(player.dateOfBirth))) / 1000 / 60 / 60 / 24 / 365).toFixed(0),
+							seasons: player.prev ? player.prev.length : 0
 						}))
 				}));
 			})
@@ -379,7 +384,9 @@ class PlayerManager extends Component {
 						players: data.players.sort((playerA, playerB) => playerA.draftNumber - playerB.draftNumber)
 							.map(player => ({
 								...player,
-								dateOfBirth: new Date(player.dateOfBirth)
+								dateOfBirth: new Date(player.dateOfBirth),
+								age: ((Date.now() - (new Date(player.dateOfBirth))) / 1000 / 60 / 60 / 24 / 365).toFixed(0),
+								seasons: player.prev ? player.prev.length : 0
 							}))
 					}));
 				})
@@ -460,6 +467,7 @@ class PlayerManager extends Component {
 					{ this.state.view.requests ? <th onClick={ () => { this.sortPlayers("requests") } } className={ this.state.playerSort === "requests" ? "sorted" : "" }>Requests</th> : null }
 					{ this.state.view.requests ? <th onClick={ () => { this.sortPlayers("coachProtect") } } className={ this.state.playerSort === "coachProtect" ? "sorted" : "" }>Coach Protect</th> : null }
 					{ this.state.view.requests ? <th onClick={ () => { this.sortPlayers("coachRequest") } } className={ this.state.playerSort === "coachRequest" ? "sorted" : "" }>Coach Request</th> : null }
+					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("seasons") } } className={ this.state.playerSort === "seasons" ? "sorted" : "" }>Seasons</th> : null }
 					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("age") } } className={ this.state.playerSort === "age" ? "sorted" : "" }>Age</th> : null }
 					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("dateOfBirth") } } className={ this.state.playerSort === "dateOfBirth" ? "sorted" : "" }>DOB</th> : null }
 					{ this.state.view.family ? <th onClick={ () => { this.sortPlayers("parentName") } } className={ this.state.playerSort === "parentName" ? "sorted" : "" }>Parent</th> : null }
@@ -486,6 +494,7 @@ class PlayerManager extends Component {
 					{ this.state.view.requests ? <td>{ player.requests }</td> : null }
 					{ this.state.view.requests ? <td>{ player.coachProtect }</td> : null }
 					{ this.state.view.requests ? <td>{ player.coachRequest }</td> : null }
+					{ this.state.view.family ? <td>{ player.seasons }</td> : null }
 					{ this.state.view.family ? <td>{ player.age }</td> : null }
 					{ this.state.view.family ? <td>{ player.dateOfBirth.toLocaleDateString() }</td> : null }
 					{ this.state.view.family ? <td>{ player.parentName }</td> : null }
