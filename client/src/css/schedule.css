@@ -127,6 +127,7 @@ h3.gameHeader {
 
 .gameTime {
 	white-space: nowrap;
+	margin-left: 15px;
 }
 
 .gameTeamContainer {
