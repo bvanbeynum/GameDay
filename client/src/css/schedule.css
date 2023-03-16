@@ -234,4 +234,9 @@ h3.gameHeader {
 	.confrenceContainer {
 		flex-direction: row;
 	}
+	
+	.scheduleContainer table:nth-child(2) {
+		margin-top: 0px;
+	}
+
 }
