@@ -37,8 +37,6 @@ class DepthChart extends Component {
 				}
 			})
 			.then(data => {
-				const newPositions = data.colors.map(color => ({ color: color, group1: { playerId: "" }, group2: { playerId: "" } }));
-
 				this.setState({
 					isLoading: false,
 					user: data.user,
@@ -50,13 +48,13 @@ class DepthChart extends Component {
 							...data.playBook.offense, 
 							positions: data.playBook.offense.positions && data.playBook.offense.positions.length > 0 ?
 								data.playBook.offense.positions
-								: newPositions
+								: []
 						},
 						defense: { 
 							...data.playBook.defense, 
 							positions: data.playBook.defense.positions && data.playBook.defense.positions.length > 0 ?
 								data.playBook.defense.positions
-								: newPositions
+								: []
 						}
 					}
 				});
@@ -84,6 +82,35 @@ class DepthChart extends Component {
 					},
 					...playBook[strategy].positions.slice(positionIndex + 1)
 				] }
+			}
+		}));
+	};
+
+	updatePosition = (strategy, positionIndex) => event => {
+		this.setState(({ playBook }) => ({
+			playBook: {
+				...playBook,
+				[strategy]: {
+					positions: [
+						...playBook[strategy].positions.slice(0, positionIndex),
+						{
+							...playBook[strategy].positions[positionIndex],
+							color: event.target.value
+						},
+						...playBook[strategy].positions.slice(positionIndex + 1)
+					]
+				}
+			}
+		}));
+	};
+
+	addPosition = strategy => {
+		this.setState(({ playBook }) => ({
+			playBook: {
+				...playBook,
+				[strategy]: {
+					positions: playBook[strategy].positions.concat({ color: "", group1: { playerId: "" }, group2: { playerId: "" } })
+				}
 			}
 		}));
 	};
@@ -137,10 +164,11 @@ class DepthChart extends Component {
 				<tbody>
 				{
 				this.state.playBook.offense.positions
-					.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
 					.map((position, positionIndex) =>
 				<tr key={ positionIndex }>
-					<td>{ position.color }</td>
+					<td>
+						<input type="text" value={ position.color || "" } onChange={ this.updatePosition("offense", positionIndex)} />
+					</td>
 					<td>
 						<select value={ position.group1.playerId || "" } onChange={ this.selectPosition("offense", positionIndex, 1) }>
 							<option value=""> &mdash; </option>
@@ -166,13 +194,15 @@ class DepthChart extends Component {
 				}
 				</tbody>
 				</table>
+
+				<div className="newPosition" onClick={ () => this.addPosition("offense") }>Add Position</div>
 				
 				<h2>Defense</h2>
 				
 				<table>
 				<thead>
 				<tr>
-					<th>Color</th>
+					<th>Position</th>
 					<th>Group 1</th>
 					<th>Group 2</th>
 				</tr>
@@ -180,10 +210,11 @@ class DepthChart extends Component {
 				<tbody>
 				{
 				this.state.playBook.defense.positions
-					.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
 					.map((position, positionIndex) =>
 				<tr key={ positionIndex }>
-					<td>{ position.color }</td>
+					<td>
+						<input type="text" value={ position.color || "" } onChange={ this.updatePosition("defense", positionIndex)} />
+					</td>
 					<td>
 						<select value={ position.group1.playerId || "" } onChange={ this.selectPosition("defense", positionIndex, 1) }>
 							<option value=""> &mdash; </option>
@@ -210,6 +241,8 @@ class DepthChart extends Component {
 				</tbody>
 				</table>
 				
+				<div className="newPosition" onClick={ () => this.addPosition("defense") }>Add Position</div>
+
 				<div className="depthChartActions">
 					<div className="depthChartAction" onClick={ () => { this.save() }}>
 						{/* Save */}

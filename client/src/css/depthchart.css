@@ -17,6 +17,21 @@
 	border-bottom: 1px solid rgb(193 193 193);
 }
 
+.depthChartPage table input[type="text"],
+.depthChartPage table select {
+	width: 100px;
+}
+
+.newPosition {
+	margin: 20px 5px 30px 5px;
+	border: 1px solid rgb(211 211 211);
+	padding: 5px 8px;
+	align-self: flex-start;
+	outline: none;
+	cursor: pointer;
+	user-select: none;
+}
+
 .depthChartActions {
 	display: flex;
 	justify-content: space-around;

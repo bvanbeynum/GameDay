@@ -14,7 +14,10 @@ const Team = (props) => {
 			{
 			props.games.sort((gameA, gameB) => gameA.dateTime - gameB.dateTime).map((game, gameIndex) =>
 				<div className="gameContainer" key={ gameIndex } onClick={ () => props.selectGame(game) }>
-					<div className="gameTime">{ game.dateTime.toLocaleTimeString().replace(/:\d\d /, " ") }</div>
+					<div className="gameTime">
+						{ game.dateTime.toLocaleTimeString().replace(/:\d\d /, " ") }<br/>
+						{game.field}
+					</div>
 
 					<div className="gameTeamContainer">
 						<div className="gameTeam">
