@@ -484,7 +484,6 @@ class PlayBook extends Component {
 							<tbody>
 							{
 							this.state.selectedPlayBook.offense.positions
-								.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
 								.map((position, positionIndex) =>
 							<tr key={ positionIndex }>
 								<td>
@@ -507,7 +506,7 @@ class PlayBook extends Component {
 							<table>
 							<thead>
 							<tr>
-								<th>Color</th>
+								<th>Position</th>
 								<th>Group 1</th>
 								<th>Group 2</th>
 							</tr>
@@ -515,7 +514,6 @@ class PlayBook extends Component {
 							<tbody>
 							{
 							this.state.selectedPlayBook.defense.positions
-								.sort((positionA, positionB) => positionA.color > positionB.color ? 1 : -1)
 								.map((position, positionIndex) =>
 							<tr key={ positionIndex }>
 								<td>
