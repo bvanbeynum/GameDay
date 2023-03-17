@@ -26,12 +26,16 @@ export default {
 				response.status(200).json({ users: users });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c4dcce8cb7b3a6bc1571", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
 
 	userSave: (request, response) => {
 		if (!request.body.user) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c4fcce8cb7b3a6bc1574", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -58,6 +62,8 @@ export default {
 					response.status(200).json({ id: userData._id });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c4fcce8cb7b3a6bc1574", message: `570: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(570).json({ error: error.message });
 				});
 		}
@@ -68,6 +74,8 @@ export default {
 					response.status(200).json({ id: userData._id });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c4fcce8cb7b3a6bc1574", message: `571: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(571).json({ error: error.message });
 				})
 		}
@@ -75,6 +83,8 @@ export default {
 
 	userDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c539ce8cb7b3a6bc1577", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -84,6 +94,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c539ce8cb7b3a6bc1577", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -109,12 +121,16 @@ export default {
 				response.status(200).json({ requests: requests });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c568ce8cb7b3a6bc15e5", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
 
 	requestSave: (request, response) => {
 		if (!request.body.request) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c589ce8cb7b3a6bc15e7", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -141,6 +157,8 @@ export default {
 					response.status(200).json({ id: requestData["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c589ce8cb7b3a6bc15e7", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -151,6 +169,8 @@ export default {
 					response.status(200).json({ id: requestData["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c589ce8cb7b3a6bc15e7", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -158,6 +178,8 @@ export default {
 	
 	requestDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c5bace8cb7b3a6bc15ea", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -167,6 +189,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c5bace8cb7b3a6bc15ea", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -189,12 +213,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c5e5ce8cb7b3a6bc15ed", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
 
 	divisionSave: (request, response) => {
 		if (!request.body.division) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c605ce8cb7b3a6bc15ef", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -221,6 +249,8 @@ export default {
 					response.status(200).json({ id: divisionDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c605ce8cb7b3a6bc15ef", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -231,13 +261,17 @@ export default {
 					response.status(200).json({ id: divisionDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c605ce8cb7b3a6bc15ef", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
-				})
+				});
 		}
 	},
 	
 	divisionDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c638ce8cb7b3a6bc15f2", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -247,6 +281,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c638ce8cb7b3a6bc15f2", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -279,12 +315,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c660ce8cb7b3a6bc15f5", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
-			})
+			});
 	},
 
 	teamSave: (request, response) => {
 		if (!request.body.team) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c67cce8cb7b3a6bc15f7", message: `550: Missing object to save` }});
+			response.statusMessage = error.message;
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -311,6 +351,8 @@ export default {
 					response.status(200).json({ id: teamDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c67cce8cb7b3a6bc15f7", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -321,6 +363,8 @@ export default {
 					response.status(200).json({ id: teamDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c67cce8cb7b3a6bc15f7", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -328,6 +372,8 @@ export default {
 	
 	teamDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c6a9ce8cb7b3a6bc1665", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -337,6 +383,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c6a9ce8cb7b3a6bc1665", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -375,12 +423,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c6e0ce8cb7b3a6bc1668", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
-			})
+			});
 	},
 
 	gameSave: (request, response) => {
 		if (!request.body.game) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c704ce8cb7b3a6bc166a", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -407,6 +459,8 @@ export default {
 					response.status(200).json({ id: gameDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c704ce8cb7b3a6bc166a", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -417,6 +471,8 @@ export default {
 					response.status(200).json({ id: gameDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c704ce8cb7b3a6bc166a", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -424,6 +480,8 @@ export default {
 	
 	gameDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c762ce8cb7b3a6bc166e", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -433,6 +491,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c762ce8cb7b3a6bc166e", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -482,12 +542,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c796ce8cb7b3a6bc1671", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
-			})
+			});
 	},
 
 	playerSave: (request, response) => {
 		if (!request.body.player) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c7bace8cb7b3a6bc1673", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -514,6 +578,8 @@ export default {
 					response.status(200).json({ id: playerDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c7bace8cb7b3a6bc1673", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -524,6 +590,8 @@ export default {
 					response.status(200).json({ id: playerDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c7bace8cb7b3a6bc1673", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -531,6 +599,8 @@ export default {
 	
 	playerDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c7eece8cb7b3a6bc16e1", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -540,6 +610,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c7eece8cb7b3a6bc16e1", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -565,12 +637,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c815ce8cb7b3a6bc16e4", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
 
 	playBookSave: (request, response) => {
 		if (!request.body.playbook) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c835ce8cb7b3a6bc16e6", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -597,6 +673,8 @@ export default {
 					response.status(200).json({ id: playBookDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c835ce8cb7b3a6bc16e6", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -607,6 +685,8 @@ export default {
 					response.status(200).json({ id: playBookDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c835ce8cb7b3a6bc16e6", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -614,6 +694,8 @@ export default {
 	
 	playBookDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c874ce8cb7b3a6bc16e9", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -623,6 +705,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c874ce8cb7b3a6bc16e9", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -648,12 +732,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c89fce8cb7b3a6bc16ec", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
-			})
+			});
 	},
 
 	playSave: (request, response) => {
 		if (!request.body.play) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c8cbce8cb7b3a6bc16ef", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -680,6 +768,8 @@ export default {
 					response.status(200).json({ id: playDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c8cbce8cb7b3a6bc16ef", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -690,6 +780,8 @@ export default {
 					response.status(200).json({ id: playDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c8cbce8cb7b3a6bc16ef", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -697,6 +789,8 @@ export default {
 	
 	playDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c8fdce8cb7b3a6bc175d", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -706,6 +800,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c8fdce8cb7b3a6bc175d", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -735,12 +831,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c926ce8cb7b3a6bc175f", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
-			})
+			});
 	},
 
 	emailListSave: (request, response) => {
 		if (!request.body.emaillist) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c93fce8cb7b3a6bc1762", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -767,6 +867,8 @@ export default {
 					response.status(200).json({ id: emailListDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c93fce8cb7b3a6bc1762", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -777,13 +879,17 @@ export default {
 					response.status(200).json({ id: emailListDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c93fce8cb7b3a6bc1762", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
-				})
+				});
 		}
 	},
 	
 	emailListDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c97cce8cb7b3a6bc1765", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -793,6 +899,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c97cce8cb7b3a6bc1765", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -815,12 +923,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c9a3ce8cb7b3a6bc1767", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			})
 	},
 
 	locationSave: (request, response) => {
 		if (!request.body.location) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c9bdce8cb7b3a6bc176a", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -847,6 +959,8 @@ export default {
 					response.status(200).json({ id: locationDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c9bdce8cb7b3a6bc176a", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -857,6 +971,8 @@ export default {
 					response.status(200).json({ id: locationDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c9bdce8cb7b3a6bc176a", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -864,6 +980,8 @@ export default {
 	
 	locationDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c9f1ce8cb7b3a6bc176d", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -873,6 +991,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c9f1ce8cb7b3a6bc176d", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	},
@@ -898,12 +1018,16 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414ca23ce8cb7b3a6bc17db", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
-			})
+			});
 	},
 
 	emailSave: (request, response) => {
 		if (!request.body.email) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414ca3fce8cb7b3a6bc17dd", message: `550: Missing object to save` }});
+			response.statusMessage = "Missing object to save";
 			response.status(550).json({ error: "Missing object to save" });
 			return;
 		}
@@ -930,6 +1054,8 @@ export default {
 					response.status(200).json({ id: emailDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414ca3fce8cb7b3a6bc17dd", message: `561: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message });
 				});
 		}
@@ -940,6 +1066,8 @@ export default {
 					response.status(200).json({ id: emailDb["_id"] });
 				})
 				.catch(error => {
+					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414ca3fce8cb7b3a6bc17dd", message: `562: ${error.message}` }});
+					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
 		}
@@ -947,6 +1075,8 @@ export default {
 	
 	emailDelete: (request, response) => {
 		if (!request.query.id) {
+			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414ca78ce8cb7b3a6bc17e0", message: `550: Missing ID to delete` }});
+			response.statusMessage = "Missing ID to delete";
 			response.status(550).json({ error: "Missing ID to delete" });
 			return;
 		}
@@ -956,6 +1086,8 @@ export default {
 				response.status(200).json({ status: "ok" });
 			})
 			.catch(error => {
+				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414ca78ce8cb7b3a6bc17e0", message: `560: ${error.message}` }});
+				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
 	}
