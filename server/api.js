@@ -214,7 +214,7 @@ export default {
 
 	loadGlobal: (request, response, next) => {
 		request.serverPath = `${ request.protocol }://${ request.headers.host }`;
-		request.logURL = `http://beynum.com/sys/api/addlog`;
+		request.logURL = `${ request.protocol }://beynum.com/sys/api/addlog`;
 		next();
 	},
 
