@@ -782,7 +782,7 @@ export default {
 		}
 		else {
 			// Refresh data
-			loadDraft();
+			loadDraft(); 
 		}
 		
 		function loadDraft() {
