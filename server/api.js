@@ -62,7 +62,7 @@ export default {
 					email.to = "maildrop444@gmail.com";
 				}
 				
-				client.post(`${ request.serverUrl }/data/request`)
+				client.post(`${ request.apiUrl }/data/request`)
 					.send({ request: userRequest })
 					.then(() => {
 						response.cookie("gd", encryptedToken, { maxAge: 999999999999 });
@@ -165,7 +165,7 @@ export default {
 									lastAccess: tokenData.token === device.token ? new Date() : device.lastAccess
 								}));
 
-								client.post(`${ request.serverUrl }/data/user`)
+								client.post(`${ request.apiUrl }/data/user`)
 									.send({ user: request.user })
 									.then(() => {})
 									.catch(() => {});
@@ -194,7 +194,7 @@ export default {
 		const divisionId = request.cookies.division;
 
 		if (divisionId) {
-			client.get(`${ request.serverUrl }/data/team?divisionid=${ divisionId }&managed=true`)
+			client.get(`${ request.apiUrl }/data/team?divisionid=${ divisionId }&managed=true`)
 				.then(clientResponse => {
 					if (clientResponse.body.teams && clientResponse.body.teams.length === 1) {
 						request.division = clientResponse.body.teams[0].division;
@@ -213,7 +213,7 @@ export default {
 	},
 
 	loadGlobal: (request, response, next) => {
-		request.serverUrl = config.apiUrl,
+		request.apiUrl = config.apiUrl,
 		request.logURL = `${ request.protocol }://beynum.com/sys/api/addlog`;
 		next();
 	},
@@ -248,7 +248,7 @@ export default {
 			season: request.body.teamdivision.season
 		};
 
-		client.post(`${ request.serverUrl }/data/division`)
+		client.post(`${ request.apiUrl }/data/division`)
 			.send({ division: newDivision })
 			.then(clientResponse => {
 				newDivision.id = clientResponse.body.id;
@@ -260,11 +260,11 @@ export default {
 					isManaged: true
 				};
 
-				client.post(`${ request.serverUrl }/data/team`)
+				client.post(`${ request.apiUrl }/data/team`)
 					.send({ team: newTeam })
 					.then(() => {
 
-						client.get(`${ request.serverUrl }/data/team?managed=true`)
+						client.get(`${ request.apiUrl }/data/team?managed=true`)
 							.then(clientResponse => {
 
 								response.status(200).json({ teams: clientResponse.body.teams });
@@ -298,7 +298,7 @@ export default {
 			return;
 		}
 
-		client.get(`${ request.serverUrl }/data/team?divisionid=${ request.query.divisionid }`)
+		client.get(`${ request.apiUrl }/data/team?divisionid=${ request.query.divisionid }`)
 			.then(clientReponse => {
 				const output = {
 					user: {
@@ -309,7 +309,7 @@ export default {
 					teams: clientReponse.body.teams
 				}
 
-				client.get(`${ request.serverUrl }/data/player?divisionid=${ request.query.divisionid }`)
+				client.get(`${ request.apiUrl }/data/player?divisionid=${ request.query.divisionid }`)
 					.then(clientResponse => {
 						const players = clientResponse.body.players;
 
@@ -318,7 +318,7 @@ export default {
 							players: players.filter(player => player.team && player.team.id === team.id)
 						}));
 
-						client.get(`${ request.serverUrl }/data/game?divisionid=${ request.query.divisionid }`)
+						client.get(`${ request.apiUrl }/data/game?divisionid=${ request.query.divisionid }`)
 							.then(clientReponse => {
 								output.games = clientReponse.body.games;
 		
@@ -353,7 +353,7 @@ export default {
 			return;
 		}
 
-		client.post(`${ request.serverUrl }/data/team`)
+		client.post(`${ request.apiUrl }/data/team`)
 			.send({ team: request.body.team })
 			.then(clientReponse => {
 				response.status(200).json({ id: clientReponse.body.id });
@@ -373,7 +373,7 @@ export default {
 			return;
 		}
 
-		client.post(`${ request.serverUrl }/data/game`)
+		client.post(`${ request.apiUrl }/data/game`)
 			.send({ game: request.body.game })
 			.then(clientResponse => {
 				response.status(200).json({ id: clientResponse.body.id });
@@ -437,7 +437,7 @@ export default {
 
 	videoPlayerLoad: (request, response) => {
 		
-		client.get(`${ request.serverUrl }/data/team?divisionid=${ request.query.divisionid }&managed=true`)
+		client.get(`${ request.apiUrl }/data/team?divisionid=${ request.query.divisionid }&managed=true`)
 			.then(clientResponse => {
 				if (!clientResponse.body.teams || clientResponse.body.teams.length !== 1) {
 					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414be21ce8cb7b3a6bc12a7", message: `562: ${error.message}` }});
@@ -534,7 +534,7 @@ export default {
 	evaluationLoad: (request, response) => {
 		const divisionId = request.query.divisionid || request.cookies.division;
 
-		client.get(`${ request.serverUrl }/data/player?divisionid=${ divisionId }`)
+		client.get(`${ request.apiUrl }/data/player?divisionid=${ divisionId }`)
 			.then(clientResponse => {
 				
 				const output = { 
@@ -566,7 +566,7 @@ export default {
 			return;
 		}
 
-		client.post(`${ request.serverUrl }/data/player`)
+		client.post(`${ request.apiUrl }/data/player`)
 			.send({ player: request.body.player })
 			.then(clientResponse => {
 				response.status(200).json({ id: clientResponse.body.id });
@@ -580,7 +580,7 @@ export default {
 
 	playerManageLoad: (request, response) => {
 
-		client.get(`${ request.serverUrl }/data/player?divisionid=${ request.cookies.division }`)
+		client.get(`${ request.apiUrl }/data/player?divisionid=${ request.cookies.division }`)
 			.then(clientResponse => {
 
 				const output = {
@@ -594,7 +594,7 @@ export default {
 					players: clientResponse.body.players
 				};
 
-				client.get(`${ request.serverUrl }/data/player`)
+				client.get(`${ request.apiUrl }/data/player`)
 					.then(clientResponse => {
 						output.attributes = [... new Set(clientResponse.body.players.map(player => Object.keys(player)).flat()) ]
 							.filter(attribute => attribute !== "id")
@@ -627,7 +627,7 @@ export default {
 
 		request.body.saveplayers.forEach(player => {
 			output.requestCount++;
-			client.post(`${ request.serverUrl }/data/player`)
+			client.post(`${ request.apiUrl }/data/player`)
 				.send({ player: player })
 				.end(onComplete);
 		})
@@ -642,7 +642,7 @@ export default {
 
 			output.completeCount++;
 			if (output.requestCount === output.completeCount) {
-				client.get(`${ request.serverUrl }/data/player?divisionid=${ request.cookies.division }`)
+				client.get(`${ request.apiUrl }/data/player?divisionid=${ request.cookies.division }`)
 					.then(clientResponse => {
 						response.status(200).json({ players: clientResponse.body.players });
 					})
@@ -667,7 +667,7 @@ export default {
 
 		request.body.playerids.forEach(playerId => {
 			output.deleteCount++;
-			client.delete(`${ request.serverUrl }/data/player?id=${ playerId }`)
+			client.delete(`${ request.apiUrl }/data/player?id=${ playerId }`)
 				.end(onComplete);
 		});
 
@@ -678,7 +678,7 @@ export default {
 
 			output.completeCount++;
 			if (output.deleteCount === output.completeCount) {
-				client.get(`${ request.serverUrl }/data/player?divisionid=${ request.division.id }`)
+				client.get(`${ request.apiUrl }/data/player?divisionid=${ request.division.id }`)
 					.then(clientResponse => {
 						response.status(200).json({ players: clientResponse.body.players });
 					})
@@ -693,7 +693,7 @@ export default {
 
 	draftLoad: (request, response) => {
 		
-		client.get(`${ request.serverUrl }/data/team?divisionid=${ request.division.id }`)
+		client.get(`${ request.apiUrl }/data/team?divisionid=${ request.division.id }`)
 			.then(clientResponse => {
 				const output = {
 					user: {
@@ -706,7 +706,7 @@ export default {
 					teams: clientResponse.body.teams.map(team => (({ id, division, draftRound, coach, name }) => ({ id, division, draftRound, coach, name }))(team))
 				};
 
-				client.get(`${ request.serverUrl }/data/player?divisionid=${ request.division.id }`)
+				client.get(`${ request.apiUrl }/data/player?divisionid=${ request.division.id }`)
 					.then(clientResponse => {
 						output.players = clientResponse.body.players;
 
@@ -743,7 +743,7 @@ export default {
 				return;
 			}
 
-			client.post(`${ request.serverUrl }/data/team`)
+			client.post(`${ request.apiUrl }/data/team`)
 				.send({ team: {
 					id: request.body.team.id,
 					draftRound: request.body.team.draftRound || null
@@ -765,7 +765,7 @@ export default {
 			request.body.players.forEach(player => {
 				status.queued++;
 
-				client.post(`${ request.serverUrl }/data/player`)
+				client.post(`${ request.apiUrl }/data/player`)
 					.send({ player: {
 						id: player.id,
 						draftPick: player.draftPick || null,
@@ -786,14 +786,14 @@ export default {
 		}
 		
 		function loadDraft() {
-			client.get(`${ request.serverUrl }/data/team?divisionid=${ request.division.id }`)
+			client.get(`${ request.apiUrl }/data/team?divisionid=${ request.division.id }`)
 				.then(clientResponse => {
 					const output = {
 						version: request.query.version,
 						teams: clientResponse.body.teams.map(team => (({ id, draftRound }) => ({ id, draftRound }))(team))
 					};
 
-					client.get(`${ request.serverUrl }/data/player?divisionid=${ request.division.id }`)
+					client.get(`${ request.apiUrl }/data/player?divisionid=${ request.division.id }`)
 						.then(clientResponse => {
 							output.players = clientResponse.body.players.map(player =>
 								(({ id, draftPick, team }) => ({ id, draftPick, team }))(player)
@@ -822,15 +822,15 @@ export default {
 				)(request.user)
 		};
 
-		client.get(`${ request.serverUrl }/data/location`)
+		client.get(`${ request.apiUrl }/data/location`)
 			.then(clientResponse => {
 				output.locations = clientResponse.body.locations;
 
-				client.get(`${ request.serverUrl }/data/emaillist?divisionid=${ request.division.id }`)
+				client.get(`${ request.apiUrl }/data/emaillist?divisionid=${ request.division.id }`)
 					.then(clientResponse => {
 						output.emailLists = clientResponse.body.emailLists;
 						
-						client.get(`${ request.serverUrl }/data/email?divisionid=${ request.division.id }`)
+						client.get(`${ request.apiUrl }/data/email?divisionid=${ request.division.id }`)
 							.then(clientResponse => {
 								output.emails = clientResponse.body.emails.map(({ emailText, ...email }) => email);
 
@@ -872,11 +872,11 @@ export default {
 				saveStatus.locationDelete.queued === saveStatus.locationDelete.complete
 				) {
 
-				client.get(`${ request.serverUrl }/data/location`)
+				client.get(`${ request.apiUrl }/data/location`)
 					.then(clientResponse => {
 						output.locations = clientResponse.body.locations;
 		
-						client.get(`${ request.serverUrl }/data/emaillist?divisionid=${ request.division.id }`)
+						client.get(`${ request.apiUrl }/data/emaillist?divisionid=${ request.division.id }`)
 							.then(clientResponse => {
 								output.emailLists = clientResponse.body.emailLists;
 								
@@ -901,7 +901,7 @@ export default {
 			request.body.emaillists.forEach(emailList => {
 				saveStatus.emailLists.queued++;
 
-				client.post(`${ request.serverUrl }/data/emaillist`)
+				client.post(`${ request.apiUrl }/data/emaillist`)
 					.send({ emaillist: emailList })
 					.then(() => {
 						saveStatus.emailLists.complete++;
@@ -914,7 +914,7 @@ export default {
 			request.body.emaillistdelete.forEach(emailList => {
 				saveStatus.emailListDelete.queued++;
 
-				client.delete(`${ request.serverUrl }/data/emaillist?id=${ emailList }`)
+				client.delete(`${ request.apiUrl }/data/emaillist?id=${ emailList }`)
 					.then(() => {
 						saveStatus.emailListDelete.complete++;
 						onComplete();
@@ -926,7 +926,7 @@ export default {
 			request.body.locations.forEach(location => {
 				saveStatus.locations.queued++;
 				
-				client.post(`${ request.serverUrl }/data/location`)
+				client.post(`${ request.apiUrl }/data/location`)
 					.send({ location: location })
 					.then(() => {
 						saveStatus.locations.complete++;
@@ -939,7 +939,7 @@ export default {
 			request.body.locationdelete.forEach(location => {
 				saveStatus.locationDelete.queued++;
 
-				client.delete(`${ request.serverUrl }/data/location?id=${ location }`)
+				client.delete(`${ request.apiUrl }/data/location?id=${ location }`)
 					.then(() => {
 						saveStatus.locationDelete.complete++;
 						onComplete();
@@ -956,16 +956,16 @@ export default {
 				)(request.user)
 		};
 
-		client.get(`${ request.serverUrl }/data/location`)
+		client.get(`${ request.apiUrl }/data/location`)
 			.then(clientResponse => {
 				output.locations = clientResponse.body.locations;
 
-				client.get(`${ request.serverUrl }/data/emaillist?divisionid=${ request.division.id }`)
+				client.get(`${ request.apiUrl }/data/emaillist?divisionid=${ request.division.id }`)
 					.then(clientResponse => {
 						output.emailLists = clientResponse.body.emailLists;
 						
 						if (request.query.id) {
-							client.get(`${ request.serverUrl }/data/email?id=${ request.query.id }`)
+							client.get(`${ request.apiUrl }/data/email?id=${ request.query.id }`)
 								.then(clientResponse => {
 									output.emailText = clientResponse.body.emails[0].emailText;
 
@@ -1095,7 +1095,7 @@ export default {
 					emailText: email.text
 				};
 
-				client.post(`${ request.serverUrl }/data/email`)
+				client.post(`${ request.apiUrl }/data/email`)
 					.send({ email: saveEmail })
 					.then(clientResponse => {
 						response.status(200).json({ emailId: clientResponse.body.id });
@@ -1121,11 +1121,11 @@ export default {
 			userFilter = `&userid=${ request.user.id }`;
 		}
 
-		client.get(`${ request.serverUrl }/data/request?isactive=true${ userFilter }`)
+		client.get(`${ request.apiUrl }/data/request?isactive=true${ userFilter }`)
 			.then(clientResponse => {
 				output.requests = clientResponse.body.requests;
 
-				client.get(`${ request.serverUrl }/data/user`)
+				client.get(`${ request.apiUrl }/data/user`)
 					.then(clientResponse => {
 						output.requests = output.requests.map(userRequest => ({
 							...userRequest,
@@ -1168,11 +1168,11 @@ export default {
 					userFilter = `&userid=${ request.user.id }`;
 				}
 		
-				client.get(`${ request.serverUrl }/data/request?isactive=true${ userFilter }`)
+				client.get(`${ request.apiUrl }/data/request?isactive=true${ userFilter }`)
 					.then(clientResponse => {
 						output.requests = clientResponse.body.requests;
 		
-						client.get(`${ request.serverUrl }/data/user`)
+						client.get(`${ request.apiUrl }/data/user`)
 							.then(clientResponse => {
 								output.requests = output.requests.map(userRequest => ({
 									...userRequest,
@@ -1198,12 +1198,12 @@ export default {
 					});
 			}
 
-			client.get(`${ request.serverUrl }/data/request?id=${ request.body.requestaccept.id }`)
+			client.get(`${ request.apiUrl }/data/request?id=${ request.body.requestaccept.id }`)
 				.then(clientResponse => {
 					const userRequest = clientResponse.body.requests[0];
 
 					if (request.body.requestaccept.userId) {
-						client.get(`${ request.serverUrl }/data/user?id=${ request.body.requestaccept.userId }`)
+						client.get(`${ request.apiUrl }/data/user?id=${ request.body.requestaccept.userId }`)
 							.then(clientResponse => {
 								const updatedUser = {
 									...clientResponse.body.user[0],
@@ -1213,7 +1213,7 @@ export default {
 									]
 								}
 
-								client.post(`${ request.serverUrl }/data/user`)
+								client.post(`${ request.apiUrl }/data/user`)
 									.send({ user: updatedUser })
 									.then(() => getOutput())
 									.catch(error => {
@@ -1231,7 +1231,7 @@ export default {
 					else {
 						userRequest.isActive = false;
 
-						client.post(`${ request.serverUrl }/data/request`)
+						client.post(`${ request.apiUrl }/data/request`)
 							.send({ request: userRequest })
 							.then(() => getOutput())
 							.catch(error => {
@@ -1256,11 +1256,11 @@ export default {
 				)(request.user)
 		};
 
-		client.get(`${ request.serverUrl }/data/playbook?divisionid=${ request.division.id }`)
+		client.get(`${ request.apiUrl }/data/playbook?divisionid=${ request.division.id }`)
 			.then(clientResponse => {
 				output.playBooks = clientResponse.body.playBooks;
 
-				client.get(`${ request.serverUrl }/data/play?divisionid=${ request.division.id }`)
+				client.get(`${ request.apiUrl }/data/play?divisionid=${ request.division.id }`)
 					.then(clientResponse => {
 						output.plays = clientResponse.body.plays;
 						
@@ -1281,7 +1281,7 @@ export default {
 
 	playBookSave: (request, response) => {
 		if (request.body.playbook) {
-			client.post(`${ request.serverUrl }/data/playbook`)
+			client.post(`${ request.apiUrl }/data/playbook`)
 				.send({ playbook: request.body.playbook })
 				.then(clientResponse => {
 					response.status(200).json({ id: clientResponse.body.id });
@@ -1293,7 +1293,7 @@ export default {
 				});
 		}
 		else if (request.query.deleteid) {
-			client.delete(`${ request.serverUrl }/data/playbook?id=${ request.query.deleteid }`)
+			client.delete(`${ request.apiUrl }/data/playbook?id=${ request.query.deleteid }`)
 				.then(() => response.status(200).json({ status: "ok" }))
 				.catch(error => {
 					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `561: ${error.message}` }});
@@ -1302,7 +1302,7 @@ export default {
 				});
 		}
 		else if (request.query.copyid) {
-			client.get(`${ request.serverUrl }/data/playbook?id=${ request.query.copyid }`)
+			client.get(`${ request.apiUrl }/data/playbook?id=${ request.query.copyid }`)
 				.then(clientResponse => {
 					const newPlayBook = { 
 						...clientResponse.body.playBooks[0],
@@ -1310,7 +1310,7 @@ export default {
 						id: null
 					};
 
-					client.post(`${ request.serverUrl }/data/playbook`)
+					client.post(`${ request.apiUrl }/data/playbook`)
 						.send({ playbook: newPlayBook })
 						.then(clientResponse => {
 							response.status(200).json({ playBook: { ...newPlayBook, id: clientResponse.body.id }, server: clientResponse.body });
@@ -1336,12 +1336,12 @@ export default {
 				)(request.user)
 		};
 
-		client.get(`${ request.serverUrl }/data/playbook?divisionid=${ request.division.id }`)
+		client.get(`${ request.apiUrl }/data/playbook?divisionid=${ request.division.id }`)
 			.then(clientResponse => {
 				output.playBooks = clientResponse.body.playBooks;
 
 				if (request.query.id) {
-					client.get(`${ request.serverUrl }/data/play?id=${ request.query.id }`)
+					client.get(`${ request.apiUrl }/data/play?id=${ request.query.id }`)
 						.then(clientResponse => {
 							output.play = clientResponse.body.plays[0];
 
@@ -1380,7 +1380,7 @@ export default {
 		}
 
 		if (request.query.deleteid) {
-			client.delete(`${ request.serverUrl }/data/play?id=${ request.query.deleteid }`)
+			client.delete(`${ request.apiUrl }/data/play?id=${ request.query.deleteid }`)
 				.then(() => response.status(200).json({ status: "ok" }))
 				.catch(error => {
 					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3ffce8cb7b3a6bc14fd", message: `560: ${error.message}` }});
@@ -1389,14 +1389,14 @@ export default {
 				});
 		}
 		else if (request.body.play && request.body.playbooks) {
-			client.post(`${ request.serverUrl }/data/play`)
+			client.post(`${ request.apiUrl }/data/play`)
 				.send({ play: request.body.play })
 				.then(() => {
 
 					request.body.playbooks.forEach(playBook => {
 						updates.queue++;
 
-						client.post(`${ request.serverUrl }/data/playbook`)
+						client.post(`${ request.apiUrl }/data/playbook`)
 							.send({ playbook: playBook})
 							.then(() => updateComplete())
 							.catch(error => updateComplete(error));
@@ -1421,11 +1421,11 @@ export default {
 				)(request.user)
 		};
 
-		client.get(`${ request.serverUrl }/data/playbook?id=${ request.query.id }`)
+		client.get(`${ request.apiUrl }/data/playbook?id=${ request.query.id }`)
 			.then(clientResponse => {
 				output.playBook = clientResponse.body.playBooks[0];
 				
-				client.get(`${ request.serverUrl }/data/player?teamid=${ request.team.id }`)
+				client.get(`${ request.apiUrl }/data/player?teamid=${ request.team.id }`)
 					.then(clientResponse => {
 						output.players = clientResponse.body.players.map(player => ({
 							id: player.id,
@@ -1433,7 +1433,7 @@ export default {
 							lastName: player.lastName
 						}));
 
-						client.get(`${ request.serverUrl }/data/play?divisionid=${ request.division.id }`)
+						client.get(`${ request.apiUrl }/data/play?divisionid=${ request.division.id }`)
 							.then(clientResponse => {
 								
 								// Get the colors used on the plays already created for the division
@@ -1470,7 +1470,7 @@ export default {
 			return;
 		}
 
-		client.post(`${ request.serverUrl }/data/playbook`)
+		client.post(`${ request.apiUrl }/data/playbook`)
 			.send({ playbook: request.body.playbook })
 			.then(clientResponse => {
 				response.status(200).json({ id: clientResponse.body.id });
