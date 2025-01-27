@@ -228,7 +228,7 @@ export default {
 				response.status(200).json(output);
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc0dce8cb7b3a6bc1227", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc0dce8cb7b3a6bc1227", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
@@ -236,7 +236,7 @@ export default {
 
 	divisionSave: (request, response) => {
 		if (!request.body.teamdivision) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `550: Missing division and team to save` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `550: Missing division and team to save` }});
 			response.statusMessage = "Missing division and team to save";
 			response.status(550).json({ error: "Missing division and team to save" });
 			return;
@@ -271,20 +271,20 @@ export default {
 								
 							})
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `562: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `562: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(562).json({ error: error.message });
 							});
 
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `561: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `561: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(561).json({ error: error.message });
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc3dce8cb7b3a6bc122a", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
@@ -292,7 +292,7 @@ export default {
 
 	scheduleLoad: (request, response) => {
 		if (!request.query.divisionid) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `550: Missing division` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `550: Missing division` }});
 			response.statusMessage = "Missing division";
 			response.status(550).json({ error: "Missing division" });
 			return;
@@ -325,21 +325,21 @@ export default {
 								response.status(200).json(output);
 							})
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `561: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `561: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(561).json({ error: error.message });
 							});
 
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `562: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `562: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(562).json({ error: error.message });
 					})
 
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bc9cce8cb7b3a6bc122e", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
@@ -347,7 +347,7 @@ export default {
 
 	teamSave: (request, response) => {
 		if (!request.body.team) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd02ce8cb7b3a6bc1231", message: `550: Missing team to save` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd02ce8cb7b3a6bc1231", message: `550: Missing team to save` }});
 			response.statusMessage = "Missing team to save";
 			response.status(550).json({ error: "Missing team to save" });
 			return;
@@ -359,7 +359,7 @@ export default {
 				response.status(200).json({ id: clientReponse.body.id });
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd02ce8cb7b3a6bc1231", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd02ce8cb7b3a6bc1231", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
@@ -367,7 +367,7 @@ export default {
 
 	gameSave: (request, response) => {
 		if (!request.body.game) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd64ce8cb7b3a6bc12a0", message: `550: Missing game to save` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd64ce8cb7b3a6bc12a0", message: `550: Missing game to save` }});
 			response.statusMessage = "Missing game to save";
 			response.status(550).json({ error: "Missing game to save" });
 			return;
@@ -379,7 +379,7 @@ export default {
 				response.status(200).json({ id: clientResponse.body.id });
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd64ce8cb7b3a6bc12a0", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bd64ce8cb7b3a6bc12a0", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
@@ -387,7 +387,7 @@ export default {
 
 	videoPlayerUpload: (request, response) => {
 		if (!request.query.divisionid) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bda7ce8cb7b3a6bc12a3", message: `560: Missing division` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bda7ce8cb7b3a6bc12a3", message: `560: Missing division` }});
 			response.statusMessage = error.message;
 			response.status(560).json({ error: "Missing division" });
 			return;
@@ -407,7 +407,7 @@ export default {
 
 		request.busboy.on("file", (fieldName, file, uploadName) => {
 			if (!/.mp4$/i.test(uploadName)) {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bda7ce8cb7b3a6bc12a3", message: `561: File is not an mp4 file` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bda7ce8cb7b3a6bc12a3", message: `561: File is not an mp4 file` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: "File is not an mp4 file" });
 				return;
@@ -425,7 +425,7 @@ export default {
 				})
 				.on("error", error => {
 					console.log(`error: ${ error.message }`);
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bda7ce8cb7b3a6bc12a3", message: `562: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bda7ce8cb7b3a6bc12a3", message: `562: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 				})
@@ -440,7 +440,7 @@ export default {
 		client.get(`${ request.apiUrl }/data/team?divisionid=${ request.query.divisionid }&managed=true`)
 			.then(clientResponse => {
 				if (!clientResponse.body.teams || clientResponse.body.teams.length !== 1) {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414be21ce8cb7b3a6bc12a7", message: `562: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414be21ce8cb7b3a6bc12a7", message: `562: ${error.message}` }});
 					response.statusMessage = "Unable to retrieve managed team";
 					response.status(562).json({ error: "Unable to retrieve managed team" });
 					return;
@@ -458,7 +458,7 @@ export default {
 				const divisionPath = path.join(request.app.get("root"), `client/media/video/${ request.division.id }`);
 				fs.readdir(divisionPath, (error, files) => {
 					if (error) {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414be21ce8cb7b3a6bc12a7", message: `560: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414be21ce8cb7b3a6bc12a7", message: `560: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(560).json({ error: error.message });
 						return;
@@ -486,7 +486,7 @@ export default {
 				});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414be21ce8cb7b3a6bc12a7", message: `561: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414be21ce8cb7b3a6bc12a7", message: `561: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message });
 			});
@@ -494,7 +494,7 @@ export default {
 
 	videoPlayerExport: (request, response) => {
 		if (!request.body.export) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414beb6ce8cb7b3a6bc1316", message: `550: Missing data to export` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414beb6ce8cb7b3a6bc1316", message: `550: Missing data to export` }});
 			response.statusMessage = "Missing data to export";
 			response.status(550).json({ error: "Missing data to export" });
 			return;
@@ -524,7 +524,7 @@ export default {
 				
 			})
 			.on("error", (error) => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414beb6ce8cb7b3a6bc1316", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414beb6ce8cb7b3a6bc1316", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message });
 			})
@@ -552,7 +552,7 @@ export default {
 
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414beeece8cb7b3a6bc131b", message: `561: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414beeece8cb7b3a6bc131b", message: `561: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message });
 			});
@@ -560,7 +560,7 @@ export default {
 
 	evaluationSave: (request, response) => {
 		if (!request.body.player) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf17ce8cb7b3a6bc131e", message: `550: ${error.message}` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf17ce8cb7b3a6bc131e", message: `550: ${error.message}` }});
 			response.statusMessage = "Missing player to save";
 			response.status(550).json({ error: "Missing player to save" });
 			return;
@@ -572,7 +572,7 @@ export default {
 				response.status(200).json({ id: clientResponse.body.id });
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf17ce8cb7b3a6bc131e", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf17ce8cb7b3a6bc131e", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message });
 			});
@@ -603,13 +603,13 @@ export default {
 						response.status(200).json(output);
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf55ce8cb7b3a6bc1321", message: `562: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf55ce8cb7b3a6bc1321", message: `562: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(562).json({ error: error.message })
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf55ce8cb7b3a6bc1321", message: `561: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bf55ce8cb7b3a6bc1321", message: `561: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message })
 			});
@@ -617,7 +617,7 @@ export default {
 
 	playerManageSave: (request, response) => {
 		if (!request.body.saveplayers) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bfafce8cb7b3a6bc138f", message: `550: Missing player list to save` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bfafce8cb7b3a6bc138f", message: `550: Missing player list to save` }});
 			response.statusMessage = "Missing player list to save";
 			response.status(550).json({ error: "Missing player list to save" });
 			return;
@@ -647,7 +647,7 @@ export default {
 						response.status(200).json({ players: clientResponse.body.players });
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bfafce8cb7b3a6bc138f", message: `561: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bfafce8cb7b3a6bc138f", message: `561: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(561).json({ error: error.message })
 					});
@@ -657,7 +657,7 @@ export default {
 
 	playerManageDelete: (request, response) => {
 		if (!request.body.playerids) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bffdce8cb7b3a6bc1393", message: `550: Missing player IDs to delete` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bffdce8cb7b3a6bc1393", message: `550: Missing player IDs to delete` }});
 			response.statusMessage = "Missing player IDs to delete";
 			response.status(550).json({ error: response.statusMessage });
 			return;
@@ -683,7 +683,7 @@ export default {
 						response.status(200).json({ players: clientResponse.body.players });
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bffdce8cb7b3a6bc1393", message: `561: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414bffdce8cb7b3a6bc1393", message: `561: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(561).json({ error: error.message })
 					});
@@ -713,13 +713,13 @@ export default {
 						response.status(200).json(output);
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c036ce8cb7b3a6bc1396", message: `562: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c036ce8cb7b3a6bc1396", message: `562: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(562).json({ error: error.message })
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c036ce8cb7b3a6bc1396", message: `561: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c036ce8cb7b3a6bc1396", message: `561: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message })
 			});
@@ -728,7 +728,7 @@ export default {
 
 	draftRefresh: (request, response) => {
 		if (!request.query.version) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `550: Missing version` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `550: Missing version` }});
 			response.statusMessage = "Missing version";
 			response.status(550).json({ error: "Missing version" });
 			return;
@@ -737,7 +737,7 @@ export default {
 		if (request.body.team) {
 			// Update draft round
 			if (!request.body.team.id) {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `561: Invalid team` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `561: Invalid team` }});
 				response.statusMessage = "Invalid team";
 				response.status(561).json({ error: "Invalid team" });
 				return;
@@ -752,7 +752,7 @@ export default {
 					loadDraft();
 				})
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `562: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `562: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(562).json({ error: error.message });
 					return;
@@ -802,13 +802,13 @@ export default {
 							response.status(200).json(output);
 						})
 						.catch(error => {
-							client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `566: ${error.message}` }});
+							// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `566: ${error.message}` }});
 							response.statusMessage = error.message;
 							response.status(566).json({ error: error.message })
 						});
 				})
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `565: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c072ce8cb7b3a6bc1399", message: `565: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(565).json({ error: error.message })
 				});
@@ -837,19 +837,19 @@ export default {
 								response.status(200).json(output);
 							})
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c10bce8cb7b3a6bc1408", message: `563: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c10bce8cb7b3a6bc1408", message: `563: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(563).json({ error: error.message })
 							});
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c10bce8cb7b3a6bc1408", message: `562: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c10bce8cb7b3a6bc1408", message: `562: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(562).json({ error: error.message })
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c10bce8cb7b3a6bc1408", message: `561: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c10bce8cb7b3a6bc1408", message: `561: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message })
 			});
@@ -883,13 +883,13 @@ export default {
 								response.status(200).json(output);
 							})
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c152ce8cb7b3a6bc140b", message: `562: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c152ce8cb7b3a6bc140b", message: `562: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(562).json({ error: error.message })
 							});
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c152ce8cb7b3a6bc140b", message: `561: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c152ce8cb7b3a6bc140b", message: `561: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(561).json({ error: error.message })
 					});
@@ -972,7 +972,7 @@ export default {
 									response.status(200).json(output);
 								})
 								.catch(error => {
-									client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c194ce8cb7b3a6bc140e", message: `563: ${error.message}` }});
+									// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c194ce8cb7b3a6bc140e", message: `563: ${error.message}` }});
 									response.statusMessage = error.message;
 									response.status(563).json({ error: error.message })
 								});
@@ -982,13 +982,13 @@ export default {
 						}
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c194ce8cb7b3a6bc140e", message: `562: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c194ce8cb7b3a6bc140e", message: `562: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(562).json({ error: error.message })
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c194ce8cb7b3a6bc140e", message: `561: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c194ce8cb7b3a6bc140e", message: `561: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message })
 			});
@@ -996,7 +996,7 @@ export default {
 
 	emailEditSend: (request, response) => {
 		if (!request.body.email) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c1e7ce8cb7b3a6bc147d", message: `550: Missing email to send` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c1e7ce8cb7b3a6bc147d", message: `550: Missing email to send` }});
 			response.statusMessage = "Missing email to send";
 			response.status(550).json({ error: "Missing email to send" });
 			return;
@@ -1081,7 +1081,7 @@ export default {
 		
 		service.sendMail(options, (error, mailResponse) => {
 			if (error) {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c1e7ce8cb7b3a6bc147d", message: `562: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c1e7ce8cb7b3a6bc147d", message: `562: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(562).json({error: error.message});
 				return;
@@ -1101,7 +1101,7 @@ export default {
 						response.status(200).json({ emailId: clientResponse.body.id });
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c1e7ce8cb7b3a6bc147d", message: `563: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c1e7ce8cb7b3a6bc147d", message: `563: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(563).json({ error: error.message })
 					});
@@ -1139,13 +1139,13 @@ export default {
 						response.status(200).json(output);
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c24ace8cb7b3a6bc1480", message: `562: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c24ace8cb7b3a6bc1480", message: `562: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(562).json({ error: error.message })
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c24ace8cb7b3a6bc1480", message: `561: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c24ace8cb7b3a6bc1480", message: `561: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(561).json({ error: error.message })
 			});
@@ -1154,7 +1154,7 @@ export default {
 	userManageSave: (request, response) => {
 		if (request.body.requestaccept) {
 			if (!request.body.requestaccept.id) {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `550: Invalid request to accept/delete` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `550: Invalid request to accept/delete` }});
 				response.statusMessage = "Invalid request to accept/delete";
 				response.status(550).json({ error: "Invalid request to accept/delete" });
 				return;				
@@ -1186,13 +1186,13 @@ export default {
 								response.status(200).json(output);
 							})
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `565: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `565: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(565).json({ error: error.message })
 							});
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `566: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `566: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(566).json({ error: error.message })
 					});
@@ -1217,13 +1217,13 @@ export default {
 									.send({ user: updatedUser })
 									.then(() => getOutput())
 									.catch(error => {
-										client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `564: ${error.message}` }});
+										// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `564: ${error.message}` }});
 										response.statusMessage = error.message;
 										response.status(564).json({ error: error.message })
 									});
 							})
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `563: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `563: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(563).json({ error: error.message })
 							});
@@ -1235,14 +1235,14 @@ export default {
 							.send({ request: userRequest })
 							.then(() => getOutput())
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `562: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `562: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(562).json({ error: error.message })
 							});
 					}
 				})
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `561: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c279ce8cb7b3a6bc1483", message: `561: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message })
 				});
@@ -1267,13 +1267,13 @@ export default {
 						response.status(200).json(output);
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c323ce8cb7b3a6bc14f3", message: `561: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c323ce8cb7b3a6bc14f3", message: `561: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(561).json({ error: error.message })
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c323ce8cb7b3a6bc14f3", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c323ce8cb7b3a6bc14f3", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message })
 			});
@@ -1287,7 +1287,7 @@ export default {
 					response.status(200).json({ id: clientResponse.body.id });
 				})
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `560: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `560: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(560).json({ error: error.message })
 				});
@@ -1296,7 +1296,7 @@ export default {
 			client.delete(`${ request.apiUrl }/data/playbook?id=${ request.query.deleteid }`)
 				.then(() => response.status(200).json({ status: "ok" }))
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `561: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `561: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(561).json({ error: error })
 				});
@@ -1316,13 +1316,13 @@ export default {
 							response.status(200).json({ playBook: { ...newPlayBook, id: clientResponse.body.id }, server: clientResponse.body });
 						})
 						.catch(error => {
-							client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `562: ${error.message}` }});
+							// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `562: ${error.message}` }});
 							response.statusMessage = error.message;
 							response.status(562).json({ error: error })
 						});
 				})
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `561: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c356ce8cb7b3a6bc14f6", message: `561: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(561).json({ error: error })
 				});
@@ -1348,7 +1348,7 @@ export default {
 							response.status(200).json(output);
 						})
 						.catch(error => {
-							client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3c0ce8cb7b3a6bc14fa", message: `561: ${error.message}` }});
+							// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3c0ce8cb7b3a6bc14fa", message: `561: ${error.message}` }});
 							response.statusMessage = error.message;
 							response.status(561).json({ error: error.message })
 						});
@@ -1358,7 +1358,7 @@ export default {
 				}
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3c0ce8cb7b3a6bc14fa", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3c0ce8cb7b3a6bc14fa", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: error.message })
 			});
@@ -1383,7 +1383,7 @@ export default {
 			client.delete(`${ request.apiUrl }/data/play?id=${ request.query.deleteid }`)
 				.then(() => response.status(200).json({ status: "ok" }))
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3ffce8cb7b3a6bc14fd", message: `560: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3ffce8cb7b3a6bc14fd", message: `560: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(560).json({ error: error.message })
 				});
@@ -1404,7 +1404,7 @@ export default {
 					
 				})
 				.catch(error => {
-					client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3ffce8cb7b3a6bc14fd", message: `561: ${error.message}` }});
+					// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c3ffce8cb7b3a6bc14fd", message: `561: ${error.message}` }});
 					response.statusMessage = error.message;
 					response.status(561).json({ error: error.message })
 				});
@@ -1444,19 +1444,19 @@ export default {
 
 							})
 							.catch(error => {
-								client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c456ce8cb7b3a6bc156b", message: `561: ${error.message}` }});
+								// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c456ce8cb7b3a6bc156b", message: `561: ${error.message}` }});
 								response.statusMessage = error.message;
 								response.status(561).json({ error: error.message })
 							});
 					})
 					.catch(error => {
-						client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c456ce8cb7b3a6bc156b", message: `560: ${error.message}` }});
+						// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c456ce8cb7b3a6bc156b", message: `560: ${error.message}` }});
 						response.statusMessage = error.message;
 						response.status(560).json({ error: error.message })
 					});
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c456ce8cb7b3a6bc156b", message: `562: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c456ce8cb7b3a6bc156b", message: `562: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(562).json({ error: error.message })
 			});
@@ -1464,7 +1464,7 @@ export default {
 
 	depthChartSave: (request, response) => {
 		if (!request.body.playbook) {
-			client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c496ce8cb7b3a6bc156e", message: `550: Missing playbook to save` }});
+			// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c496ce8cb7b3a6bc156e", message: `550: Missing playbook to save` }});
 			response.statusMessage = "Missing playbook to save";
 			response.status(550).json({ error: "Missing playbook to save" });
 			return;
@@ -1476,7 +1476,7 @@ export default {
 				response.status(200).json({ id: clientResponse.body.id });
 			})
 			.catch(error => {
-				client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c496ce8cb7b3a6bc156e", message: `560: ${error.message}` }});
+				// client.post(request.logURL).send({ log: { logTime: new Date(), logTypeId: "6414c496ce8cb7b3a6bc156e", message: `560: ${error.message}` }});
 				response.statusMessage = error.message;
 				response.status(560).json({ error: JSON.stringify(error) })
 			});
