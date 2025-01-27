@@ -1,7 +1,6 @@
 // Imports =======================================================================
 
-import { fileURLToPath } from "url";
-import path, { dirname } from "path";
+import path from "path";
 import config from "./server/config.js";
 import express from "express";
 import bodyParser from "body-parser";
@@ -14,8 +13,7 @@ import router from "./server/router.js";
 const app = express();
 const { json, urlencoded } = bodyParser;
 const port = config.port || 9201;
-const currentFile = fileURLToPath(import.meta.url);
-const currentDirectory = dirname(currentFile);
+const currentDirectory = path.resolve(process.cwd());
 
 
 // Config =======================================================================
