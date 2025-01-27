@@ -18,7 +18,7 @@ export default {
 			return;
 		}
 
-		client.get(`${ request.protocol}://${ request.headers.host }/data/user?email=${ request.body.email }`)
+		client.get(`${ request.apiUrl }/data/user?email=${ request.body.email }`)
 			.then(clientResponse => {
 				let ipAddress = (request.headers["x-forwarded-for"] || "").split(",").pop().trim() || 
 					request.connection.remoteAddress || 
