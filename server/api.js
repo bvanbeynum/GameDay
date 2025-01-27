@@ -101,7 +101,7 @@ export default {
 			return;
 		}
 
-		client.get(`${request.protocol}://${request.headers.host}/data/user?usertoken=${request.query.token}`)
+		client.get(`${ request.apiUrl }/data/user?usertoken=${request.query.token}`)
 			.then(clientResponse => {
 				if (clientResponse.body.users && clientResponse.body.users.length === 1) {
 					const user = clientResponse.body.users[0];
@@ -122,7 +122,7 @@ export default {
 
 					user.tokens = user.tokens.filter(token => token !== request.query.token);
 
-					client.post(`${request.protocol}://${request.headers.host}/data/user`)
+					client.post(`${ request.apiUrl }/data/user`)
 						.send({ user: user })
 						.then(() => {
 
@@ -156,7 +156,7 @@ export default {
 				const tokenData = jwt.verify(request.cookies.gd, config.jwt);
 
 				if (tokenData.token) {
-					client.get(request.protocol + "://" + request.headers.host + "/data/user?devicetoken=" + tokenData.token)
+					client.get(request.apiUrl + "/data/user?devicetoken=" + tokenData.token)
 						.then(clientResponse => {
 							if (clientResponse.body.users && clientResponse.body.users.length === 1) {
 								request.user = clientResponse.body.users[0];
@@ -219,7 +219,7 @@ export default {
 	},
 
 	divisionsLoad: (request, response) => {
-		client.get(request.protocol + "://" + request.headers.host + "/data/team")
+		client.get(request.apiUrl + "/data/team")
 			.then(clientResponse => {
 				const output = {
 					teams: clientResponse.body.teams.filter(team => request.user.teams && request.user.teams.some(userTeam => userTeam === team.id))
